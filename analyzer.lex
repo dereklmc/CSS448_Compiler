@@ -1,11 +1,8 @@
 %{
-
 #include <iostream>
-
 #include "tokenconsts.h"
 
 static char* text;
-
 static const char* tokenNames[] = {
 	"yand",
 	"yarray",
@@ -71,11 +68,9 @@ static const char* tokenNames[] = {
 	"ywriteln",
 	"yunknown"
 };
-
 %}
 
 %option case-insensitive
-
 letter			[a-zA-Z]
 digit 			[[:digit:]]
 
@@ -86,6 +81,7 @@ digit 			[[:digit:]]
 %%
 	/** Identifiers **/
 and				{ return yand; }
+array 			{ return yarray; }
 begin			{ return ybegin; }
 case 			{ return ycase; }
 const 			{ return yconst; }
@@ -149,7 +145,8 @@ writeln			{ return ywriteln; }
 {letter}\({letter}|[0-9]\)\* 			{ text = yytext; return yident; }
 {digit}*(.{digit}+)?(e[+-]?{digit}+)?	{ text = yytext; return ynumber; }
 [[:space:]]			/** Ignore */
-.										{ text = yytext; return yunknown; }
+({letter}
+.				{ text = yytext; return yunknown; }
 
 %%
 
