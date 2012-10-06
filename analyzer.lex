@@ -85,23 +85,23 @@ digit 			[0-9]
 
 %%
 	/** Identifiers **/
-and				{ return yand; }
+and			{ return yand; }
 begin			{ return ybegin; }
 case 			{ return ycase; }
 const 			{ return yconst; }
 dispose			{ return ydispose; }
 div 			{ return ydiv; }
-do 				{ return ydo; }
+do 			{ return ydo; }
 downto 			{ return ydownto; }
 else 			{ return yelse; }
 end 			{ return yend; }
 false 			{ return yfalse; }
 for 			{ return yfor; }
-function    	{ return yfunction; }
+function    		{ return yfunction; }
 if  			{ return yif; }
 in  			{ return yin; }
 mod 			{ return ymod; }
-new				{ return ynew; }
+new			{ return ynew; }
 nil 			{ return ynil; }
 not 			{ return ynot; }
 of  			{ return yof; }
@@ -112,44 +112,44 @@ read			{ return yread; }
 readln			{ return yreadln; }
 record			{ return yrecord; }
 repeat			{ return yrepeat; }
-set				{ return yset; }
+set			{ return yset; }
 string			{ return ystring; }
 then			{ return ythen; }
-to				{ return yto; }
+to			{ return yto; }
 true			{ return ytrue; }
 type			{ return ytype; }
 until			{ return yuntil; }
-var				{ return yvar; }
+var			{ return yvar; }
 while			{ return ywhile; }
 write			{ return ywrite; }
 writeln			{ return ywriteln; }
 	/** Operands **/
-":="				{ return yassign; }
-\^					{ return ycaret; }
-:					{ return ycolon; }
-,					{ return ycomma; }
-\/					{ return ydivide; }
-"."	 				{ return ydot; }
-".." 				{ return ydotdot; }
-"=" 				{ return yequal; }
-">"   				{ return ygreater; }
-">="  				{ return ygreaterequal; }
-"["  				{ return yleftbracket; }
-"("  				{ return yleftparen; }
-"<"   				{ return yless; }
-"<="  				{ return ylessequal; }
-"-"   				{ return yminus; }
-"*"  				{ return ymultiply; }
-"<>"				{ return ynotequal; }
-"+"					{ return yplus; }
-"}"					{ return yrightbracket; }
-")"					{ return yrightparen; }
-";"					{ return ysemicolon; }
+":="			{ return yassign; }
+\^			{ return ycaret; }
+:			{ return ycolon; }
+,			{ return ycomma; }
+\/			{ return ydivide; }
+"."	 		{ return ydot; }
+".." 			{ return ydotdot; }
+"=" 			{ return yequal; }
+">"   			{ return ygreater; }
+">="  			{ return ygreaterequal; }
+"["  			{ return yleftbracket; }
+"("  			{ return yleftparen; }
+"<"   			{ return yless; }
+"<="  			{ return ylessequal; }
+"-"   			{ return yminus; }
+"*"  			{ return ymultiply; }
+"<>"			{ return ynotequal; }
+"+"			{ return yplus; }
+"}"			{ return yrightbracket; }
+")"			{ return yrightparen; }
+";"			{ return ysemicolon; }
 	/** Misc */
 {letter}\({letter}|[0-9]\)\* 			{ text = yytext; return yident; }
-{digit}*(.{digit}+)?(e[+-]?{digit}+)?	{ text = yytext; return ynumber; }
+{digit}*|{digit}+(.{digit}+)?(e[+-]?{digit}+)?		{ text = yytext; return ynumber; }
 [[:space:]]			/** Ignore */
-.										{text = yytext; return yunknown; }
+.						{ text = yytext; return yunknown; }
 
 %%
 
