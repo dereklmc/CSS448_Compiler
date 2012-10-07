@@ -1,0 +1,9 @@
+git clone https://github.com/dereklmc/CSS448_Compiler.git
+git add . (in directory)
+git status
+git commit -m "Test Message"
+git commit -a -m "Test Message" (for updated files only)
+git commit --amend (to fix issues)
+git push
+git pull
+git pull --rebase (magic)
