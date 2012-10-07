@@ -1,6 +1,6 @@
 arrays(input,output);
 
-(*** Demonstrate array usage. ***)
+(* Demonstrate array usage. *)
 
 type
       array1D = array [1..5] of integer;
@@ -35,5 +35,4 @@ begin
       writeln;
    end;
 end.
-
-
+(* This comment does not close

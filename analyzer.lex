@@ -84,6 +84,7 @@ digit 			[0-9]
 
 %s STRING
 %s COMMENT
+%s COMMENTTWO
 
 %%
 	/** Identifiers **/
@@ -130,23 +131,23 @@ writeln			{ return ywriteln; }
 <STRING>[^"]*		{ yymore(); return nextToken; }
 <STRING>["]		{ text = yytext; BEGIN(0); return ystring; }
 <STRING><<EOF>>		{ text = yytext; BEGIN(0); return ystring; }
-"(*"([^*]|\*)*"*)"\n?	{ ECHO; return nextToken; }
-	/**
-<INITIAL>(\(\*)		{ printf("/*"); BEGIN(COMMENT); return nextToken; }
-<COMMENT>[^*)]*		{ ECHO; return nextToken; }
-<COMMENT>[*]		{ 
-				register int peek = input();
-				if (peek == ')') {
-					printf("*\/");
-					BEGIN(0);
-				} else {
-					unput(peek);
-					ECHO;
-				}
-				return nextToken;
-			}
-<COMMENT><<EOF>>	{ printf("*\/"); BEGIN(0); return nextToken; }
-	**/
+
+<INITIAL>[\{]		{ printf("/*"); BEGIN(COMMENTTWO); return nextToken;}
+<COMMENTTWO>[^\}]*	{ ECHO; return nextToken; }
+<COMMENTTWO>[\}]	{ printf("*/\n");
+				 BEGIN(0); return nextToken; }
+<COMMENTTWO><<EOF>>	{ printf("*/\n");
+				 BEGIN(0); return nextToken; } /**
+
+"(*"([^*]|\*)*"*)"\n?	{ ECHO; return nextToken; } */	
+
+<INITIAL>[\(][\*]	{ printf("/*"); BEGIN(COMMENT); return nextToken; }
+<COMMENT>[^(\*\))]*	{ ECHO; return nextToken; }
+<COMMENT>[\*/\)]	{ printf("*/\n"); yyinput();
+				 BEGIN(0); return nextToken; }
+<COMMENT>[\*][^\)]	{ ECHO;	return nextToken; }
+<COMMENT><<EOF>>	{ printf("*/\n"); BEGIN(0); return nextToken; }
+	
 ":="			{ return yassign; }
 \^			{ return ycaret; }
 :			{ return ycolon; }
@@ -157,7 +158,7 @@ writeln			{ return ywriteln; }
 "=" 			{ return yequal; }
 ">"   			{ return ygreater; }
 ">="  			{ return ygreaterequal; }
-"["  			{ return yleftbracket; }
+<INITIAL>"["  		{ return yleftbracket; }
 <INITIAL>"("		{ return yleftparen; }
 "<"   			{ return yless; }
 "<="  			{ return ylessequal; }
