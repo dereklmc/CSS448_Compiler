@@ -1,8 +1,11 @@
 %{
-#include <iostream>
-#include "tokenconsts.h"
 
+#include "tokenconsts.h"
+#include <iostream>
+#include <iomanip>
 static char* text;
+static const int subtractFromToken = 257;
+
 static const char* tokenNames[] = {
 	"yand",
 	"yarray",
@@ -68,11 +71,13 @@ static const char* tokenNames[] = {
 	"ywriteln",
 	"yunknown"
 };
+
 %}
 
 %option case-insensitive
+
 letter			[a-zA-Z]
-digit 			[[:digit:]]
+digit 			[0-9]
 
 /**
  * TODO {letter}({letter}|{digit})*\[{digit}\] { return yarray; }
@@ -81,7 +86,6 @@ digit 			[[:digit:]]
 %%
 	/** Identifiers **/
 and				{ return yand; }
-array 			{ return yarray; }
 begin			{ return ybegin; }
 case 			{ return ycase; }
 const 			{ return yconst; }
@@ -145,19 +149,32 @@ writeln			{ return ywriteln; }
 {letter}\({letter}|[0-9]\)\* 			{ text = yytext; return yident; }
 {digit}*(.{digit}+)?(e[+-]?{digit}+)?	{ text = yytext; return ynumber; }
 [[:space:]]			/** Ignore */
-({letter}
-.				{ text = yytext; return yunknown; }
+.										{text = yytext; return yunknown; }
 
 %%
 
-void displayToken(int tokenId)
+int getNewTokenId(int oldTokenId)
 {
-	std::cout << tokenId << std::endl;
+	int newTokenId = oldTokenId - subtractFromToken;
+	return newTokenId;
 }
 
-int main()
+void displayToken(int tokenId)
 {
-	while (true)
+	std::string tName;
+	tName = tokenNames[getNewTokenId(tokenId)];
+
+	std::cout << std::left << std::setw(8) <<  tokenId;
+	std::cout << std::left << std::setw(15) << tokenNames[tokenId-257];
+	if ( (tName == "ynumber") || (tName == "yident") || (tName == "yunknown") ){
+		std::cout << text;
+	}
+	std::cout << "\n";	
+}
+
+int main(void)
+{
+	while (1)
 	{
 		int tokenId = yylex();
 		if (tokenId == 0) {
@@ -167,3 +184,4 @@ int main()
 	}
 	return 0;
 }
+
