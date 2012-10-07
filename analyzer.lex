@@ -1,10 +1,11 @@
 %{
 
 #include "tokenconsts.h"
-#include <iostream>
-#include <iomanip>
+#include <iostream>	// For cout	      
+#include <iomanip>	// For setw and left
 
-static char* text;
+static char* text;	//Holds yytext for display
+//Number used to get the proper index in the hash table
 static const int subtractFromToken = 257;
 
 static const char* tokenNames[] = {
@@ -72,7 +73,7 @@ static const char* tokenNames[] = {
 	"ywriteln",
 	"yunknown"
 };
-
+//Used when dealing with strings and comments
 static const int nextToken = -1;
 
 %}
@@ -83,8 +84,9 @@ letter			[a-zA-Z]
 digit 			[0-9]
 
 %s STRING
+%s STRING2
 %s COMMENT
-%s COMMENTTWO
+%s COMMENT2
 
 %%
 	/** Identifiers **/
@@ -127,26 +129,30 @@ while			{ return ywhile; }
 write			{ return ywrite; }
 writeln			{ return ywriteln; }
 	/** Operands **/
+	/** Strings **/
 <INITIAL>[\"]		{ yymore(); BEGIN(STRING); return nextToken; }
 <STRING>[^"]*		{ yymore(); return nextToken; }
 <STRING>["]		{ text = yytext; BEGIN(0); return ystring; }
 <STRING><<EOF>>		{ text = yytext; BEGIN(0); return ystring; }
 
-<INITIAL>[\{]		{ printf("/*"); BEGIN(COMMENTTWO); return nextToken;}
-<COMMENTTWO>[^\}]*	{ ECHO; return nextToken; }
-<COMMENTTWO>[\}]	{ printf("*/\n");
-				 BEGIN(0); return nextToken; }
-<COMMENTTWO><<EOF>>	{ printf("*/\n");
-				 BEGIN(0); return nextToken; } /**
+<INITIAL>[\']           { yymore(); BEGIN(STRING2); return nextToken; }
+<STRING2>[^']*           { yymore(); return nextToken; }
+<STRING2>[']             { text = yytext; BEGIN(0); return ystring; }
+<STRING2><<EOF>>         { text = yytext; BEGIN(0); return ystring; }
 
-"(*"([^*]|\*)*"*)"\n?	{ ECHO; return nextToken; } */	
-
+	/** Comments **/
 <INITIAL>[\(][\*]	{ printf("/*"); BEGIN(COMMENT); return nextToken; }
 <COMMENT>[^(\*\))]*	{ ECHO; return nextToken; }
 <COMMENT>[\*/\)]	{ printf("*/\n"); yyinput();
 				 BEGIN(0); return nextToken; }
 <COMMENT>[\*][^\)]	{ ECHO;	return nextToken; }
 <COMMENT><<EOF>>	{ printf("*/\n"); BEGIN(0); return nextToken; }
+
+<INITIAL>[\{]           { printf("/*"); BEGIN(COMMENT2); return nextToken;}
+<COMMENT2>[^\}]*        { ECHO; return nextToken; }
+<COMMENT2>[\}] 		 { printf("*/\n"); BEGIN(0); return nextToken; }
+<COMMENT2><<EOF>>       { printf("*/\n"); BEGIN(0); return nextToken; }
+
 	
 ":="			{ return yassign; }
 \^			{ return ycaret; }
@@ -167,13 +173,13 @@ writeln			{ return ywriteln; }
 "<>"			{ return ynotequal; }
 "+"			{ return yplus; }
 "]"			{ return yrightbracket; }
-<INITIAL>")"			{ return yrightparen; }
+<INITIAL>")"		{ return yrightparen; }
 ";"			{ return ysemicolon; }
 	/** Misc */
-{letter}({letter}|[0-9])* 			{ text = yytext; return yident; }
-{digit}+(\.{digit}+)?(e[+-]?{digit}+)?		{ text = yytext; return ynumber; }
-[[:space:]]			/** Ignore */
-.						{ text = yytext; return yunknown; }
+{letter}({letter}|[0-9])* 		{ text = yytext; return yident; }
+{digit}+(\.{digit}+)?(e[+-]?{digit}+)?	{ text = yytext; return ynumber; }
+[[:space:]]				/** Ignore */
+.					{ text = yytext; return yunknown; }
 
 %%
 
@@ -190,7 +196,10 @@ void displayToken(int tokenId)
 
 	std::cout << std::left << std::setw(8) <<  tokenId;
 	std::cout << std::left << std::setw(15) << tokenNames[tokenId-257];
-	if ( (tName == "ynumber") || (tName == "yident") || (tName == "yunknown") || (tName == "ystring") ){
+	
+	if ( (tName == "ynumber") || (tName == "yident") ||
+		 (tName == "yunknown") || (tName == "ystring") )
+	{
 		std::cout << text;
 	}
 	std::cout << "\n";	

@@ -1,38 +1,22 @@
-arrays(input,output);
-
-(* Demonstrate array usage. *)
+program arrays2(input,output);
 
 type
-      array1D = array [1..5] of integer;
-      array3D = array [1..5,2..3,0..2] of integer;
+  array1dim = array ['a'..'e'] of integer;
 
 var
-      a: array3D;
-      b: array [0..3] of array1D;
-      i,j,k: integer;
+  a: array1dim;
+  i: char;
+  n: integer;
 
+(******************************* main **********************************)
 begin
-   for i := 1 to 5 do
-      for j := 2 to 3 do
-         for k := 0 to 2 do
-             a[i,j,k] := i;
-
-   for i := 0 to 3 do
-      for j := 1 to 5 do
-         b[i,j] := i+j;
-
-   for i := 1 to 5 do
-      for j := 2 to 3 do begin
-         for k := 0 to 2 do
-            write(a[i,j,k], " ");
-	 writeln;
-      end;
-   writeln;
-
-   for i := 0 to 3 do begin
-      for j := 1 to 5 do
-         write(b[i,j], " ");
-      writeln;
+   n := 0;
+   (* loop to show you can use chars to index arrays *)
+   for i := 'a' to 'e' do
+   begin
+      n := n + 5;
+      a[i] := n;                         { cool, huh }
+      write(a[i], " ");
    end;
+   writeln;
 end.
-(* This comment does not close
