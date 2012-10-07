@@ -86,6 +86,7 @@ digit 			[0-9]
 %%
 	/** Identifiers **/
 and			{ return yand; }
+array       		{ return yarray; }
 begin			{ return ybegin; }
 case 			{ return ycase; }
 const 			{ return yconst; }
