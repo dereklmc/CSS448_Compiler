@@ -3,6 +3,7 @@
 #include "tokenconsts.h"
 #include <iostream>
 #include <iomanip>
+
 static char* text;
 static const int subtractFromToken = 257;
 
@@ -72,6 +73,8 @@ static const char* tokenNames[] = {
 	"yunknown"
 };
 
+static const int nextToken = -1;
+
 %}
 
 %option case-insensitive
@@ -79,9 +82,7 @@ static const char* tokenNames[] = {
 letter			[a-zA-Z]
 digit 			[0-9]
 
-/**
- * TODO {letter}({letter}|{digit})*\[{digit}\] { return yarray; }
- */
+%s STRING
 
 %%
 	/** Identifiers **/
@@ -114,7 +115,6 @@ readln			{ return yreadln; }
 record			{ return yrecord; }
 repeat			{ return yrepeat; }
 set			{ return yset; }
-string			{ return ystring; }
 then			{ return ythen; }
 to			{ return yto; }
 true			{ return ytrue; }
@@ -125,6 +125,10 @@ while			{ return ywhile; }
 write			{ return ywrite; }
 writeln			{ return ywriteln; }
 	/** Operands **/
+<INITIAL>[\"]	{ yymore(); BEGIN(STRING); return nextToken; }
+<STRING>[^"]*	{ yymore(); return nextToken; }
+<STRING>["]	{ text = yytext; BEGIN(0); return ystring; }
+<STRING><<EOF>>	{ text = yytext; BEGIN(0); return ystring; }
 ":="			{ return yassign; }
 \^			{ return ycaret; }
 :			{ return ycolon; }
@@ -143,11 +147,11 @@ writeln			{ return ywriteln; }
 "*"  			{ return ymultiply; }
 "<>"			{ return ynotequal; }
 "+"			{ return yplus; }
-"}"			{ return yrightbracket; }
+"]"			{ return yrightbracket; }
 ")"			{ return yrightparen; }
 ";"			{ return ysemicolon; }
 	/** Misc */
-{letter}\({letter}|[0-9]\)\* 			{ text = yytext; return yident; }
+{letter}({letter}|[0-9])* 			{ text = yytext; return yident; }
 {digit}*|{digit}+(.{digit}+)?(e[+-]?{digit}+)?		{ text = yytext; return ynumber; }
 [[:space:]]			/** Ignore */
 .						{ text = yytext; return yunknown; }
@@ -167,7 +171,7 @@ void displayToken(int tokenId)
 
 	std::cout << std::left << std::setw(8) <<  tokenId;
 	std::cout << std::left << std::setw(15) << tokenNames[tokenId-257];
-	if ( (tName == "ynumber") || (tName == "yident") || (tName == "yunknown") ){
+	if ( (tName == "ynumber") || (tName == "yident") || (tName == "yunknown") || (tName == "ystring") ){
 		std::cout << text;
 	}
 	std::cout << "\n";	
@@ -180,8 +184,9 @@ int main(void)
 		int tokenId = yylex();
 		if (tokenId == 0) {
 			break;
+		} else if (tokenId > 0) {
+			displayToken(tokenId);
 		}
-		displayToken(tokenId);
 	}
 	return 0;
 }

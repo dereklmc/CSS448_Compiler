@@ -1,0 +1,203 @@
+281     yident         arrays
+285     yleftparen     
+281     yident         input
+264     ycomma         
+281     yident         output
+306     yrightparen    
+307     ysemicolon     
+285     yleftparen     
+290     ymultiply      
+290     ymultiply      
+290     ymultiply      
+281     yident         Demonstrate
+258     yarray         
+281     yident         usage
+270     ydot           
+290     ymultiply      
+290     ymultiply      
+290     ymultiply      
+306     yrightparen    
+313     ytype          
+281     yident         array1D
+275     yequal         
+258     yarray         
+284     yleftbracket   
+295     ynumber        1
+271     ydotdot        
+295     ynumber        5
+305     yrightbracket  
+296     yof            
+281     yident         integer
+307     ysemicolon     
+281     yident         array3D
+275     yequal         
+258     yarray         
+284     yleftbracket   
+295     ynumber        1
+271     ydotdot        
+295     ynumber        5,2
+271     ydotdot        
+295     ynumber        3,0
+271     ydotdot        
+295     ynumber        2
+305     yrightbracket  
+296     yof            
+281     yident         integer
+307     ysemicolon     
+315     yvar           
+281     yident         a
+263     ycolon         
+281     yident         array3D
+307     ysemicolon     
+281     yident         b
+263     ycolon         
+258     yarray         
+284     yleftbracket   
+295     ynumber        0
+271     ydotdot        
+295     ynumber        3
+305     yrightbracket  
+296     yof            
+281     yident         array1D
+307     ysemicolon     
+281     yident         i
+264     ycomma         
+281     yident         j
+264     ycomma         
+281     yident         k
+263     ycolon         
+281     yident         integer
+307     ysemicolon     
+260     ybegin         
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        1
+311     yto            
+295     ynumber        5
+269     ydo            
+277     yfor           
+281     yident         j
+259     yassign        
+295     ynumber        2
+311     yto            
+295     ynumber        3
+269     ydo            
+277     yfor           
+281     yident         k
+259     yassign        
+295     ynumber        0
+311     yto            
+295     ynumber        2
+269     ydo            
+281     yident         a
+284     yleftbracket   
+281     yident         i
+264     ycomma         
+281     yident         j
+264     ycomma         
+281     yident         k
+305     yrightbracket  
+259     yassign        
+281     yident         i
+307     ysemicolon     
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        0
+311     yto            
+295     ynumber        3
+269     ydo            
+277     yfor           
+281     yident         j
+259     yassign        
+295     ynumber        1
+311     yto            
+295     ynumber        5
+269     ydo            
+281     yident         b
+284     yleftbracket   
+281     yident         i
+264     ycomma         
+281     yident         j
+305     yrightbracket  
+259     yassign        
+281     yident         i
+298     yplus          
+281     yident         j
+307     ysemicolon     
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        1
+311     yto            
+295     ynumber        5
+269     ydo            
+277     yfor           
+281     yident         j
+259     yassign        
+295     ynumber        2
+311     yto            
+295     ynumber        3
+269     ydo            
+260     ybegin         
+277     yfor           
+281     yident         k
+259     yassign        
+295     ynumber        0
+311     yto            
+295     ynumber        2
+269     ydo            
+317     ywrite         
+285     yleftparen     
+281     yident         a
+284     yleftbracket   
+281     yident         i
+264     ycomma         
+281     yident         j
+264     ycomma         
+281     yident         k
+305     yrightbracket  
+264     ycomma         
+309     ystring        " "
+306     yrightparen    
+307     ysemicolon     
+318     ywriteln       
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+318     ywriteln       
+307     ysemicolon     
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        0
+311     yto            
+295     ynumber        3
+269     ydo            
+260     ybegin         
+277     yfor           
+281     yident         j
+259     yassign        
+295     ynumber        1
+311     yto            
+295     ynumber        5
+269     ydo            
+317     ywrite         
+285     yleftparen     
+281     yident         b
+284     yleftbracket   
+281     yident         i
+264     ycomma         
+281     yident         j
+305     yrightbracket  
+264     ycomma         
+309     ystring        " "
+306     yrightparen    
+307     ysemicolon     
+318     ywriteln       
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+274     yend           
+270     ydot           
