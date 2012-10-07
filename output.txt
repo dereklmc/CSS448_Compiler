@@ -5,18 +5,7 @@
 281     yident         output
 306     yrightparen    
 307     ysemicolon     
-285     yleftparen     
-290     ymultiply      
-290     ymultiply      
-290     ymultiply      
-281     yident         Demonstrate
-258     yarray         
-281     yident         usage
-270     ydot           
-290     ymultiply      
-290     ymultiply      
-290     ymultiply      
-306     yrightparen    
+(*** Demonstrate array usage. ***)
 313     ytype          
 281     yident         array1D
 275     yequal         
@@ -35,9 +24,13 @@
 284     yleftbracket   
 295     ynumber        1
 271     ydotdot        
-295     ynumber        5,2
+295     ynumber        5
+264     ycomma         
+295     ynumber        2
 271     ydotdot        
-295     ynumber        3,0
+295     ynumber        3
+264     ycomma         
+295     ynumber        0
 271     ydotdot        
 295     ynumber        2
 305     yrightbracket  

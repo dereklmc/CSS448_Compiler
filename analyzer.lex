@@ -83,6 +83,7 @@ letter			[a-zA-Z]
 digit 			[0-9]
 
 %s STRING
+%s COMMENT
 
 %%
 	/** Identifiers **/
@@ -125,14 +126,31 @@ while			{ return ywhile; }
 write			{ return ywrite; }
 writeln			{ return ywriteln; }
 	/** Operands **/
-<INITIAL>[\"]	{ yymore(); BEGIN(STRING); return nextToken; }
-<STRING>[^"]*	{ yymore(); return nextToken; }
-<STRING>["]	{ text = yytext; BEGIN(0); return ystring; }
-<STRING><<EOF>>	{ text = yytext; BEGIN(0); return ystring; }
+<INITIAL>[\"]		{ yymore(); BEGIN(STRING); return nextToken; }
+<STRING>[^"]*		{ yymore(); return nextToken; }
+<STRING>["]		{ text = yytext; BEGIN(0); return ystring; }
+<STRING><<EOF>>		{ text = yytext; BEGIN(0); return ystring; }
+"(*"([^*]|\*)*"*)"\n?	{ ECHO; return nextToken; }
+	/**
+<INITIAL>(\(\*)		{ printf("/*"); BEGIN(COMMENT); return nextToken; }
+<COMMENT>[^*)]*		{ ECHO; return nextToken; }
+<COMMENT>[*]		{ 
+				register int peek = input();
+				if (peek == ')') {
+					printf("*\/");
+					BEGIN(0);
+				} else {
+					unput(peek);
+					ECHO;
+				}
+				return nextToken;
+			}
+<COMMENT><<EOF>>	{ printf("*\/"); BEGIN(0); return nextToken; }
+	**/
 ":="			{ return yassign; }
 \^			{ return ycaret; }
 :			{ return ycolon; }
-,			{ return ycomma; }
+","			{ return ycomma; }
 \/			{ return ydivide; }
 "."	 		{ return ydot; }
 ".." 			{ return ydotdot; }
@@ -140,7 +158,7 @@ writeln			{ return ywriteln; }
 ">"   			{ return ygreater; }
 ">="  			{ return ygreaterequal; }
 "["  			{ return yleftbracket; }
-"("  			{ return yleftparen; }
+<INITIAL>"("		{ return yleftparen; }
 "<"   			{ return yless; }
 "<="  			{ return ylessequal; }
 "-"   			{ return yminus; }
@@ -148,11 +166,11 @@ writeln			{ return ywriteln; }
 "<>"			{ return ynotequal; }
 "+"			{ return yplus; }
 "]"			{ return yrightbracket; }
-")"			{ return yrightparen; }
+<INITIAL>")"			{ return yrightparen; }
 ";"			{ return ysemicolon; }
 	/** Misc */
 {letter}({letter}|[0-9])* 			{ text = yytext; return yident; }
-{digit}*|{digit}+(.{digit}+)?(e[+-]?{digit}+)?		{ text = yytext; return ynumber; }
+{digit}+(\.{digit}+)?(e[+-]?{digit}+)?		{ text = yytext; return ynumber; }
 [[:space:]]			/** Ignore */
 .						{ text = yytext; return yunknown; }
 
