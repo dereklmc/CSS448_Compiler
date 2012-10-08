@@ -1570,11 +1570,11 @@ static int yy_more_len = 0;
 #define YY_MORE_ADJ (yy_more_len)
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "src/tokenizer.lex"
-#line 2 "src/tokenizer.lex"
+#line 1 "src/analyzer.lex"
+#line 2 "src/analyzer.lex"
 
 #include "tokenconsts.h"
-#include "tokenizer.h"
+#include "analyzer.h"
 
 #include <iostream>	// For cout	      
 #include <iomanip>	// For setw and left
@@ -1776,7 +1776,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 23 "src/tokenizer.lex"
+#line 23 "src/analyzer.lex"
 
 	/** Identifiers **/
 #line 1783 "src/lex.yy.c"
@@ -1870,245 +1870,245 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 25 "src/tokenizer.lex"
+#line 25 "src/analyzer.lex"
 { return yand; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 26 "src/tokenizer.lex"
+#line 26 "src/analyzer.lex"
 { return yarray; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 27 "src/tokenizer.lex"
+#line 27 "src/analyzer.lex"
 { return ybegin; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 28 "src/tokenizer.lex"
+#line 28 "src/analyzer.lex"
 { return ycase; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 29 "src/tokenizer.lex"
+#line 29 "src/analyzer.lex"
 { return yconst; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 30 "src/tokenizer.lex"
+#line 30 "src/analyzer.lex"
 { return ydispose; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 31 "src/tokenizer.lex"
+#line 31 "src/analyzer.lex"
 { return ydiv; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 32 "src/tokenizer.lex"
+#line 32 "src/analyzer.lex"
 { return ydo; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 33 "src/tokenizer.lex"
+#line 33 "src/analyzer.lex"
 { return ydownto; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 34 "src/tokenizer.lex"
+#line 34 "src/analyzer.lex"
 { return yelse; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 35 "src/tokenizer.lex"
+#line 35 "src/analyzer.lex"
 { return yend; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 36 "src/tokenizer.lex"
+#line 36 "src/analyzer.lex"
 { return yfalse; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 37 "src/tokenizer.lex"
+#line 37 "src/analyzer.lex"
 { return yfor; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 38 "src/tokenizer.lex"
+#line 38 "src/analyzer.lex"
 { return yfunction; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 39 "src/tokenizer.lex"
+#line 39 "src/analyzer.lex"
 { return yif; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 40 "src/tokenizer.lex"
+#line 40 "src/analyzer.lex"
 { return yin; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 41 "src/tokenizer.lex"
+#line 41 "src/analyzer.lex"
 { return ymod; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 42 "src/tokenizer.lex"
+#line 42 "src/analyzer.lex"
 { return ynew; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 43 "src/tokenizer.lex"
+#line 43 "src/analyzer.lex"
 { return ynil; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 44 "src/tokenizer.lex"
+#line 44 "src/analyzer.lex"
 { return ynot; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 45 "src/tokenizer.lex"
+#line 45 "src/analyzer.lex"
 { return yof; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 46 "src/tokenizer.lex"
+#line 46 "src/analyzer.lex"
 { return yor; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 47 "src/tokenizer.lex"
+#line 47 "src/analyzer.lex"
 { return yprocedure; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 48 "src/tokenizer.lex"
+#line 48 "src/analyzer.lex"
 { return yprogram; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 49 "src/tokenizer.lex"
+#line 49 "src/analyzer.lex"
 { return yread; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 50 "src/tokenizer.lex"
+#line 50 "src/analyzer.lex"
 { return yreadln; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 51 "src/tokenizer.lex"
+#line 51 "src/analyzer.lex"
 { return yrecord; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 52 "src/tokenizer.lex"
+#line 52 "src/analyzer.lex"
 { return yrepeat; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 53 "src/tokenizer.lex"
+#line 53 "src/analyzer.lex"
 { return yset; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 54 "src/tokenizer.lex"
+#line 54 "src/analyzer.lex"
 { return ythen; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 55 "src/tokenizer.lex"
+#line 55 "src/analyzer.lex"
 { return yto; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 56 "src/tokenizer.lex"
+#line 56 "src/analyzer.lex"
 { return ytrue; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 57 "src/tokenizer.lex"
+#line 57 "src/analyzer.lex"
 { return ytype; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 58 "src/tokenizer.lex"
+#line 58 "src/analyzer.lex"
 { return yuntil; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 59 "src/tokenizer.lex"
+#line 59 "src/analyzer.lex"
 { return yvar; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 60 "src/tokenizer.lex"
+#line 60 "src/analyzer.lex"
 { return ywhile; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 61 "src/tokenizer.lex"
+#line 61 "src/analyzer.lex"
 { return ywrite; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 62 "src/tokenizer.lex"
+#line 62 "src/analyzer.lex"
 { return ywriteln; }
 	YY_BREAK
 /** Strings **/
 case 39:
 YY_RULE_SETUP
-#line 64 "src/tokenizer.lex"
+#line 64 "src/analyzer.lex"
 { yymore(); BEGIN(STRING); return nextToken; }
 	YY_BREAK
 case 40:
 /* rule 40 can match eol */
 YY_RULE_SETUP
-#line 65 "src/tokenizer.lex"
+#line 65 "src/analyzer.lex"
 { yymore(); return nextToken; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 66 "src/tokenizer.lex"
+#line 66 "src/analyzer.lex"
 { text = yytext; BEGIN(0); return ystring; }
 	YY_BREAK
 case YY_STATE_EOF(STRING):
-#line 67 "src/tokenizer.lex"
+#line 67 "src/analyzer.lex"
 { text = yytext; BEGIN(0); return ystring; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 69 "src/tokenizer.lex"
+#line 69 "src/analyzer.lex"
 { yymore(); BEGIN(STRING2); return nextToken; }
 	YY_BREAK
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
-#line 70 "src/tokenizer.lex"
+#line 70 "src/analyzer.lex"
 { yymore(); return nextToken; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 71 "src/tokenizer.lex"
+#line 71 "src/analyzer.lex"
 { text = yytext; BEGIN(0); return ystring; }
 	YY_BREAK
 case YY_STATE_EOF(STRING2):
-#line 72 "src/tokenizer.lex"
+#line 72 "src/analyzer.lex"
 { text = yytext; BEGIN(0); return ystring; }
 	YY_BREAK
 /** Comments **/
 case 45:
 YY_RULE_SETUP
-#line 75 "src/tokenizer.lex"
+#line 75 "src/analyzer.lex"
 { printf("/*"); BEGIN(COMMENT); return nextToken; }
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 76 "src/tokenizer.lex"
+#line 76 "src/analyzer.lex"
 { ECHO; return nextToken; }
 	YY_BREAK
 case 47:
@@ -2116,7 +2116,7 @@ case 47:
 (yy_c_buf_p) = yy_cp = yy_bp + 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 77 "src/tokenizer.lex"
+#line 77 "src/analyzer.lex"
 {
 				printf("*/\n");
 				yyinput();
@@ -2127,164 +2127,164 @@ YY_RULE_SETUP
 case 48:
 /* rule 48 can match eol */
 YY_RULE_SETUP
-#line 83 "src/tokenizer.lex"
+#line 83 "src/analyzer.lex"
 { ECHO;	return nextToken; }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 84 "src/tokenizer.lex"
+#line 84 "src/analyzer.lex"
 { printf("*/\n"); BEGIN(0); return nextToken; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 86 "src/tokenizer.lex"
+#line 86 "src/analyzer.lex"
 { printf("/*"); BEGIN(COMMENT2); return nextToken;}
 	YY_BREAK
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
-#line 87 "src/tokenizer.lex"
+#line 87 "src/analyzer.lex"
 { ECHO; return nextToken; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 88 "src/tokenizer.lex"
+#line 88 "src/analyzer.lex"
 { printf("*/\n"); BEGIN(0); return nextToken; }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT2):
-#line 89 "src/tokenizer.lex"
+#line 89 "src/analyzer.lex"
 { printf("*/\n"); BEGIN(0); return nextToken; }
 	YY_BREAK
 /** Operands **/	
 case 52:
 YY_RULE_SETUP
-#line 91 "src/tokenizer.lex"
+#line 91 "src/analyzer.lex"
 { return yassign; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 92 "src/tokenizer.lex"
+#line 92 "src/analyzer.lex"
 { return ycaret; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 93 "src/tokenizer.lex"
+#line 93 "src/analyzer.lex"
 { return ycolon; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 94 "src/tokenizer.lex"
+#line 94 "src/analyzer.lex"
 { return ycomma; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 95 "src/tokenizer.lex"
+#line 95 "src/analyzer.lex"
 { return ydivide; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 96 "src/tokenizer.lex"
+#line 96 "src/analyzer.lex"
 { return ydot; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 97 "src/tokenizer.lex"
+#line 97 "src/analyzer.lex"
 { return ydotdot; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 98 "src/tokenizer.lex"
+#line 98 "src/analyzer.lex"
 { return yequal; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 99 "src/tokenizer.lex"
+#line 99 "src/analyzer.lex"
 { return ygreater; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 100 "src/tokenizer.lex"
+#line 100 "src/analyzer.lex"
 { return ygreaterequal; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 101 "src/tokenizer.lex"
+#line 101 "src/analyzer.lex"
 { return yleftbracket; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 102 "src/tokenizer.lex"
+#line 102 "src/analyzer.lex"
 { return yleftparen; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 103 "src/tokenizer.lex"
+#line 103 "src/analyzer.lex"
 { return yless; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 104 "src/tokenizer.lex"
+#line 104 "src/analyzer.lex"
 { return ylessequal; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 105 "src/tokenizer.lex"
+#line 105 "src/analyzer.lex"
 { return yminus; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 106 "src/tokenizer.lex"
+#line 106 "src/analyzer.lex"
 { return ymultiply; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 107 "src/tokenizer.lex"
+#line 107 "src/analyzer.lex"
 { return ynotequal; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 108 "src/tokenizer.lex"
+#line 108 "src/analyzer.lex"
 { return yplus; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 109 "src/tokenizer.lex"
+#line 109 "src/analyzer.lex"
 { return yrightbracket; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 110 "src/tokenizer.lex"
+#line 110 "src/analyzer.lex"
 { return yrightparen; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 111 "src/tokenizer.lex"
+#line 111 "src/analyzer.lex"
 { return ysemicolon; }
 	YY_BREAK
 /** Misc */
 case 73:
 YY_RULE_SETUP
-#line 113 "src/tokenizer.lex"
+#line 113 "src/analyzer.lex"
 { text = yytext; return yident; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 114 "src/tokenizer.lex"
+#line 114 "src/analyzer.lex"
 { text = yytext; return ynumber; }
 	YY_BREAK
 case 75:
 /* rule 75 can match eol */
 YY_RULE_SETUP
-#line 115 "src/tokenizer.lex"
+#line 115 "src/analyzer.lex"
 /** Ignore */
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 116 "src/tokenizer.lex"
+#line 116 "src/analyzer.lex"
 { text = yytext; return yunknown; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 118 "src/tokenizer.lex"
+#line 118 "src/analyzer.lex"
 ECHO;
 	YY_BREAK
 #line 2291 "src/lex.yy.c"
@@ -3285,7 +3285,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 118 "src/tokenizer.lex"
+#line 118 "src/analyzer.lex"
 
 
 
