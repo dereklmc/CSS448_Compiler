@@ -355,10 +355,7 @@
 305     yrightbracket  
 306     yrightparen    
 307     ysemicolon     
-/*    newrec^.info[avgPosition]:= average319     yunknown       (
-newrec*/
-290     ymultiply      
-306     yrightparen    
+/*    newrec^.info[avgPosition]:= average(newrec);  */
 274     yend           
 307     ysemicolon     
 /* ************************************************************************* */

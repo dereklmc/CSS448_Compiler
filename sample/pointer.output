@@ -1,0 +1,70 @@
+300  yprogram
+281  yident         pointer
+285  yleftparen
+281  yident         input
+264  ycomma
+281  yident         output
+306  yrightparen
+307  ysemicolon
+/* types */
+313 ytype
+281  yident         integerArray
+275  yequal
+258  yarray
+284  yleftbracket
+295  ynumber        1
+271  ydotdot
+295  ynumber        10
+305  yrightbracket
+296  yof
+281  yident         integer
+307  ysemicolon
+281  yident         cellPtr
+275  yequal
+261  ycaret
+281  yident         cell
+307  ysemicolon
+281  yident         cell
+275  yequal
+303  yrecord
+281  yident         id
+263  ycolon
+281  yident         integer
+307  ysemicolon
+281  yident         info
+263  ycolon
+281  yident         integerArray
+307  ysemicolon
+281  yident         next
+263  ycolon
+281  yident         cellPtr
+274  yend
+307  ysemicolon
+/* vars */
+315  yvar
+281  yident         list
+264  ycomma
+281  yident         newrec
+263  ycolon
+281  yident         cellPtr
+307  ysemicolon
+281  yident         mycount
+264  ycomma
+281  yident         classNum
+263  ycolon
+281  yident         integer
+307  ysemicolon
+281  yident         pointer1
+263  ycolon
+261  ycaret
+281  yident         integer
+307  ysemicolon
+281  yident         pointer2
+263  ycolon
+261  ycaret
+281  yident         integerArray
+307  ysemicolon
+/* main program */
+260  ybegin
+274  yend
+270  ydot

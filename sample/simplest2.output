@@ -1,0 +1,15 @@
+300  yprogram
+281  yident         simplest2
+285  yleftparen
+281  yident         input
+264  ycomma
+281  yident         output
+306  yrightparen
+307  ysemicolon
+260  ybegin
+318  ywriteln
+285  yleftparen
+309  ystring        "Hello world"
+306  yrightparen
+274  yend
+270  ydot

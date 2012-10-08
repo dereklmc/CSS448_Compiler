@@ -1,5 +1,9 @@
 # Compiled Files #
-.out
-.run
-.app
-.exe
+*.out
+*.run
+*.app
+*.exe
+
+# Temp Files #
+*.swp
+*~

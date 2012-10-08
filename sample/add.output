@@ -1,0 +1,146 @@
+300  yprogram
+281  yident         add
+285  yleftparen
+281  yident         input
+264  ycomma
+281  yident         output
+306  yrightparen
+307  ysemicolon
+/*** Simple program to add 2 integer arrays element by element.  ***/
+265  yconst
+281  yident         size
+275  yequal
+295  ynumber        5
+307  ysemicolon
+313  ytype
+281  yident         intarray
+275  yequal
+258  yarray
+284  yleftbracket
+295  ynumber        1
+271  ydotdot
+281  yident         size
+305  yrightbracket
+296  yof
+281  yident         integer
+307  ysemicolon
+315  yvar
+281  yident         i
+263  ycolon
+281  yident         integer
+307  ysemicolon
+281  yident         a
+263  ycolon
+281  yident         intarray
+307  ysemicolon
+/* ***************************    adder    ********************************** */
+299  yprocedure
+281  yident         adder
+285  yleftparen
+315  yvar
+281  yident         a
+264  ycomma
+281  yident         b
+263  ycolon
+281  yident         intarray
+306  yrightparen
+307  ysemicolon
+315  yvar
+281  yident         i
+263  ycolon
+281  yident         integer
+307  ysemicolon
+260  ybegin
+277  yfor
+281  yident         i
+259  yassign
+295  ynumber        1
+311  yto
+281  yident         size
+269  ydo
+281  yident         b
+284  yleftbracket
+281  yident         i
+305  yrightbracket
+259  yassign
+281  yident         a
+284  yleftbracket
+281  yident         i
+305  yrightbracket
+298  yplus
+281  yident         b
+284  yleftbracket
+281  yident         i
+305  yrightbracket
+307  ysemicolon
+274  yend
+307     ysemicolon 
+/* **************************    main      ********************************** */
+260  ybegin
+277  yfor
+281  yident         i
+259  yassign
+295  ynumber        1
+311  yto
+281  yident         size
+269  ydo
+281  yident         a
+284  yleftbracket
+281  yident         i
+305  yrightbracket
+259  yassign
+281  yident         i
+307  ysemicolon
+318  ywriteln
+285  yleftparen
+309  ystring        'The array before call to adder:'
+306  yrightparen
+307  ysemicolon
+277  yfor
+281  yident         i
+259  yassign
+295  ynumber        1
+311  yto
+281  yident         size
+269  ydo
+317  ywrite
+285  yleftparen
+281  yident         a
+284  yleftbracket
+281  yident         i
+305  yrightbracket
+306  yrightparen
+307  ysemicolon
+318  ywriteln
+307  ysemicolon
+281  yident         adder
+285  yleftparen
+281  yident         a
+264  ycomma
+281  yident         a
+306  yrightparen
+307     ysemicolon
+318  ywriteln
+285  yleftparen
+309  ystring        'The array after call to adder:'
+306  yrightparen
+307  ysemicolon
+277  yfor
+281  yident         i
+259  yassign
+295  ynumber        1
+311  yto
+281  yident         size
+269  ydo
+317  ywrite
+285  yleftparen
+281  yident         a
+284  yleftbracket
+281  yident         i
+305  yrightbracket
+306  yrightparen
+307  ysemicolon
+318  ywriteln
+307  ysemicolon
+274  yend
+270  ydot

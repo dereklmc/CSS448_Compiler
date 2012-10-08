@@ -1,79 +1,12 @@
 %{
 
 #include "tokenconsts.h"
-#include <iostream>
-#include <iomanip>
+#include "analyzer.h"
 
-static char* text;
-static const int subtractFromToken = 257;
+#include <iostream>	// For cout	      
+#include <iomanip>	// For setw and left
 
-static const char* tokenNames[] = {
-	"yand",
-	"yarray",
-	"yassign",
-	"ybegin",
-	"ycaret",
-	"ycase",
-	"ycolon",
-	"ycomma",
-	"yconst",
-	"ydispose",
-	"ydiv",
-	"ydivide",
-	"ydo",
-	"ydot",
-	"ydotdot",
-	"ydownto",
-	"yelse",
-	"yend",
-	"yequal",
-	"yfalse",
-	"yfor",
-	"yfunction",
-	"ygreater",
-	"ygreaterequal",
-	"yident",
-	"yif",
-	"yin",
-	"yleftbracket",
-	"yleftparen",
-	"yless",
-	"ylessequal",
-	"yminus",
-	"ymod",
-	"ymultiply",
-	"ynew",
-	"ynil",
-	"ynot",
-	"ynotequal",
-	"ynumber",
-	"yof",
-	"yor",
-	"yplus",
-	"yprocedure",
-	"yprogram",
-	"yread",
-	"yreadln",
-	"yrecord",
-	"yrepeat",
-	"yrightbracket",
-	"yrightparen",
-	"ysemicolon",
-	"yset",
-	"ystring",
-	"ythen",
-	"yto",
-	"ytrue",
-	"ytype",
-	"yuntil",
-	"yvar",
-	"ywhile",
-	"ywrite",
-	"ywriteln",
-	"yunknown"
-};
-
-static const int nextToken = -1;
+static char* text;	// Holds yytext for display
 
 %}
 
@@ -83,7 +16,9 @@ letter			[a-zA-Z]
 digit 			[0-9]
 
 %s STRING
+%s STRING2
 %s COMMENT
+%s COMMENT2
 
 %%
 	/** Identifiers **/
@@ -125,28 +60,34 @@ var			{ return yvar; }
 while			{ return ywhile; }
 write			{ return ywrite; }
 writeln			{ return ywriteln; }
-	/** Operands **/
+	/** Strings **/
 <INITIAL>[\"]		{ yymore(); BEGIN(STRING); return nextToken; }
 <STRING>[^"]*		{ yymore(); return nextToken; }
 <STRING>["]		{ text = yytext; BEGIN(0); return ystring; }
 <STRING><<EOF>>		{ text = yytext; BEGIN(0); return ystring; }
-"(*"([^*]|\*)*"*)"\n?	{ ECHO; return nextToken; }
-	/**
-<INITIAL>(\(\*)		{ printf("/*"); BEGIN(COMMENT); return nextToken; }
+
+<INITIAL>[\']           { yymore(); BEGIN(STRING2); return nextToken; }
+<STRING2>[^']*          { yymore(); return nextToken; }
+<STRING2>[']            { text = yytext; BEGIN(0); return ystring; }
+<STRING2><<EOF>>        { text = yytext; BEGIN(0); return ystring; }
+
+	/** Comments **/
+<INITIAL>[(][*]		{ printf("/*"); BEGIN(COMMENT); return nextToken; }
 <COMMENT>[^*)]*		{ ECHO; return nextToken; }
-<COMMENT>[*]		{ 
-				register int peek = input();
-				if (peek == ')') {
-					printf("*\/");
-					BEGIN(0);
-				} else {
-					unput(peek);
-					ECHO;
-				}
+<COMMENT>[*]/[)]	{
+				printf("*/\n");
+				yyinput();
+				BEGIN(0);
 				return nextToken;
 			}
-<COMMENT><<EOF>>	{ printf("*\/"); BEGIN(0); return nextToken; }
-	**/\{[^\}]*}		{printf("/*"); ECHO; return nextToken;}
+<COMMENT>[*][^)]	{ ECHO;	return nextToken; }
+<COMMENT><<EOF>>	{ printf("*/\n"); BEGIN(0); return nextToken; }
+
+<INITIAL>[{]            { printf("/*"); BEGIN(COMMENT2); return nextToken;}
+<COMMENT2>[^}]*         { ECHO; return nextToken; }
+<COMMENT2>[}] 		{ printf("*/\n"); BEGIN(0); return nextToken; }
+<COMMENT2><<EOF>>       { printf("*/\n"); BEGIN(0); return nextToken; }
+	/** Operands **/	
 ":="			{ return yassign; }
 \^			{ return ycaret; }
 :			{ return ycolon; }
@@ -157,7 +98,7 @@ writeln			{ return ywriteln; }
 "=" 			{ return yequal; }
 ">"   			{ return ygreater; }
 ">="  			{ return ygreaterequal; }
-"["  			{ return yleftbracket; }
+<INITIAL>"["  		{ return yleftbracket; }
 <INITIAL>"("		{ return yleftparen; }
 "<"   			{ return yless; }
 "<="  			{ return ylessequal; }
@@ -166,13 +107,13 @@ writeln			{ return ywriteln; }
 "<>"			{ return ynotequal; }
 "+"			{ return yplus; }
 "]"			{ return yrightbracket; }
-<INITIAL>")"			{ return yrightparen; }
+<INITIAL>")"		{ return yrightparen; }
 ";"			{ return ysemicolon; }
 	/** Misc */
-{letter}({letter}|[0-9])* 			{ text = yytext; return yident; }
-{digit}+(\.{digit}+)?(e[+-]?{digit}+)?		{ text = yytext; return ynumber; }
-[[:space:]]			/** Ignore */
-.						{ text = yytext; return yunknown; }
+{letter}({letter}|[0-9])* 		{ text = yytext; return yident; }
+{digit}+(\.{digit}+)?(e[+-]?{digit}+)?	{ text = yytext; return ynumber; }
+[[:space:]]				/** Ignore */
+<INITIAL>.				{ text = yytext; return yunknown; }
 
 %%
 
@@ -189,7 +130,10 @@ void displayToken(int tokenId)
 
 	std::cout << std::left << std::setw(8) <<  tokenId;
 	std::cout << std::left << std::setw(15) << tokenNames[tokenId-257];
-	if ( (tName == "ynumber") || (tName == "yident") || (tName == "yunknown") || (tName == "ystring") ){
+	
+	if ( (tName == "ynumber") || (tName == "yident") ||
+		 (tName == "yunknown") || (tName == "ystring") )
+	{
 		std::cout << text;
 	}
 	std::cout << "\n";	
