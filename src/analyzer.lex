@@ -61,14 +61,16 @@ while			{ return ywhile; }
 write			{ return ywrite; }
 writeln			{ return ywriteln; }
 	/** Strings **/
-<INITIAL>[\"]		{ yymore(); BEGIN(STRING); return nextToken; }
+<INITIAL>[\"]		{ BEGIN(STRING); return nextToken; }
 <STRING>[^"]*		{ yymore(); return nextToken; }
-<STRING>["]		{ text = yytext; BEGIN(0); return ystring; }
+<STRING>["]		{ yyless(yyleng-1); text = yytext; yyinput(); 
+				 BEGIN(0); return ystring; }
 <STRING><<EOF>>		{ text = yytext; BEGIN(0); return ystring; }
 
-<INITIAL>[\']           { yymore(); BEGIN(STRING2); return nextToken; }
+<INITIAL>[\']           { BEGIN(STRING2); return nextToken; }
 <STRING2>[^']*          { yymore(); return nextToken; }
-<STRING2>[']            { text = yytext; BEGIN(0); return ystring; }
+<STRING2>[']            {  yyless(yyleng-1); text = yytext; yyinput();
+				BEGIN(0); return ystring; }
 <STRING2><<EOF>>        { text = yytext; BEGIN(0); return ystring; }
 
 	/** Comments **/

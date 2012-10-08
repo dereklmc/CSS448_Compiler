@@ -2061,7 +2061,7 @@ YY_RULE_SETUP
 case 39:
 YY_RULE_SETUP
 #line 64 "analyzer.lex"
-{ yymore(); BEGIN(STRING); return nextToken; }
+{ BEGIN(STRING); return nextToken; }
 	YY_BREAK
 case 40:
 /* rule 40 can match eol */
@@ -2072,42 +2072,44 @@ YY_RULE_SETUP
 case 41:
 YY_RULE_SETUP
 #line 66 "analyzer.lex"
-{ text = yytext; BEGIN(0); return ystring; }
+{ yyless(yyleng-1); text = yytext; yyinput(); 
+				 BEGIN(0); return ystring; }
 	YY_BREAK
 case YY_STATE_EOF(STRING):
-#line 67 "analyzer.lex"
+#line 68 "analyzer.lex"
 { text = yytext; BEGIN(0); return ystring; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 69 "analyzer.lex"
-{ yymore(); BEGIN(STRING2); return nextToken; }
+#line 70 "analyzer.lex"
+{ BEGIN(STRING2); return nextToken; }
 	YY_BREAK
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
-#line 70 "analyzer.lex"
+#line 71 "analyzer.lex"
 { yymore(); return nextToken; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 71 "analyzer.lex"
-{ text = yytext; BEGIN(0); return ystring; }
+#line 72 "analyzer.lex"
+{  yyless(yyleng-1); text = yytext; yyinput();
+				BEGIN(0); return ystring; }
 	YY_BREAK
 case YY_STATE_EOF(STRING2):
-#line 72 "analyzer.lex"
+#line 74 "analyzer.lex"
 { text = yytext; BEGIN(0); return ystring; }
 	YY_BREAK
 /** Comments **/
 case 45:
 YY_RULE_SETUP
-#line 75 "analyzer.lex"
+#line 77 "analyzer.lex"
 { printf("/*"); BEGIN(COMMENT); return nextToken; }
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 76 "analyzer.lex"
+#line 78 "analyzer.lex"
 { ECHO; return nextToken; }
 	YY_BREAK
 case 47:
@@ -2115,7 +2117,7 @@ case 47:
 (yy_c_buf_p) = yy_cp = yy_bp + 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 77 "analyzer.lex"
+#line 79 "analyzer.lex"
 {
 				printf("*/\n");
 				yyinput();
@@ -2129,167 +2131,167 @@ case 48:
 (yy_c_buf_p) = yy_cp = yy_bp + 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 83 "analyzer.lex"
+#line 85 "analyzer.lex"
 { ECHO;	return nextToken; }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 84 "analyzer.lex"
+#line 86 "analyzer.lex"
 { printf("*/\n"); BEGIN(0); return nextToken; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 86 "analyzer.lex"
+#line 88 "analyzer.lex"
 { printf("/*"); BEGIN(COMMENT2); return nextToken;}
 	YY_BREAK
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
-#line 87 "analyzer.lex"
+#line 89 "analyzer.lex"
 { ECHO; return nextToken; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 88 "analyzer.lex"
+#line 90 "analyzer.lex"
 { printf("*/\n"); BEGIN(0); return nextToken; }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT2):
-#line 89 "analyzer.lex"
+#line 91 "analyzer.lex"
 { printf("*/\n"); BEGIN(0); return nextToken; }
 	YY_BREAK
 /** Operands **/	
 case 52:
 YY_RULE_SETUP
-#line 91 "analyzer.lex"
+#line 93 "analyzer.lex"
 { return yassign; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 92 "analyzer.lex"
+#line 94 "analyzer.lex"
 { return ycaret; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 93 "analyzer.lex"
+#line 95 "analyzer.lex"
 { return ycolon; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 94 "analyzer.lex"
+#line 96 "analyzer.lex"
 { return ycomma; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 95 "analyzer.lex"
+#line 97 "analyzer.lex"
 { return ydivide; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 96 "analyzer.lex"
+#line 98 "analyzer.lex"
 { return ydot; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 97 "analyzer.lex"
+#line 99 "analyzer.lex"
 { return ydotdot; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 98 "analyzer.lex"
+#line 100 "analyzer.lex"
 { return yequal; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 99 "analyzer.lex"
+#line 101 "analyzer.lex"
 { return ygreater; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 100 "analyzer.lex"
+#line 102 "analyzer.lex"
 { return ygreaterequal; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 101 "analyzer.lex"
+#line 103 "analyzer.lex"
 { return yleftbracket; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 102 "analyzer.lex"
+#line 104 "analyzer.lex"
 { return yleftparen; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 103 "analyzer.lex"
+#line 105 "analyzer.lex"
 { return yless; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 104 "analyzer.lex"
+#line 106 "analyzer.lex"
 { return ylessequal; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 105 "analyzer.lex"
+#line 107 "analyzer.lex"
 { return yminus; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 106 "analyzer.lex"
+#line 108 "analyzer.lex"
 { return ymultiply; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 107 "analyzer.lex"
+#line 109 "analyzer.lex"
 { return ynotequal; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 108 "analyzer.lex"
+#line 110 "analyzer.lex"
 { return yplus; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 109 "analyzer.lex"
+#line 111 "analyzer.lex"
 { return yrightbracket; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 110 "analyzer.lex"
+#line 112 "analyzer.lex"
 { return yrightparen; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 111 "analyzer.lex"
+#line 113 "analyzer.lex"
 { return ysemicolon; }
 	YY_BREAK
 /** Misc */
 case 73:
 YY_RULE_SETUP
-#line 113 "analyzer.lex"
+#line 115 "analyzer.lex"
 { text = yytext; return yident; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 114 "analyzer.lex"
+#line 116 "analyzer.lex"
 { text = yytext; return ynumber; }
 	YY_BREAK
 case 75:
 /* rule 75 can match eol */
 YY_RULE_SETUP
-#line 115 "analyzer.lex"
+#line 117 "analyzer.lex"
 /** Ignore */
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 116 "analyzer.lex"
+#line 118 "analyzer.lex"
 { text = yytext; return yunknown; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 118 "analyzer.lex"
+#line 120 "analyzer.lex"
 ECHO;
 	YY_BREAK
-#line 2293 "lex.yy.c"
+#line 2295 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -3287,7 +3289,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 118 "analyzer.lex"
+#line 120 "analyzer.lex"
 
 
 
