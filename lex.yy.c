@@ -1572,10 +1572,10 @@ char *yytext;
 #line 2 "analyzer.lex"
 
 #include "tokenconsts.h"
-#include <iostream>
-#include <iomanip>
+#include <iostream>	// For cout	      
+#include <iomanip>	// For setw and left
 
-static char* text;
+static char* text;	//Holds yytext for display
 //Number used to get the proper index in the hash table
 static const int subtractFromToken = 257;
 

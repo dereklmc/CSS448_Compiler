@@ -1,78 +1,558 @@
 300     yprogram       
-281     yident         arrays2
+281     yident         linkedlist
 285     yleftparen     
 281     yident         input
 264     ycomma         
 281     yident         output
 306     yrightparen    
 307     ysemicolon     
+/*  Example linked list Pascal Program                          */
+/*                                                              */
+/*  The file list.data would be used as the data file.          */
+/*  If there was an executable, a.out, run:  a.out < list.data  */
+265     yconst         
+281     yident         grades
+275     yequal         
+295     ynumber        5
+307     ysemicolon     
+/* number of grades to be averaged */
+281     yident         avgPosition
+275     yequal         
+295     ynumber        6
+307     ysemicolon     
+/* position of grade average */
+281     yident         size
+275     yequal         
+295     ynumber        4
+307     ysemicolon     
+/* number of students */
 313     ytype          
-281     yident         array1dim
+281     yident         integerArray
 275     yequal         
 258     yarray         
 284     yleftbracket   
-309     ystring        'a'
+295     ynumber        1
 271     ydotdot        
-309     ystring        'e'
+281     yident         avgPosition
 305     yrightbracket  
 296     yof            
 281     yident         integer
 307     ysemicolon     
-315     yvar           
-281     yident         a
-263     ycolon         
-281     yident         array1dim
+281     yident         cellPtr
+275     yequal         
+261     ycaret         
+281     yident         cell
 307     ysemicolon     
-281     yident         i
-263     ycolon         
-281     yident         char
-307     ysemicolon     
-281     yident         n
+281     yident         cell
+275     yequal         
+303     yrecord        
+281     yident         id
 263     ycolon         
 281     yident         integer
 307     ysemicolon     
-/******************************* main ***********************************/
+281     yident         info
+263     ycolon         
+281     yident         integerArray
+307     ysemicolon     
+281     yident         next
+263     ycolon         
+281     yident         cellPtr
+274     yend           
+307     ysemicolon     
+315     yvar           
+281     yident         list
+264     ycomma         
+281     yident         newrec
+263     ycolon         
+281     yident         cellPtr
+307     ysemicolon     
+281     yident         mycount
+264     ycomma         
+281     yident         classNum
+263     ycolon         
+281     yident         integer
+307     ysemicolon     
+/* ************************************************************************* */
+/* procedure insert                                                          */
+/* ************************************************************************* */
+299     yprocedure     
+281     yident         insert
+285     yleftparen     
+315     yvar           
+281     yident         list
+263     ycolon         
+281     yident         cellPtr
+307     ysemicolon     
+281     yident         newrec
+263     ycolon         
+281     yident         cellPtr
+306     yrightparen    
+307     ysemicolon     
+315     yvar           
+281     yident         current
+263     ycolon         
+281     yident         cellPtr
+307     ysemicolon     
+281     yident         found
+263     ycolon         
+281     yident         boolean
+307     ysemicolon     
 260     ybegin         
-281     yident         n
+281     yident         current
+259     yassign        
+281     yident         list
+307     ysemicolon     
+281     yident         found
+259     yassign        
+276     yfalse         
+307     ysemicolon     
+282     yif            
+285     yleftparen     
+281     yident         list
+275     yequal         
+292     ynil           
+306     yrightparen    
+310     ythen          
+260     ybegin         
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         next
+259     yassign        
+281     yident         list
+307     ysemicolon     
+/* fix bug so next is set to nil */
+281     yident         list
+259     yassign        
+281     yident         newrec
+307     ysemicolon     
+274     yend           
+273     yelse          
+282     yif            
+285     yleftparen     
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         id
+286     yless          
+281     yident         list
+261     ycaret         
+270     ydot           
+281     yident         id
+306     yrightparen    
+310     ythen          
+260     ybegin         
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         next
+259     yassign        
+281     yident         list
+307     ysemicolon     
+281     yident         list
+259     yassign        
+281     yident         newrec
+307     ysemicolon     
+274     yend           
+273     yelse          
+260     ybegin         
+316     ywhile         
+285     yleftparen     
+281     yident         current
+294     ynotequal      
+292     ynil           
+306     yrightparen    
+257     yand           
+285     yleftparen     
+293     ynot           
+281     yident         found
+306     yrightparen    
+269     ydo            
+260     ybegin         
+282     yif            
+285     yleftparen     
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         next
+275     yequal         
+292     ynil           
+306     yrightparen    
+310     ythen          
+260     ybegin         
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         next
+259     yassign        
+292     ynil           
+307     ysemicolon     
+/* fix bug so next is set to nil */
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         next
+259     yassign        
+281     yident         newrec
+307     ysemicolon     
+281     yident         found
+259     yassign        
+312     ytrue          
+307     ysemicolon     
+274     yend           
+273     yelse          
+282     yif            
+285     yleftparen     
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         id
+286     yless          
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         next
+261     ycaret         
+270     ydot           
+281     yident         id
+306     yrightparen    
+310     ythen          
+260     ybegin         
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         next
+259     yassign        
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         next
+307     ysemicolon     
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         next
+259     yassign        
+281     yident         newrec
+307     ysemicolon     
+281     yident         found
+259     yassign        
+312     ytrue          
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+281     yident         current
+259     yassign        
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         next
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+/* ************************************************************************* */
+/* function average                                                          */
+/* ************************************************************************* */
+278     yfunction      
+281     yident         average
+285     yleftparen     
+281     yident         newrec
+263     ycolon         
+281     yident         cellPtr
+306     yrightparen    
+263     ycolon         
+281     yident         integer
+307     ysemicolon     
+315     yvar           
+281     yident         i
+264     ycomma         
+281     yident         sum
+263     ycolon         
+281     yident         integer
+307     ysemicolon     
+260     ybegin         
+281     yident         sum
 259     yassign        
 295     ynumber        0
 307     ysemicolon     
-/* loop to show you can use chars to index arrays */
 277     yfor           
 281     yident         i
 259     yassign        
-309     ystring        'a'
+295     ynumber        1
 311     yto            
-309     ystring        'e'
+281     yident         grades
 269     ydo            
-260     ybegin         
-281     yident         n
+281     yident         sum
 259     yassign        
-281     yident         n
+281     yident         sum
 298     yplus          
-295     ynumber        5
-307     ysemicolon     
-281     yident         a
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         info
 284     yleftbracket   
 281     yident         i
 305     yrightbracket  
-259     yassign        
-281     yident         n
 307     ysemicolon     
-/* cool, huh */
+281     yident         average
+259     yassign        
+281     yident         sum
+267     ydiv           
+281     yident         grades
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+/* ************************************************************************* */
+/* procedure makeNewrec                                                      */
+/* ************************************************************************* */
+299     yprocedure     
+281     yident         makeNewrec
+285     yleftparen     
+315     yvar           
+281     yident         newrec
+263     ycolon         
+281     yident         cellPtr
+306     yrightparen    
+307     ysemicolon     
+315     yvar           
+281     yident         i
+263     ycolon         
+281     yident         integer
+307     ysemicolon     
+260     ybegin         
+291     ynew           
+285     yleftparen     
+281     yident         newrec
+306     yrightparen    
+307     ysemicolon     
+301     yread          
+285     yleftparen     
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         id
+306     yrightparen    
+307     ysemicolon     
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        1
+311     yto            
+281     yident         grades
+269     ydo            
+301     yread          
+285     yleftparen     
+281     yident         newrec
+261     ycaret         
+270     ydot           
+281     yident         info
+284     yleftbracket   
+281     yident         i
+305     yrightbracket  
+306     yrightparen    
+307     ysemicolon     
+/*    newrec^.info[avgPosition]:= average319     yunknown       (
+newrec*/
+290     ymultiply      
+306     yrightparen    
+274     yend           
+307     ysemicolon     
+/* ************************************************************************* */
+/* procedure displayInfo                                                     */
+/* ************************************************************************* */
+299     yprocedure     
+281     yident         displayInfo
+285     yleftparen     
+315     yvar           
+281     yident         list
+263     ycolon         
+281     yident         cellPtr
+306     yrightparen    
+307     ysemicolon     
+315     yvar           
+281     yident         i
+263     ycolon         
+281     yident         integer
+307     ysemicolon     
+281     yident         current
+263     ycolon         
+281     yident         cellPtr
+307     ysemicolon     
+260     ybegin         
+281     yident         current
+259     yassign        
+281     yident         list
+307     ysemicolon     
+282     yif            
+285     yleftparen     
+281     yident         list
+294     ynotequal      
+292     ynil           
+306     yrightparen    
+310     ythen          
+260     ybegin         
 317     ywrite         
 285     yleftparen     
-281     yident         a
+309     ystring        '            '
+306     yrightparen    
+307     ysemicolon     
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        1
+311     yto            
+281     yident         grades
+269     ydo            
+317     ywrite         
+285     yleftparen     
+309     ystring        'Grade     '
+306     yrightparen    
+307     ysemicolon     
+318     ywriteln       
+307     ysemicolon     
+317     ywrite         
+285     yleftparen     
+309     ystring        'Student'
+306     yrightparen    
+307     ysemicolon     
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        1
+311     yto            
+281     yident         grades
+269     ydo            
+317     ywrite         
+285     yleftparen     
+281     yident         i
+306     yrightparen    
+307     ysemicolon     
+318     ywriteln       
+285     yleftparen     
+309     ystring        '        Average'
+306     yrightparen    
+307     ysemicolon     
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        1
+311     yto            
+281     yident         grades
+298     yplus          
+295     ynumber        2
+269     ydo            
+317     ywrite         
+285     yleftparen     
+309     ystring        '-----------'
+306     yrightparen    
+307     ysemicolon     
+318     ywriteln       
+307     ysemicolon     
+316     ywhile         
+285     yleftparen     
+281     yident         current
+294     ynotequal      
+292     ynil           
+306     yrightparen    
+269     ydo            
+260     ybegin         
+317     ywrite         
+285     yleftparen     
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         id
+306     yrightparen    
+307     ysemicolon     
+277     yfor           
+281     yident         i
+259     yassign        
+295     ynumber        1
+311     yto            
+285     yleftparen     
+281     yident         grades
+298     yplus          
+295     ynumber        1
+306     yrightparen    
+269     ydo            
+317     ywrite         
+285     yleftparen     
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         info
 284     yleftbracket   
 281     yident         i
 305     yrightbracket  
+306     yrightparen    
+307     ysemicolon     
+318     ywriteln       
+307     ysemicolon     
+281     yident         current
+259     yassign        
+281     yident         current
+261     ycaret         
+270     ydot           
+281     yident         next
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+274     yend           
+307     ysemicolon     
+/* ************************************************************************** */
+/* main program                                                               */
+/* ************************************************************************** */
+260     ybegin         
+301     yread          
+285     yleftparen     
+281     yident         classNum
+306     yrightparen    
+307     ysemicolon     
+281     yident         list
+259     yassign        
+292     ynil           
+307     ysemicolon     
+277     yfor           
+281     yident         mycount
+259     yassign        
+295     ynumber        1
+311     yto            
+281     yident         size
+269     ydo            
+260     ybegin         
+281     yident         makeNewrec
+285     yleftparen     
+281     yident         newrec
+306     yrightparen    
+307     ysemicolon     
+281     yident         insert
+285     yleftparen     
+281     yident         list
 264     ycomma         
-309     ystring        " "
+281     yident         newrec
 306     yrightparen    
 307     ysemicolon     
 274     yend           
 307     ysemicolon     
 318     ywriteln       
+285     yleftparen     
+309     ystring        'Here are the class grades for class:'
+264     ycomma         
+281     yident         classNum
+306     yrightparen    
+307     ysemicolon     
+318     ywriteln       
+307     ysemicolon     
+281     yident         displayInfo
+285     yleftparen     
+281     yident         list
+306     yrightparen    
 307     ysemicolon     
 274     yend           
 270     ydot           
