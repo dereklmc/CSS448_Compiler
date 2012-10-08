@@ -72,15 +72,15 @@ writeln			{ return ywriteln; }
 <STRING2><<EOF>>        { text = yytext; BEGIN(0); return ystring; }
 
 	/** Comments **/
-<INITIAL>[(][*]		{ printf("/*"); BEGIN(COMMENT); return nextToken; }
-<COMMENT>[^*)]*		{ ECHO; return nextToken; }
-<COMMENT>[*]/[)]	{
+<INITIAL>[\(][\*]		{ printf("/*"); BEGIN(COMMENT); return nextToken; }
+<COMMENT>[^\*\)]*		{ ECHO; return nextToken; }
+<COMMENT>[\*]/[\)]	{
 				printf("*/\n");
 				yyinput();
 				BEGIN(0);
 				return nextToken;
 			}
-<COMMENT>[*][^)]	{ ECHO;	return nextToken; }
+<COMMENT>[\*]/[^\)]	{ ECHO;	return nextToken; }
 <COMMENT><<EOF>>	{ printf("*/\n"); BEGIN(0); return nextToken; }
 
 <INITIAL>[{]            { printf("/*"); BEGIN(COMMENT2); return nextToken;}

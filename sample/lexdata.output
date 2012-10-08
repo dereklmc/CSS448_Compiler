@@ -1,0 +1,72 @@
+316     ywhile         
+257     yand           
+257     yand           
+315     yvar           
+265     yconst         
+278     yfunction      
+299     yprocedure     
+258     yarray         
+293     ynot           
+310     ythen          
+262     ycase          
+297     yor            
+313     ytype          
+260     ybegin         
+307     ysemicolon     
+274     yend           
+295     ynumber        123
+268     ydivide        
+288     yminus         
+295     ynumber        45
+298     yplus          
+288     yminus         
+290     ymultiply      
+275     yequal         
+319     yunknown       #
+286     yless          
+286     yless          
+294     ynotequal      
+279     ygreater       
+/* ******* */
+263     ycolon         
+298     yplus          
+259     yassign        
+263     ycolon         
+275     yequal         
+305     yrightbracket  
+284     yleftbracket   
+287     ylessequal     
+281     yident         xXx
+285     yleftparen     
+295     ynumber        2
+281     yident         a
+298     yplus          
+295     ynumber        3
+306     yrightparen    
+281     yident         yyy
+269     ydo            
+281     yident         andif
+282     yif            
+285     yleftparen     
+267     ydiv           
+289     ymod           
+281     yident         DIVMOD
+/*  are we having fun yet?
+    When uncertain or in doubt,
+    run in circles, scream and shout  ****/
+271     ydotdot        
+271     ydotdot        
+271     ydotdot        
+270     ydot           
+319     yunknown       ?
+319     yunknown       ?
+309     ystring        'this is a string'
+295     ynumber        123
+271     ydotdot        
+295     ynumber        456
+/* 123..456 is number dotdot number */
+295     ynumber        7.8E+9
+281     yident         number2
+295     ynumber        2
+281     yident         number
+309     ystring        " so is this ' '"
