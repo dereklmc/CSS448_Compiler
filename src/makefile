@@ -7,4 +7,4 @@ lex.run: $H $(LEX)
 	g++ $(LEX) -o $(APP) -lfl
 
 $(LEX): $(SRC)
-	flex -o $(LEX) $(SRC)
+	flex $(SRC)
