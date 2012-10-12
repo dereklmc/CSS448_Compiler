@@ -1,10 +1,42 @@
-H = tokenconsts.h analyzer.h
-SRC = analyzer.lex
-LEX = lex.yy.c
-APP = analyzer.run
+# This is a comment.
+# A makefile must be called makefile or Makefile.  The command is 'make' .
 
-lex.run: $H $(LEX)
-	g++ $(LEX) -o $(APP) -lfl
+# If you don't tell make what to make, it makes the first thing in this file.
+# These 'targets' start in column 1 and are followed by a colon.  Following
+# the colon are the dependencies (files).  If any file in the dependency list
+# is updated, then 'make' executes the commands found on the following lines.  
+# These commands _must_ start with a tab.
 
-$(LEX): $(SRC)
-	flex $(SRC)
+# The 'touch' command is useful for faking an update.  'touch y3.y' fools
+# make into thinking that the file y3.y has been changed by updating its date.
+
+OBJ = y.tab.o main.o lex.yy.o # actions.o     # all object files, the  .o  files
+H = y.tab.h   tokenconsts.h	analyzer.h             
+# ACT = actions.h      
+
+# The $ is a macro reference.  The following ident is replaced with the
+# specified list.  Parens must be used if the ident is longer than one char.
+
+a.out: $(OBJ) $H  # $(ACT)         # a.out depends on everything
+	g++ -g $(OBJ) -o a.out -lfl
+
+main.o: main.cpp                   # main.o depends on main.cpp
+	g++ -g -c  main.cpp
+
+# actions.o: $(ACT) actions.cpp    # actions.o depends on the .h and .cpp
+#	g++ -c actions.cpp
+
+lex.yy.o: lex.yy.c                 # lex.yy.o depend on lex.yy.c
+	g++ -g -c lex.yy.c         # include this if you used (f)lex
+
+lex.yy.c: $H lex.l                 # lex.yy.c depend on the lex file, lex.l
+	flex lex.l                 # include only if you used (f)lex
+
+y.tab.o: y.tab.c                   # y.tab.o depends on y.tab.c
+	g++ -c y.tab.c
+
+y.tab.c: grammar.y                 # y.tab.c depends on the yacc file, y   
+	yacc -d -v grammar.y       # -d separates out defines into .h file
+
+clean:
+	rm *.o y.tab.c lex.yy.c a.out
