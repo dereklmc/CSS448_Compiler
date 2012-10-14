@@ -61,34 +61,33 @@ while			{ return ywhile; }
 write			{ return ywrite; }
 writeln			{ return ywriteln; }
 	/** Strings **/
-<INITIAL>[\"]		{ BEGIN(STRING); return nextToken; }
-<STRING>[^"]*		{ yymore(); return nextToken; }
+<INITIAL>[\"]		{ BEGIN(STRING); }
+<STRING>[^"]*		{ yymore(); }
 <STRING>["]		{ yyless(yyleng-1); text = yytext; yyinput(); 
 				 BEGIN(0); return ystring; }
 <STRING><<EOF>>		{ text = yytext; BEGIN(0); return ystring; }
 
-<INITIAL>[\']           { BEGIN(STRING2); return nextToken; }
-<STRING2>[^']*          { yymore(); return nextToken; }
+<INITIAL>[\']           { BEGIN(STRING2); }
+<STRING2>[^']*          { yymore(); }
 <STRING2>[']            {  yyless(yyleng-1); text = yytext; yyinput();
 				BEGIN(0); return ystring; }
 <STRING2><<EOF>>        { text = yytext; BEGIN(0); return ystring; }
 
 	/** Comments **/
-<INITIAL>[\(][\*]		{ printf("/*"); BEGIN(COMMENT); return nextToken; }
-<COMMENT>[^\*\)]*		{ ECHO; return nextToken; }
+<INITIAL>[\(][\*]	{ printf("/*"); BEGIN(COMMENT); }
+<COMMENT>[^\*\)]*	{ ECHO; }
 <COMMENT>[\*]/[\)]	{
 				printf("*/\n");
 				yyinput();
 				BEGIN(0);
-				return nextToken;
 			}
-<COMMENT>[\*]/[^\)]	{ ECHO;	return nextToken; }
-<COMMENT><<EOF>>	{ printf("*/\n"); BEGIN(0); return nextToken; }
+<COMMENT>[\*]/[^\)]	{ ECHO;	}
+<COMMENT><<EOF>>	{ printf("*/\n"); BEGIN(0); }
 
-<INITIAL>[{]            { printf("/*"); BEGIN(COMMENT2); return nextToken;}
-<COMMENT2>[^}]*         { ECHO; return nextToken; }
-<COMMENT2>[}] 		{ printf("*/\n"); BEGIN(0); return nextToken; }
-<COMMENT2><<EOF>>       { printf("*/\n"); BEGIN(0); return nextToken; }
+<INITIAL>[{]            { printf("/*"); BEGIN(COMMENT2);}
+<COMMENT2>[^}]*         { ECHO; }
+<COMMENT2>[}] 		{ printf("*/\n"); BEGIN(0); }
+<COMMENT2><<EOF>>       { printf("*/\n"); BEGIN(0); }
 	/** Operands **/	
 ":="			{ return yassign; }
 \^			{ return ycaret; }

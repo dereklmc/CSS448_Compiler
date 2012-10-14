@@ -264,7 +264,7 @@ Relation           :  yequal  | ynotequal | yless | ygreater
 
 /* program section */
 
-void yyerror(char *s) {
+void yyerror(const char *s) {
    cout << s << endl;
 }
 

@@ -3,6 +3,9 @@
 *.run
 *.app
 *.exe
+*.o
+*.yy.*
+*.tab.*
 
 # Temp Files #
 *.swp
