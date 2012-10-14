@@ -39,17 +39,10 @@ Block              :  Declarations  ybegin  StatementSequence  yend
 Declarations       :  ConstantDefBlock
                       TypeDefBlock
                       VariableDeclBlock
-                      SubprogDeclList  
-		   |  TypeDefBlock
-                      VariableDeclBlock
-                      SubprogDeclList 
-		   |  ConstantDefBlock
-                      TypeDefBlock
-                      SubprogDeclList 
-		   |  TypeDefBlock
-                      SubprogDeclList 
+                      SubprogDeclList   
                    ;
 ConstantDefBlock   :  yconst ConstDefList
+		   |  /*** empty ***/
                    ;
 ConstDefList       :  ConstantDef ysemicolon
                    |  ConstDefList ConstantDef ysemicolon
@@ -61,6 +54,7 @@ TypeDefList        :  TypeDef  ysemicolon
                    |  TypeDefList TypeDef ysemicolon  
                    ;
 VariableDeclBlock  :  yvar VariableDeclList
+		   |  /*** empty ***/
                    ;
 VariableDeclList   :  VariableDecl ysemicolon 
 		   |  VariableDeclList VariableDecl ysemicolon
@@ -83,7 +77,6 @@ ConstFactor        :  yident
                    |  ynumber
                    |  ytrue
                    |  yfalse
-                   |  ynil
                    ;
 Type               :  yident
                    |  ArrayType
@@ -134,11 +127,11 @@ Assignment         :  Designator yassign Expression
 ProcedureCall      :  yident 
                    |  yident ActualParameters
                    ;
-IfStatement        :  yif  Expression  ythen  Statement  ElsePart
-                   ;
-ElsePart           :  /*** empty ***/
-                   |  yelse  Statement  
-                   ;
+IfStatement        :  yif  Expression  ythen  Statement EndIf
+		   |  yif  Expression  ythen  Statement yelse Statement  EndIf  
+                   ;  
+EndIf		   :  /*** empty ***/
+		   ;
 CaseStatement      :  ycase  Expression  yof  CaseList  yend
                    ;
 CaseList           :  Case
@@ -218,7 +211,7 @@ Factor             :  ynumber
 /*  to handle that in FunctionCall because it is handled by Designator.     */
 /*  A FunctionCall has at least one parameter in parens, more are           */
 /*  separated with commas.                                                  */
-FunctionCall       :     /* you finish it, Expressions are valid parameters */
+FunctionCall       :  yident ActualParameters
                    ;
 Setvalue           :  yleftbracket ElementList  yrightbracket
                    |  yleftbracket yrightbracket

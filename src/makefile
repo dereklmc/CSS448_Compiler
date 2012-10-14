@@ -18,7 +18,7 @@ H = y.tab.h   tokenconsts.h	analyzer.h
 # specified list.  Parens must be used if the ident is longer than one char.
 
 a.out: $(OBJ) $H  # $(ACT)         # a.out depends on everything
-	g++ -g $(OBJ) -o a.out -lfl
+	g++ -g $(OBJ) -o a.out
 
 main.o: main.cpp                   # main.o depends on main.cpp
 	g++ -g -c  main.cpp

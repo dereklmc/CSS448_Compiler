@@ -141,17 +141,7 @@ void displayToken(int tokenId)
 	std::cout << "\n";	
 }
 
-int main(void)
+int yywrap()
 {
-	while (1)
-	{
-		int tokenId = yylex();
-		if (tokenId == 0) {
-			break;
-		} else if (tokenId > 0) {
-			displayToken(tokenId);
-		}
-	}
 	return 0;
 }
-
