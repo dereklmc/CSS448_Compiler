@@ -33,7 +33,7 @@ lex.yy.c: $H lex.l                 # lex.yy.c depend on the lex file, lex.l
 	flex lex.l                 # include only if you used (f)lex
 
 y.tab.o: y.tab.c                   # y.tab.o depends on y.tab.c
-	g++ -c y.tab.c
+	g++ -g -c y.tab.c
 
 y.tab.c: grammar.y                 # y.tab.c depends on the yacc file, y   
 	yacc -d -v grammar.y       # -d separates out defines into .h file

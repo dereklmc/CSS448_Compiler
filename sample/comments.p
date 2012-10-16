@@ -1,0 +1,5 @@
+program simplest2(input, output); (* Apple *)
+begin				  (* Kiwi *)
+   writeln("Hello world")	  (* Orange *)
+end.				  (* Pineapple *)
+(* Plum *)(* Pear *)

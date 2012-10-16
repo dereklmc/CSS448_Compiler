@@ -2,7 +2,10 @@
 
 /* declarations section */
 #include <iostream>
-using namespace std; 
+using namespace std;
+
+extern char* tokenText;
+void printIdent();
 
 %}
 
@@ -24,12 +27,22 @@ using namespace std;
 
 CompilationUnit    :  ProgramModule        
                    ;
-ProgramModule      :  yprogram yident ProgramParameters ysemicolon Block ydot
+ProgramModule      :  yprogram yident
+					  			{
+								    printf("%s ", tokenText);
+								}
+				      ProgramParameters ysemicolon Block ydot
                    ;
 ProgramParameters  :  yleftparen  IdentList  yrightparen
                    ;
 IdentList          :  yident 
+					  			{
+								    printf("%s ", tokenText);
+								}
                    |  IdentList ycomma yident
+								{
+								    printf("%s ", tokenText);
+								}
                    ;
 
 /**************************  Declarations section ***************************/
@@ -59,9 +72,17 @@ VariableDeclBlock  :  yvar VariableDeclList
 VariableDeclList   :  VariableDecl ysemicolon 
 		   |  VariableDeclList VariableDecl ysemicolon
                    ;  
-ConstantDef        :  yident  yequal  ConstExpression
+ConstantDef        :  yident  
+								{
+								    printf("%s ", tokenText);
+								}
+					  yequal  ConstExpression
                    ;
-TypeDef            :  yident  yequal  Type
+TypeDef            :  yident  
+								{
+								    printf("%s ", tokenText);
+								}
+					  yequal  Type
                    ;
 VariableDecl       :  IdentList  ycolon  Type
                    ;
@@ -73,12 +94,16 @@ ConstExpression    :  UnaryOperator ConstFactor
                    |  ystring
 		   |  ynil
                    ;
-ConstFactor        :  yident
+ConstFactor        :  yident 	{
+								    printf("%s ", tokenText);
+								}
                    |  ynumber
                    |  ytrue
                    |  yfalse
                    ;
-Type               :  yident
+Type               :  yident	{
+								    printf("%s ", tokenText);
+								}
                    |  ArrayType
                    |  PointerType
                    |  RecordType
@@ -97,7 +122,10 @@ RecordType         :  yrecord  FieldListSequence  yend
                    ;
 SetType            :  yset  yof  Subrange
                    ;
-PointerType        :  ycaret  yident 
+PointerType        :  ycaret  yident 		
+								{
+								    printf("%s ", tokenText);
+								}
                    ;
 FieldListSequence  :  FieldList  
                    |  FieldListSequence  ysemicolon  FieldList
@@ -125,7 +153,14 @@ Statement          :  Assignment
 Assignment         :  Designator yassign Expression
                    ;
 ProcedureCall      :  yident 
-                   |  yident ActualParameters
+								{
+								    printf("%s ", tokenText);
+								}
+                   |  yident 
+								{
+								    printf("%s ", tokenText);
+								}
+					  ActualParameters
                    ;
 IfStatement        :  yif  Expression  ythen  Statement EndIf
 		   |  yif  Expression  ythen  Statement yelse Statement  EndIf  
@@ -146,7 +181,11 @@ WhileStatement     :  ywhile  Expression  ydo  Statement
                    ;
 RepeatStatement    :  yrepeat  StatementSequence  yuntil  Expression
                    ;
-ForStatement       :  yfor  yident  yassign  Expression  WhichWay  Expression
+ForStatement       :  yfor  yident  
+								{
+								    printf("%s ", tokenText);
+								}
+							yassign  Expression  WhichWay  Expression
                             ydo  Statement
                    ;
 WhichWay           :  yto  |  ydownto
@@ -164,12 +203,19 @@ IOStatement        :  yread  yleftparen  DesignatorList  yrightparen
 DesignatorList     :  Designator  
                    |  DesignatorList  ycomma  Designator 
                    ;
-Designator         :  yident  DesignatorStuff 
+Designator         :  yident  
+								{
+								   printf("%s ", tokenText);
+								}
+					  DesignatorStuff 
                    ;
 DesignatorStuff    :  /*** empty ***/
                    |  DesignatorStuff  theDesignatorStuff
                    ;
-theDesignatorStuff :  ydot yident 
+theDesignatorStuff :  ydot yident
+								{
+								    printf("%s ", tokenText);
+								} 
                    |  yleftbracket ExpList yrightbracket 
                    |  ycaret 
                    ;
@@ -178,8 +224,16 @@ ActualParameters   :  yleftparen  ExpList  yrightparen
 ExpList            :  Expression   
                    |  ExpList  ycomma  Expression       
                    ;
-MemoryStatement    :  ynew  yleftparen  yident  yrightparen  
-                   |  ydispose yleftparen  yident  yrightparen
+MemoryStatement    :  ynew  yleftparen  yident  
+								{
+								    printf("%s ", tokenText);
+								}
+					  yrightparen  
+                   |  ydispose yleftparen  yident  
+								{
+								    printf("%s ", tokenText);
+								}
+					  yrightparen
                    ;
 
 /***************************  Expression Stuff  ******************************/
@@ -211,7 +265,11 @@ Factor             :  ynumber
 /*  to handle that in FunctionCall because it is handled by Designator.     */
 /*  A FunctionCall has at least one parameter in parens, more are           */
 /*  separated with commas.                                                  */
-FunctionCall       :  yident ActualParameters
+FunctionCall       :  yident 
+								{
+								    printf("%s ", tokenText);
+								}
+					  ActualParameters
                    ;
 Setvalue           :  yleftbracket ElementList  yrightbracket
                    |  yleftbracket yrightbracket
@@ -231,13 +289,31 @@ SubprogDeclList    :  /*** empty ***/
                    ;
 ProcedureDecl      :  ProcedureHeading  ysemicolon  Block 
                    ;
-FunctionDecl       :  FunctionHeading  ycolon  yident  ysemicolon  Block
+FunctionDecl       :  FunctionHeading  ycolon  yident  
+								{
+								    printf("%s ", tokenText);
+								}
+					  ysemicolon  Block
                    ;
 ProcedureHeading   :  yprocedure  yident  
-                   |  yprocedure  yident  FormalParameters
+								{
+								    printf("%s ", tokenText);
+								}
+                   |  yprocedure  yident  
+								{
+								    printf("%s ", tokenText);
+								}
+					  FormalParameters
                    ;
 FunctionHeading    :  yfunction  yident  
-                   |  yfunction  yident  FormalParameters
+								{
+								    printf("%s ", tokenText);
+								}
+                   |  yfunction  yident  
+								{
+								    printf("%s ", tokenText);
+								}
+					  FormalParameters
                    ;
 FormalParameters   :  yleftparen FormalParamList yrightparen 
                    ;
@@ -245,7 +321,13 @@ FormalParamList    :  OneFormalParam
                    |  FormalParamList ysemicolon OneFormalParam
                    ;
 OneFormalParam     :  yvar  IdentList  ycolon  yident
+								{
+								    printf("%s ", tokenText);
+								}
                    |  IdentList  ycolon  yident
+								{
+								    printf("%s ", tokenText);
+								}
                    ;
 
 /***************************  More Operators  ********************************/
@@ -269,4 +351,10 @@ void yyerror(const char *s) {
 }
 
 extern int yylex();
+
+void printIdent()
+{
+	
+
+}
 

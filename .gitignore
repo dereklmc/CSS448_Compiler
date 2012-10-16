@@ -10,3 +10,7 @@
 # Temp Files #
 *.swp
 *~
+#*#
+
+# Wierd Files #
+.nfs*
