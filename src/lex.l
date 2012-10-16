@@ -1,7 +1,6 @@
 %{
 
 #include "y.tab.h"
-#include "analyzer.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -146,28 +145,6 @@ writeln			{ return ywriteln; }
 										}
 
 %%
-
-int getNewTokenId(int oldTokenId)
-{
-	int newTokenId = oldTokenId - subtractFromToken;
-	return newTokenId;
-}
-
-void displayToken(int tokenId)
-{
-	std::string tName;
-	tName = tokenNames[getNewTokenId(tokenId)];
-
-	std::cout << std::left << std::setw(8) <<  tokenId;
-	std::cout << std::left << std::setw(15) << tokenNames[tokenId-257];
-	
-	if ( (tName == "ynumber") || (tName == "yident") ||
-		 (tName == "yunknown") || (tName == "ystring") )
-	{
-		std::cout << yylval.text;
-	}
-	std::cout << "\n";
-}
 
 int yywrap()
 {
