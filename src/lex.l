@@ -1,15 +1,13 @@
 %{
 
-#include "tokenconsts.h"
+#include "y.tab.h"
 #include "analyzer.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#include <iostream>	// For cout	      
+#include <iostream>	// For cout
 #include <iomanip>	// For setw and left
-
-char* tokenText;	// Holds yytext for display
 
 %}
 
@@ -64,93 +62,86 @@ while			{ return ywhile; }
 write			{ return ywrite; }
 writeln			{ return ywriteln; }
 	/** Strings **/
-<INITIAL>[\"]		{ BEGIN(STRING); }
-<STRING>[^"]*		{ yymore(); }
-<STRING>["]			{
-						yyless(yyleng-1);
-						tokenText = new char[yyleng];
-						strcpy(tokenText, yytext);
-						yyinput(); 
-						BEGIN(0);
-						return ystring;
-					}
-<STRING><<EOF>>		{
-						tokenText = new char[yyleng];
-						strcpy(tokenText, yytext);
-						BEGIN(0);
-						return ystring;
-					}
+<INITIAL>[\"]		    { BEGIN(STRING); }
+<STRING>[^"]*		    { yymore(); }
+<STRING>["]			    {
+						    yyless(yyleng-1);
+                            yylval.text = strdup(yytext);
+						    yyinput();
+						    BEGIN(0);
+						    return ystring;
+					    }
+<STRING><<EOF>>		    {
+                            yylval.text = strdup(yytext);
+						    BEGIN(0);
+						    return ystring;
+					    }
 
 <INITIAL>[\']			{ BEGIN(STRING2); }
 <STRING2>[^']*			{ yymore(); }
 <STRING2>[']			{
 							yyless(yyleng-1);
-							tokenText = new char[yyleng];
-							strcpy(tokenText, yytext);
+                            yylval.text = strdup(yytext);
 							yyinput();
 							BEGIN(0);
 							return ystring;
 						}
 <STRING2><<EOF>>		{
-							tokenText = new char[yyleng];
-							strcpy(tokenText, yytext);
+                            yylval.text = strdup(yytext);
 							BEGIN(0);
 							return ystring;
 						}
 
 	/** Comments **/
-<INITIAL>[\(][\*]	{ printf("/*"); BEGIN(COMMENT); }
-<COMMENT>[^\*\)]*	{ ECHO; }
-<COMMENT>[\*]/[\)]	{
-				printf("*/");
-				yyinput();
-				BEGIN(0);
-			}
-<COMMENT>[\*]/[^\)]	{ ECHO;	}
-<COMMENT><<EOF>>	{ printf("*/"); BEGIN(0); }
+<INITIAL>[\(][\*]	    { printf("/*"); BEGIN(COMMENT); }
+<COMMENT>[^\*\)]*	    { ECHO; }
+<COMMENT>[\*]/[\)]	    {
+				            printf("*/");
+				            yyinput();
+				            BEGIN(0);
+        			    }
+<COMMENT>[\*]/[^\)]	    { ECHO; }
+<COMMENT><<EOF>>	    { printf("*/"); BEGIN(0); }
 
 <INITIAL>[{]            { printf("/*"); BEGIN(COMMENT2);}
 <COMMENT2>[^}]*         { ECHO; }
-<COMMENT2>[}] 		{ printf("*/"); BEGIN(0); }
+<COMMENT2>[}]           { printf("*/"); BEGIN(0); }
 <COMMENT2><<EOF>>       { printf("*/"); BEGIN(0); }
-	/** Operands **/	
+	/** Operands **/
 ":="			{ return yassign; }
-\^			{ return ycaret; }
-:			{ return ycolon; }
-","			{ return ycomma; }
-\/			{ return ydivide; }
-"."	 		{ return ydot; }
+\^			    { return ycaret; }
+:			    { return ycolon; }
+","			    { return ycomma; }
+\/			    { return ydivide; }
+"."	 		    { return ydot; }
 ".." 			{ return ydotdot; }
 "=" 			{ return yequal; }
-">"   			{ return ygreater; }
-">="  			{ return ygreaterequal; }
-<INITIAL>"["  		{ return yleftbracket; }
-<INITIAL>"("		{ return yleftparen; }
-<INITIAL>"<"   			{ return yless; }
+>   			{ return ygreater; }
+>=  			{ return ygreaterequal; }
+<INITIAL>"["    { return yleftbracket; }
+<INITIAL>"("    { return yleftparen; }
+<INITIAL><      { return yless; }
 "<="  			{ return ylessequal; }
 "-"   			{ return yminus; }
 "*"  			{ return ymultiply; }
-"<>"			{ return ynotequal; }
-"+"			{ return yplus; }
-"]"			{ return yrightbracket; }
-<INITIAL>")"		{ return yrightparen; }
-";"			{ return ysemicolon; }
+"<>"  			{ return ynotequal; }
+"+"			    { return yplus; }
+"]"			    { return yrightbracket; }
+<INITIAL>")"    { return yrightparen; }
+";"			    { return ysemicolon; }
 	/** Misc */
 \n					{ ECHO; }
 {letter}({letter}|[0-9])* 				{
-											tokenText = new char[yyleng];
-											strcpy(tokenText, yytext);
+                                            yylval.text = strdup(yytext);
 											return yident;
 										}
 {digit}+(\.{digit}+)?(e[+-]?{digit}+)?	{
-											tokenText = new char[yyleng];
-											strcpy(tokenText, yytext);
+                                            yylval.text = strdup(yytext);
 											return ynumber;
 										}
 [[:space:]]				/** Ignore */
 <INITIAL>.								{
-											tokenText = new char[yyleng];
-											strcpy(tokenText, yytext);
+                                            yylval.text = strdup(yytext);
 											return yunknown;
 										}
 
@@ -173,9 +164,9 @@ void displayToken(int tokenId)
 	if ( (tName == "ynumber") || (tName == "yident") ||
 		 (tName == "yunknown") || (tName == "ystring") )
 	{
-		std::cout << tokenText;
+		std::cout << yylval.text;
 	}
-	std::cout << "\n";	
+	std::cout << "\n";
 }
 
 int yywrap()
