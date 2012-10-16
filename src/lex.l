@@ -1,4 +1,18 @@
 %{
+/******************************************************************************
+ * File: lex.l
+ * Authors:  Evelina Arthursson, Derek Mclean, Hugo Ribeiro
+ * This file is dependent on external files "tokenconsts.h" and "analyzer.h"
+ * This flex file parses through a given file and looks for tokens
+ * related to Pascal grammar. When it finds a keyword or symbol, it
+ * returns the appropriate int associated with it. If it encounters
+ * a comment it will convert the comment symbols to C comment symbols
+ * and echo the content of the comment.
+ * If the tokenizer encounters a newline it will echo that newline.
+ *
+ * char* tokenText is referred to by grammar.y (the yacc file) in
+ * order to output the identifier text.
+ */
 
 #include "y.tab.h"
 

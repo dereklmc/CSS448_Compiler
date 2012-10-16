@@ -1,4 +1,13 @@
 %{
+/******************************************************************************
+ * File: grammar.y
+ * Authors: Evelina Arthursson, Derek McLean, Hugo Ribeiro
+ *      *original content: Carol Zander
+ * This is a grammar file that defines the grammar rules for a Pascal-like
+ * language.
+ * 10/16 - It currently only displays the text of unique identifiers (not
+ *         keywords or symbols).
+ */
 
 /* declarations section */
 #include <stdio.h>
