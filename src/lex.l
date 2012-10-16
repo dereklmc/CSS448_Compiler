@@ -180,5 +180,5 @@ void displayToken(int tokenId)
 
 int yywrap()
 {
-	return 0;
+	return 1;
 }
