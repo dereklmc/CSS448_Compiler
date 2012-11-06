@@ -6,9 +6,9 @@
 
 class Stack
 {
-    friend std::ostream& operator<<(std::ostream& out, const Stack& f)
+    friend std::ostream& operator<<(std::ostream& out, const Stack& s)
     {
-        f.print(out);
+        s.print(out);
     }
     public:
         // Public pointers are bad, mmkay?
@@ -31,7 +31,7 @@ class Stack
         }
         //---------------------------------------------------------------------
         //                          createScope
-        // Creates the StackFrame with the given string, appends it to the 
+        // Creates the StackFrame with the given string, appends it to the
         // Linked-List.
         bool createScope(std::string s)
         {
@@ -65,7 +65,7 @@ class Stack
             }
             return temp;
         }
-        void print(std::ostream& out)
+        void print(std::ostream& out) const
         {
             StackFrame* temp = current;
             while(temp != NULL)
