@@ -1,16 +1,22 @@
-#include STACKFRAME_H
-#include <unodered_set>
+#include "stackframe.h"
+#include <iostream>
 #ifndef STACK_H
-#def STACK_H
+#define STACK_H
+#endif
 
 class Stack
 {
+    friend std::ostream& operator<<(std::ostream& out, const Stack& f)
+    {
+        f.print(out);
+    }
     public:
+        // Public pointers are bad, mmkay?
         StackFrame* current;
         StackFrame* zeroeth;
-
+        // Constructor
         Stack(){zeroeth = new StackFrame(); current = zeroeth;}
-
+        // Destructor
         ~Stack()
         {
             while(current!=zeroeth)
@@ -19,20 +25,52 @@ class Stack
                 current = current->previous;
                 delete temp;
             }
-            zeroeth = null;
+            zeroeth = NULL;
             delete current;
-            current = null;
+            current = NULL;
         }
-        bool createScope()
+        //---------------------------------------------------------------------
+        //                          createScope
+        // Creates the StackFrame with the given string, appends it to the 
+        // Linked-List.
+        bool createScope(std::string s)
         {
-            return false;
+            StackFrame* temp = new StackFrame(s);
+            temp->previous = current;
+            current = temp;
+            return true;
         }
-        bool leaveScope()
+        //---------------------------------------------------------------------
+        //                          leaveScope
+        // "Pops" off the current StackFrame and returns a pointer to it.
+        StackFrame* leaveScope()
         {
-            return false;
+            StackFrame* temp = current;
+            current = current->previous;
+            return temp;
         }
-        bool searchStack()
+        //---------------------------------------------------------------------
+        //                          searchStack
+        // Searches Stack for a frame with the specific name, returning it if
+        // it's found, null if empty.
+        StackFrame* searchStack(const Symbol& s)
         {
-            return false;
+            StackFrame* temp = current;
+            while(temp != NULL)
+            {
+                if(temp->hasSymbol(s))
+                    break;
+                else
+                    temp = temp->previous;
+            }
+            return temp;
         }
-}
+        void print(std::ostream& out)
+        {
+            StackFrame* temp = current;
+            while(temp != NULL)
+            {
+                out<<*temp;
+            }
+        }
+};

@@ -1,43 +1,45 @@
 #include <string>
 #include <iostream>
-#include <unordered_set>
+#include <vector>
 #include "symbol.h"
 #ifndef STACKFRAME_H
 #define STACKFRAME_H
+#endif
 
 class StackFrame 
 {
-    friend ostream& operator<<(ostream& out, const StackFrame& f)
+    friend std::ostream& operator<<(std::ostream& out, const StackFrame& f)
     {
         f.print(out);
     }
     private:
-        string name;
-        std::unordered_set<Symbol*> symbols;
-        StackFrame* previous;
+        std::string name;
+        std::vector<Symbol*> symbols; 
+        void print(std::ostream& out) const
+        {
+            out << name << " " << "contains: " << std::endl;
+            for(int x = 0; x < symbols.size(); x++)
+                out << " " << *symbols[x];
+            out << std::endl;
+        }     
+
     public:
+        StackFrame* previous;
         StackFrame(){};
-        StackFrame(string n)
+        StackFrame(std::string n)
         {
             name = n;
         }
-        bool addSymbol(Symbol s)
+        bool addSymbol(Symbol* s)
         {
-            symbols.insert(s);
+            
+            symbols.push_back(s);
         }
-        bool hasSymbol(Symbol s)
+        bool hasSymbol(const Symbol& s)
         {
-            if(unordered_set.find(s)!=unordered_set.end())
-                return true;
-            else
-                return false;
+            for(int x = 0; x < symbols.size(); x++)
+                if(*symbols[x]==s)
+                    return true;
+            return false;
         }
-        void print(ostream& out)
-        {
-            out << name << " " << "contains: " << std::endl;
-            for ( auto it = symbol.begin(); it != symbol.end(); ++it )
-                out << " " << *it;
-            out << std::endl;
-        }
-
-}
+};
