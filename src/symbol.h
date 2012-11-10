@@ -12,6 +12,11 @@ class Symbol
 
     private:
         string name;
+    
+        virtual void print(std::ostream& out) const
+        {
+             out << name; 
+        }
 
     public:
         Symbol(std::string n)
@@ -29,11 +34,6 @@ class Symbol
             else
                 return false;
         }
-	
-	virtual void print(std::ostream& out) const
-    	{
-             out << name; 
-    	}
 
 	bool hasName(std::string n)
 	{
