@@ -1,7 +1,8 @@
 #ifndef PROCEDURE_H
 #define PROCEDURE_H
 
-#include"symbol.h"
+#include "symbol.h"
+#include "Parameter.h"
 
 #include<vector>
 
@@ -12,7 +13,7 @@ class Procedure : public Symbol {
         bool addField(const Parameter&);
 
     private:
-        vector<Parameter> fields;
+        std::vector<Parameter> fields;
 
 };
 

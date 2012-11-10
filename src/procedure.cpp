@@ -2,7 +2,7 @@
 
 Procedure::Procedure(string name) :
         Symbol(name)
-{    
+{
 }
 
 bool Procedure::addField(const Parameter &param)

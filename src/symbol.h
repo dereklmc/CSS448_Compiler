@@ -13,6 +13,7 @@ class Symbol
     private:
         string name;
     
+    protected:
         virtual void print(std::ostream& out) const
         {
              out << name; 
