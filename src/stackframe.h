@@ -38,15 +38,18 @@ class StackFrame
 	//Searches the entire StackFrame for a Symbol matching the name
 	//If found, it will return a ptr to that Symbol
 	//Else it will return NULL
-        Symbol* findMatch(std::string s)
+        bool findMatch(std::string s, Symbol*& found)
         {
-	    //For each symbol in the stackframe, check if it matches name
+	    	//For each symbol in the stackframe, check if it matches name
             for(int x = 0; x < symbols.size(); x++)
-	    {
-		if (symbols[x]->hasName(s))
-			return symbols[x];
-	    }
-	    return NULL;
+	    	{
+				if (symbols[x]->hasName(s))
+				{
+					found = symbols[x];
+					return true;
+				}
+	    	}
+	    	return false;
         }
 };
 #endif

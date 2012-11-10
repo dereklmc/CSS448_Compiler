@@ -13,13 +13,7 @@ public:
 
 	StdType() { name = ""; }
 	StdType( String name ) { this.name = name; }
-	bool hasName(string oName)
-	{
-		if (name == oName)
-			return true;
-		else
-			return false;
-	}
+
 private:
 
 }

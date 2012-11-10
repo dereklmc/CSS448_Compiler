@@ -20,7 +20,7 @@ class Constant : public Symbol
         void print(std::ostream& out) const
         {
             	Symbol::print(out);
-		out << " " << type;
+				out << " " << type;
         }
 };
 

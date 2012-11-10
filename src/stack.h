@@ -54,20 +54,19 @@ class Stack
         //                          searchStack
         // Searches Stack for a symbol with the specific name, returning it if
         // it's found, null if not found.
-        Symbol* searchStack(std::string s)
+        bool searchStack(std::string s, Symbol*& found)
         {
             StackFrame* temp = current;
-	    Symbol* matchedSymbol;
             while(temp != NULL)
             {
-		//Now calls StackFrame's findMatch which will return the matching
-		//Symbol if found, else NULL
-		matchedSymbol = findMatch(s);
-		if (matchedSymbol != NULL)
-			return matchedSymbol;
-		temp = temp->previous;
+				//Now calls StackFrame's findMatch which will return the matching
+				//Symbol if found, else NULL
+				bool wasFound = findMatch(s, found);
+				if (wasFound)
+					return true;
+				temp = temp->previous;
             }
-            return NULL;
+            return false;
         }
 
         void print(std::ostream& out) const
