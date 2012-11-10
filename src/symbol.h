@@ -1,21 +1,18 @@
-#include <string>
-#include <iostream>
 #ifndef SYMBOL_H
 #define SYMBOL_H
-#endif
-
+#include <string>
+#include <iostream>
+using namespace std;
 class Symbol
 {
     friend std::ostream& operator<<(std::ostream& out, const Symbol s)
     {
         s.print(out);
     }
+
     private:
-        std::string name;
-        virtual void print(std::ostream& out) const
-        {
-           out << name; 
-        }
+        string name;
+
     public:
         Symbol(std::string n)
         {
@@ -32,4 +29,19 @@ class Symbol
             else
                 return false;
         }
+	
+	virtual void print(std::ostream& out) const
+    	{
+             out << name; 
+    	}
+
+	bool hasName(std::string n)
+	{
+	    if (name == n)
+		return true;
+	    else
+		return false;
+	}
 };
+
+#endif

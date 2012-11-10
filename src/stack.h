@@ -49,22 +49,27 @@ class Stack
             current = current->previous;
             return temp;
         }
+
         //---------------------------------------------------------------------
         //                          searchStack
-        // Searches Stack for a frame with the specific name, returning it if
-        // it's found, null if empty.
-        StackFrame* searchStack(const Symbol& s)
+        // Searches Stack for a symbol with the specific name, returning it if
+        // it's found, null if not found.
+        Symbol* searchStack(std::string s)
         {
             StackFrame* temp = current;
+	    Symbol* matchedSymbol;
             while(temp != NULL)
             {
-                if(temp->hasSymbol(s))
-                    break;
-                else
-                    temp = temp->previous;
+		//Now calls StackFrame's findMatch which will return the matching
+		//Symbol if found, else NULL
+		matchedSymbol = findMatch(s);
+		if (matchedSymbol != NULL)
+			return matchedSymbol;
+		temp = temp->previous;
             }
-            return temp;
+            return NULL;
         }
+
         void print(std::ostream& out) const
         {
             StackFrame* temp = current;

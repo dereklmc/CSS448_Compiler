@@ -1,7 +1,6 @@
-#include "symbol.h"
 #ifndef CONSTANT_H
 #define CONSTANT_H
-#endif 
+#include "symbol.h"
 
 template <class T>
 class Constant : public Symbol
@@ -9,12 +8,20 @@ class Constant : public Symbol
     private:
         T type;
     public:
+	friend std::ostream& operator<<(std::ostream& out, const Constant s)
+    	{
+        	s.print(out);
+		return out;
+    	}
         Constant(std::string n, T t) : Symbol(n)
         {
             type = t;
         }
         void print(std::ostream& out) const
         {
-            out << name << " " << type;
+            	Symbol::print(out);
+		out << " " << type;
         }
 };
+
+#endif
