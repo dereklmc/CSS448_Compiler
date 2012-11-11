@@ -61,7 +61,7 @@ class Stack
             {
 				//Now calls StackFrame's findMatch which will return the matching
 				//Symbol if found, else NULL
-				bool wasFound = findMatch(s, found);
+				bool wasFound = temp->findMatch(s, found);
 				if (wasFound)
 					return true;
 				temp = temp->previous;
