@@ -5,7 +5,12 @@
 
 public StdType : public Symbol
 {
-public:
+
+friend std::ostream& operator<<(std::ostream& out, const StdType s)
+{
+    s.print(out);
+}
+	public:
 	static const StdType INTEGER;
 	static const StdType BOOL;
 	static const StdType REAL;
@@ -14,8 +19,13 @@ public:
 	StdType() { name = ""; }
 	StdType( String name ) { this.name = name; }
 
-private:
+	private:
 
+	protected:
+	void print(std::ostream& out) const
+    {
+         out << name; 
+    }
 }
 
 #endif

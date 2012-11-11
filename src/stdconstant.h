@@ -14,6 +14,7 @@ public:
 	static const StdConstant TRUE;
 	static const StdConstant FALSE;
 	StdConstant(string name, bool value) : Constant(name, value) {};
+protected:
 	void print(std::ostream& out) const
 	{
 		Symbol::print(out);

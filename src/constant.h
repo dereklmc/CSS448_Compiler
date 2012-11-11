@@ -17,6 +17,7 @@ class Constant : public Symbol
         {
             type = t;
         }
+	protected:
         void print(std::ostream& out) const
         {
             	Symbol::print(out);
