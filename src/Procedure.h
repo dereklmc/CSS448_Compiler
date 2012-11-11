@@ -23,10 +23,7 @@ class Procedure : public Symbol {
         // Add a new parameter that must be given when calling the procedure.
         bool addParameter(const Parameter&);
 	protected:
-		void print(std::ostream& out) const
-        {
-             Symbol::print(out);
-        }
+		void print(std::ostream& out) const;
 
     private:
         // parameters required when calling the procedure.
