@@ -3,7 +3,7 @@
 
 #include "symbol.h"
 
-public StdType : public Symbol
+class StdType : public Symbol
 {
 
 friend std::ostream& operator<<(std::ostream& out, const StdType s)
@@ -16,8 +16,8 @@ friend std::ostream& operator<<(std::ostream& out, const StdType s)
 	static const StdType REAL;
 	static const StdType CHAR;
 
-	StdType() { name = ""; }
-	StdType( String name ) { this.name = name; }
+	StdType() : Symbol("") { }
+	StdType(string name) : Symbol(name) { }
 
 	private:
 
@@ -26,6 +26,6 @@ friend std::ostream& operator<<(std::ostream& out, const StdType s)
     {
          out << name; 
     }
-}
+};
 
 #endif
