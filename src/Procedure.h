@@ -6,15 +6,21 @@
 
 #include<vector>
 
+/**
+ * Represents an identifier for a procedure in pascal.
+ * A procedure has a name and a set of parameters.
+ */
 class Procedure : public Symbol {
 
     public:
+        // ctr inherited from Symbol.
         Procedure(string);
-        bool addField(const Parameter&);
+        // Add a new parameter that must be given when calling the procedure.
+        bool addParameter(const Parameter&);
 
     private:
-        std::vector<Parameter> fields;
-
+        // parameters required when calling the procedure.
+        std::vector<Parameter> parameters;
 };
 
 #endif
