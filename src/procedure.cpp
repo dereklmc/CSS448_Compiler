@@ -21,7 +21,11 @@ Procedure::Procedure(string name) :
  */
 bool Procedure::addParameter(const Parameter &param)
 {
+    if (hasParameter(field.param)) {
+        return false;
+    }
     parameters.push_back(param);
+    return true;
 }
 
 /*******************************************************************************
