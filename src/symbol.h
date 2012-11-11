@@ -9,9 +9,6 @@ class Symbol
     {
         s.print(out);
     }
-
-    private:
-        string name;
     
     protected:
         virtual void print(std::ostream& out) const
@@ -20,13 +17,9 @@ class Symbol
         }
 
     public:
-        Symbol(std::string n)
+        string name;
+        Symbol(std::string n) : name(n)
         {
-            name = n;
-        }
-        Symbol(const Symbol& s)
-        {
-            name = s.name;
         }
         virtual bool operator==(const Symbol& rhs)
         {
