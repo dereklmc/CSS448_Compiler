@@ -10,18 +10,32 @@
  */
 
 /* declarations section */
+#include "stack.h"
+#include "Procedure.h"
+
 #include <stdio.h>
 #include <iostream>
+#include <vector>
+#include <deque>
 
+extern Stack scopeStack;
 using namespace std;
 
 %}
 
-%union { const char *text; }
+%union {
+    const char *text;
+    Procedure *procedure;
+    deque<Parameter> parameterQueue;
+    deque<string> identQueue;
+}
 
 /* definition section */
 
 %start  CompilationUnit
+%type   <procedure> ProcedureHeading
+%type   <parameterQueue> FormalParameters FormalParamList OneFormalParam
+%type   <identQueue> IdentList
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
@@ -36,24 +50,32 @@ using namespace std;
 
 /**************************  Pascal program **********************************/
 
-CompilationUnit    :  ProgramModule        
+CompilationUnit    :  ProgramModule
                    ;
 ProgramModule      :  yprogram yident
-					  			{
-								    printf("%s ", $2);
-								}
-				      ProgramParameters ysemicolon Block ydot
+                                {
+                                    printf("%s ", $2);
+                                }
+                      ProgramParameters ysemicolon
+                                { 
+                                    /* Enter Program Scope */
+                                    scopeStack.createScope(string($2));
+                                    /* TODO : Put Program parameters on stack?? */
+                                }
+                      Block ydot
                    ;
 ProgramParameters  :  yleftparen  IdentList  yrightparen
                    ;
 IdentList          :  yident 
-					  			{
-								    printf("%s ", $1);
-								}
+                                {
+                                    printf("%s ", $1);
+                                    $$.push_back($1);
+                                }
                    |  IdentList ycomma yident
-								{
-								    printf("%s ", $3);
-								}
+                                {
+                                    printf("%s ", $3);
+                                    $$.push_back($1);
+                                }
                    ;
 
 /**************************  Declarations section ***************************/
@@ -66,7 +88,7 @@ Declarations       :  ConstantDefBlock
                       SubprogDeclList
                    ;
 ConstantDefBlock   :  yconst ConstDefList
-		   |  /*** empty ***/
+           |  /*** empty ***/
                    ;
 ConstDefList       :  ConstantDef ysemicolon
                    |  ConstDefList ConstantDef ysemicolon
@@ -78,22 +100,22 @@ TypeDefList        :  TypeDef  ysemicolon
                    |  TypeDefList TypeDef ysemicolon
                    ;
 VariableDeclBlock  :  yvar VariableDeclList
-		   |  /*** empty ***/
+           |  /*** empty ***/
                    ;
 VariableDeclList   :  VariableDecl ysemicolon
-		   |  VariableDeclList VariableDecl ysemicolon
+           |  VariableDeclList VariableDecl ysemicolon
                    ;  
 ConstantDef        :  yident
-								{
-								    printf("%s ", $1);
-								}
-					  yequal  ConstExpression
+                                {
+                                    printf("%s ", $1);
+                                }
+                      yequal  ConstExpression
                    ;
 TypeDef            :  yident
-								{
-								    printf("%s ", $1);
-								}
-					  yequal  Type
+                                {
+                                    printf("%s ", $1);
+                                }
+                      yequal  Type
                    ;
 VariableDecl       :  IdentList  ycolon  Type
                    ;
@@ -101,20 +123,20 @@ VariableDecl       :  IdentList  ycolon  Type
 /***************************  Const/Type Stuff  ******************************/
 
 ConstExpression    :  UnaryOperator ConstFactor
-		   |  ConstFactor
+           |  ConstFactor
                    |  ystring
-		   |  ynil
+           |  ynil
                    ;
-ConstFactor        :  yident 	{
-								    printf("%s ", $1);
-								}
+ConstFactor        :  yident    {
+                                    printf("%s ", $1);
+                                }
                    |  ynumber
                    |  ytrue
                    |  yfalse
                    ;
-Type               :  yident	{
-								    printf("%s ", $1);
-								}
+Type               :  yident    {
+                                    printf("%s ", $1);
+                                }
                    |  ArrayType
                    |  PointerType
                    |  RecordType
@@ -134,9 +156,9 @@ RecordType         :  yrecord  FieldListSequence  yend
 SetType            :  yset  yof  Subrange
                    ;
 PointerType        :  ycaret  yident
-								{
-								    printf("%s ", $2);
-								}
+                                {
+                                    printf("%s ", $2);
+                                }
                    ;
 FieldListSequence  :  FieldList  
                    |  FieldListSequence  ysemicolon  FieldList
@@ -151,6 +173,9 @@ StatementSequence  :  Statement
                    ;
 Statement          :  Assignment
                    |  ProcedureCall
+                      {
+                          //Handle procedue calls
+                      }
                    |  IfStatement
                    |  CaseStatement
                    |  WhileStatement
@@ -164,20 +189,20 @@ Statement          :  Assignment
 Assignment         :  Designator yassign Expression
                    ;
 ProcedureCall      :  yident 
-								{
-								    printf("%s ", $1);
-								}
+                                {
+                                    printf("%s ", $1);
+                                }
                    |  yident 
-								{
-								    printf("%s ", $1);
-								}
-					  ActualParameters
+                                {
+                                    printf("%s ", $1);
+                                }
+                      ActualParameters
                    ;
 IfStatement        :  yif  Expression  ythen  Statement EndIf
-		   |  yif  Expression  ythen  Statement yelse Statement  EndIf
+           |  yif  Expression  ythen  Statement yelse Statement  EndIf
                    ;  
-EndIf		   :  /*** empty ***/
-		   ;
+EndIf          :  /*** empty ***/
+           ;
 CaseStatement      :  ycase  Expression  yof  CaseList  yend
                    ;
 CaseList           :  Case
@@ -193,10 +218,10 @@ WhileStatement     :  ywhile  Expression  ydo  Statement
 RepeatStatement    :  yrepeat  StatementSequence  yuntil  Expression
                    ;
 ForStatement       :  yfor  yident  
-								{
-								    printf("%s ", $2);
-								}
-							yassign  Expression  WhichWay  Expression
+                                {
+                                    printf("%s ", $2);
+                                }
+                            yassign  Expression  WhichWay  Expression
                             ydo  Statement
                    ;
 WhichWay           :  yto  |  ydownto
@@ -215,18 +240,18 @@ DesignatorList     :  Designator
                    |  DesignatorList  ycomma  Designator
                    ;
 Designator         :  yident  
-								{
-								   printf("%s ", $1);
-								}
-					  DesignatorStuff
+                                {
+                                   printf("%s ", $1);
+                                }
+                      DesignatorStuff
                    ;
 DesignatorStuff    :  /*** empty ***/
                    |  DesignatorStuff  theDesignatorStuff
                    ;
 theDesignatorStuff :  ydot yident
-								{
-								    printf("%s ", $2);
-								} 
+                                {
+                                    printf("%s ", $2);
+                                } 
                    |  yleftbracket ExpList yrightbracket
                    |  ycaret
                    ;
@@ -236,15 +261,15 @@ ExpList            :  Expression
                    |  ExpList  ycomma  Expression
                    ;
 MemoryStatement    :  ynew  yleftparen  yident
-								{
-								    printf("%s ", $3);
-								}
-					  yrightparen
+                                {
+                                    printf("%s ", $3);
+                                }
+                      yrightparen
                    |  ydispose yleftparen  yident
-								{
-								    printf("%s ", $3);
-								}
-					  yrightparen
+                                {
+                                    printf("%s ", $3);
+                                }
+                      yrightparen
                    ;
 
 /***************************  Expression Stuff  ******************************/
@@ -277,10 +302,10 @@ Factor             :  ynumber
 /*  A FunctionCall has at least one parameter in parens, more are           */
 /*  separated with commas.                                                  */
 FunctionCall       :  yident 
-								{
-								    printf("%s ", $1);
-								}
-					  ActualParameters
+                                {
+                                    printf("%s ", $1);
+                                }
+                      ActualParameters
                    ;
 Setvalue           :  yleftbracket ElementList  yrightbracket
                    |  yleftbracket yrightbracket
@@ -298,47 +323,112 @@ SubprogDeclList    :  /*** empty ***/
                    |  SubprogDeclList ProcedureDecl ysemicolon
                    |  SubprogDeclList FunctionDecl ysemicolon
                    ;
-ProcedureDecl      :  ProcedureHeading  ysemicolon  Block
+ProcedureDecl      :  ProcedureHeading  ysemicolon
+                            {
+                                /* TODO: put in actions.cpp */
+                                /* Put procedure in parent scope */
+                                scopeStack.current->add(&$1);
+                                /* Enter Procedure Scope */
+                                scopeStack.createScope($1.name);
+                                /* Put procedure params on symbol stack. */
+                                std::vector<Procedure> toPutOnStack = $1.getParameters();
+                                for (int i = 0; i < toPutOnStack.size(); i++) {
+                                    current->add(toPutOnStack[i]);
+                                }
+                            }
+                      Block
+                            {
+                                /* TODO: put in actions.cpp */
+                                /* Exit Procedure scope */
+                                StackFrame *scope = stackScope.leaveScope();
+                                /* Print exited scope. */
+                                cout << scope;
+                                /* Mem management */
+                                delete scope;
+                                scope = NULL;
+                            }
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident
-								{
-								    printf("%s ", $3);
-								}
-					  ysemicolon  Block
+                                {
+                                    printf("%s ", $3);
+                                }
+                      ysemicolon  Block
                    ;
-ProcedureHeading   :  yprocedure  yident
-								{
-								    printf("%s ", $2);
-								}
-                   |  yprocedure  yident  
-								{
-								    printf("%s ", $2);
-								}
-					  FormalParameters
+ProcedureHeading   :  yprocedure yident {
+                                {
+                                    printf("%s ", $2);
+                                    /* create procedure */
+                                    Procedure procedure(string($2));
+                                    /* Pass procedure back */
+                                    $$ = procedure;
+                                }
+                   |  yprocedure yident {
+                                {
+                                    printf("%s ", $2);
+                                }
+                      FormalParameters
+                                {
+                                    /* Create procedure */
+                                    Procedure procedure(string($2)); // NOTE May need to dynamically create?
+                                    /* Add parameters */
+                                    while (!$4.empty()) {
+                                        procedure.addParameter($4.front());
+                                        $4.pop_front();
+                                    }
+                                    /* Pass procedure back */
+                                    $$ = procedure;
+                                }
+                      
                    ;
 FunctionHeading    :  yfunction  yident
-								{
-								    printf("%s ", $2);
-								}
+                                {
+                                    printf("%s ", $2);
+                                }
                    |  yfunction  yident
-								{
-								    printf("%s ", $2);
-								}
-					  FormalParameters
+                                {
+                                    printf("%s ", $2);
+                                }
+                      FormalParameters
                    ;
 FormalParameters   :  yleftparen FormalParamList yrightparen
+                                {
+                                    $$ = $2; /* TODO Play with removing */
+                                }
                    ;
 FormalParamList    :  OneFormalParam 
+                                {
+                                    //$$.push_back($1);
+                                }
                    |  FormalParamList ysemicolon OneFormalParam
+                                {
+                                    //$$.push_back($3);
+                                }
                    ;
 OneFormalParam     :  yvar  IdentList  ycolon  yident
-								{
-								    printf("%s ", $4);
-								}
+                                {
+                                    printf("%s ", $4);
+                                    /* Search Symbol Table for Type corresponding to yident. */
+                                    Type *type = NULL; // = foundType;
+                                    /* Create parameters and add to parameter queue */
+                                    while (!$2.empty()) {
+                                        Parameter param($2.front(), type, true);
+                                        $$.push_back(param);
+                                        $2.pop_front();
+                                    }
+                                    
+                                }
                    |  IdentList  ycolon  yident
-								{
-								    printf("%s ", $3);
-								}
+                                {
+                                    printf("%s ", $3);
+                                    /* TODOSearch Symbol Table for Type corresponding to yident. */
+                                    Type *type = NULL; // = foundType;
+                                    /* Create parameters and add to parameter queue */
+                                    while (!$2.empty()) {
+                                        Parameter param($2.front(), type, false);
+                                        $$.push_back(param);
+                                        $2.pop_front();
+                                    }
+                                }
                    ;
 
 /***************************  More Operators  ********************************/
