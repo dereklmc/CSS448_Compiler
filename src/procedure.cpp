@@ -24,6 +24,23 @@ bool Procedure::addParameter(const Parameter &param)
     parameters.push_back(param);
 }
 
+/*******************************************************************************
+ *
+ * Checks if the procedure has a parameter with a given name. Returns true if
+ * it does, otherwise false.
+ */
+bool Procedure::hasParameter(const string &paramName) const
+{
+    
+    std::vector<Parameter>::const_iterator it;
+    for(it = parameters.begin(); it != parameters.end(); ++it) {
+        if (it->name == paramName) {
+            return true;
+        }
+    }
+    false;
+}
+
 void Procedure::print(std::ostream& out) const
 {
     out << name;

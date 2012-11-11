@@ -30,7 +30,8 @@ bool RecordType::addField(const Variable &field)
 
 /*******************************************************************************
  *
- * Add a new field to the current record.
+ * Checks if the record has a field with a given name. Returns true if
+ * it does, otherwise false.
  */
 bool RecordType::hasField(const string &fieldName) const
 {

@@ -22,6 +22,8 @@ class Procedure : public Symbol {
         Procedure(string);
         // Add a new parameter that must be given when calling the procedure.
         bool addParameter(const Parameter&);
+        // Checks if param with given name is in the current procedure.
+        bool hasParameter(const string&) const;
 	protected:
 		void print(std::ostream& out) const;
 
