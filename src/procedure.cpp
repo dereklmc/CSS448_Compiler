@@ -23,3 +23,9 @@ bool Procedure::addParameter(const Parameter &param)
 {
     parameters.push_back(param);
 }
+
+void Procedure::print(std::ostream& out) const
+{
+    out << name;
+	//out << " " << parameters; 
+}

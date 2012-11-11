@@ -21,6 +21,7 @@ class Parameter : public Variable {
         // false if by value.
         bool byReference;
         // Overloaded print from Symbol.
+	protected:
         void print(std::ostream&) const;
 
 };

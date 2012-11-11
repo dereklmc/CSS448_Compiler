@@ -12,12 +12,17 @@
  */
 class Variable : public Symbol {
 
+	friend std::ostream& operator<<(std::ostream& out, const Variable s)
+    {
+        s.print(out);
+    }
     public:
         // ctr, creates a variable with a name and a type.
         Variable(string, Type*);
         // Defined to release Variable's reference to Type.
         // Since type is also in the symbol table, the ST will deallocate type.
         virtual ~Variable();
+		
 
     private:
         Type *type; // The type associated with this variable.
