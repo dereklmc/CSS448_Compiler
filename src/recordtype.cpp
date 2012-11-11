@@ -32,11 +32,12 @@ bool RecordType::addField(const Variable &field)
  *
  * Add a new field to the current record.
  */
-bool RecordType::hasField(const String &fieldName)
+bool RecordType::hasField(const string &fieldName) const
 {
     
+    std::vector<Variable>::const_iterator it;
     for(it = fields.begin(); it != fields.end(); ++it) {
-        if (*it.name = field.name) {
+        if (it->name == fieldName) {
             return true;
         }
     }
