@@ -32,7 +32,6 @@ bool validBlock;
     Procedure *procedure;
     Function *function;
     Type *type;
-    deque<string> identQueue;
 }
 
 /* definition section */
@@ -80,7 +79,7 @@ IdentList          :  yident
                    |  IdentList ycomma yident
                                 {
                                     printf("%s ", $3);
-                                    identQueue.push_back($1);
+                                    identQueue.push_back($3);
                                 }
                    ;
 
@@ -127,8 +126,8 @@ VariableDecl       :  IdentList  ycolon  Type
                                 {
                                     /* TODO Search Symbol Table for Type corresponding to yident. */
                                     /* If Type was  */
-                                    Type *type = NULL; // = foundType;
-                                    bool isFound = scopeStack.searchStack(yident, type);
+                                    //Type *type = NULL; // = foundType;
+                                    //bool isFound = scopeStack.searchStack(yident, type);
                                     /* Create parameters and add to parameter queue */
                                     if (isFound)
                                     {
@@ -158,15 +157,27 @@ ConstFactor        :  yident    {
 Type               :  yident    {
                                     printf("%s ", $1);
                                     Type *type = NULL;
-                                    bool isFound = scopeStack.searchStack(yident, type);
+                                    bool isFound = scopeStack.searchStack($1, type);
                                     if (isFound) {
                                         $$ = type;
                                     }
                                 }
                    |  ArrayType
+                                {
+                                    $$ = NULL;
+                                }
                    |  PointerType
+                                {
+                                    $$ = NULL;
+                                }
                    |  RecordType
+                                {
+                                    $$ = NULL;
+                                }
                    |  SetType
+                                {
+                                    $$ = NULL;
+                                }
                    ;
 ArrayType          :  yarray yleftbracket Subrange SubrangeList
                       yrightbracket  yof Type
@@ -379,7 +390,7 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                                 /* TODO: put in actions.cpp */
                                 /* Check if return type is valid */
                                 Type *type = NULL;
-                                validBlock = scopeStack.searchStack(yident, type);
+                                validBlock = scopeStack.searchStack($3, type);
                                 /* Put function in parent scope */
                                 if (validBlock)
                                 {
@@ -462,7 +473,7 @@ FunctionHeading    :  yfunction  yident
                    ;
 FormalParameters   :  yleftparen FormalParamList yrightparen
                                 {
-                                    $$ = $2; /* TODO Play with removing */
+                                    //$$ = $2; /* TODO Play with removing */
                                 }
                    ;
 FormalParamList    :  OneFormalParam 
@@ -474,12 +485,12 @@ FormalParamList    :  OneFormalParam
                                     //$$.push_back($3);
                                 }
                    ;
-OneFormalParam     :  yvar  IdentList  ycolon  yident
+OneFormalParam     :  yvar IdentList ycolon yident
                                 {
-                                    printf("%s ", $4);
+                                    //printf("%s ", $4);
                                     /* Search Symbol Table for Type corresponding to yident. */
                                     Type *type = NULL; // = foundType;
-                                    bool isFound = scopeStack.searchStack(yident, type);
+                                    bool isFound = scopeStack.searchStack($<text>4, type);
                                     /* Create parameters and add to parameter queue */
                                     if (isFound)
                                     {
@@ -491,7 +502,7 @@ OneFormalParam     :  yvar  IdentList  ycolon  yident
                                         }
                                     }
                                 }
-                   |  IdentList  ycolon  yident
+                   |  IdentList ycolon yident
                                 {
                                     printf("%s ", $3);
                                     /* TODO Search Symbol Table for Type corresponding to yident. */
