@@ -1,4 +1,4 @@
-#include"PointerType.h"
+#include "PointerType.h"
 
 /*******************************************************************************
  *
@@ -7,7 +7,7 @@
  * Creates a pointer with a name that points to a given ident. Extends the 
  * constructor in Symbol.
  */
-PointerType::PointerType(string name, Symbol *pointee) :
+PointerType::PointerType(std::string name, Symbol *pointee) :
         Type(name)
 {
     this->pointee = pointee;

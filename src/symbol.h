@@ -2,7 +2,6 @@
 #define SYMBOL_H
 #include <string>
 #include <iostream>
-using namespace std;
 class Symbol
 {
     friend std::ostream& operator<<(std::ostream& out, const Symbol s)

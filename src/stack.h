@@ -2,7 +2,6 @@
 #include <iostream>
 #ifndef STACK_H
 #define STACK_H
-#endif
 
 class Stack
 {
@@ -78,3 +77,4 @@ class Stack
             }
         }
 };
+#endif

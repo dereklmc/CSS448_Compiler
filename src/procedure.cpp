@@ -32,17 +32,20 @@ bool Procedure::addParameter(const Parameter &param)
  *
  * Checks if the procedure has a parameter with a given name. Returns true if
  * it does, otherwise false.
+ * 
+ * @param paramName - paramName to search for.
+ * @return return true if paramater exists in vector, false otherwise.
  */
 bool Procedure::hasParameter(const string &paramName) const
 {
     
     std::vector<Parameter>::const_iterator it;
-    for(it = parameters.begin(); it != parameters.end(); ++it) {
+    for(it = parameters.begin(); it != parameters.end(); it++) {
         if (it->name == paramName) {
             return true;
         }
     }
-    false;
+    return false;
 }
 
 void Procedure::print(std::ostream& out) const

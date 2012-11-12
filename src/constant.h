@@ -8,10 +8,10 @@ class Constant : public Symbol
     private:
         T type;
     public:
-	friend std::ostream& operator<<(std::ostream& out, const Constant s)
+	    friend std::ostream& operator<<(std::ostream& out, const Constant s)
     	{
         	s.print(out);
-		return out;
+		    return out;
     	}
         Constant(std::string n, T t) : Symbol(n)
         {

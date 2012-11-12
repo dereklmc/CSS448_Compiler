@@ -18,7 +18,7 @@ class Type : public Symbol {
     
     public:
         // Standard ctr, see Symbol.
-        Type(string);
+        Type(std::string);
 };
 
 #endif
