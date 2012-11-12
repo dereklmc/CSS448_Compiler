@@ -424,14 +424,14 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                                 validBlock = true;
                             }
                    ;
-ProcedureHeading   :  yprocedure yident {
+ProcedureHeading   :  yprocedure yident
                                 {
                                     /* create procedure Check if name already taken? */
                                     Procedure *procedure = new Procedure(string($2));
                                     /* Pass procedure back */
                                     $$ = procedure;
                                 }
-                   |  yprocedure yident {
+                   |  yprocedure yident
                                 {
                                     printf("%s ", $2);
                                 }
@@ -472,26 +472,18 @@ FunctionHeading    :  yfunction  yident
                                 }
                    ;
 FormalParameters   :  yleftparen FormalParamList yrightparen
-                                {
-                                    //$$ = $2; /* TODO Play with removing */
-                                }
                    ;
-FormalParamList    :  OneFormalParam 
-                                {
-                                    //$$.push_back($1);
-                                }
+FormalParamList    :  OneFormalParam
                    |  FormalParamList ysemicolon OneFormalParam
-                                {
-                                    //$$.push_back($3);
-                                }
                    ;
 OneFormalParam     :  yvar IdentList ycolon yident
                                 {
-                                    //printf("%s ", $4);
+                                    printf("%s ", $4);
                                     /* Search Symbol Table for Type corresponding to yident. */
                                     Type *type = NULL; // = foundType;
                                     bool isFound = scopeStack.searchStack($<text>4, type);
                                     /* Create parameters and add to parameter queue */
+                                    
                                     if (isFound)
                                     {
                                         while (!identQueue.empty()) 
@@ -501,6 +493,7 @@ OneFormalParam     :  yvar IdentList ycolon yident
                                             identQueue.pop_front();
                                         }
                                     }
+                                    
                                 }
                    |  IdentList ycolon yident
                                 {
@@ -509,6 +502,7 @@ OneFormalParam     :  yvar IdentList ycolon yident
                                     Type *type = NULL; // = foundType;
                                     bool isFound = scopeStack.searchStack(yident, type);
                                     /* Create parameters and add to parameter queue */
+                                    
                                     if (isFound)
                                     {
                                         while (!identQueue.empty()) {
@@ -517,6 +511,7 @@ OneFormalParam     :  yvar IdentList ycolon yident
                                             identQueue.pop_front();
                                         }
                                     }
+                                    
                                 }
                    ;
 

@@ -16,24 +16,26 @@ class Symbol
         }
 
     public:
-        string name;
+        std::string name;
         Symbol(std::string n) : name(n)
         {
         }
         virtual bool operator==(const Symbol& rhs)
         {
-            if(name==rhs.name)
+            if(name==rhs.name) {
                 return true;
-            else
+            } else {
                 return false;
+            }
         }
 
 	bool hasName(std::string n)
 	{
-	    if (name == n)
-		return true;
-	    else
-		return false;
+	    if (name == n) {
+		    return true;
+	    } else {
+		    return false;
+	    }
 	}
 };
 
