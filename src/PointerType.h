@@ -13,7 +13,7 @@ class PointerType : public Type {
 
     public:
         // ctr, creates a variable with a name that points to a given ident.
-        PointerType(string, Symbol*);
+        PointerType(std::string, Symbol*);
         // Defined to release PointerType's reference to Symbol.
         // Since pointee is also in the symbol table, the ST will deallocate 
         // pointee.
