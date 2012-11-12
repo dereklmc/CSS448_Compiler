@@ -1,0 +1,12 @@
+
+function Apple
+
+    type: color
+    
+    function Orange
+        
+        var red : color;
+        
+        function Kiwi
+        
+            red = "some reddish color";

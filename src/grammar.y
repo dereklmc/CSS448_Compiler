@@ -23,13 +23,15 @@ using namespace std;
 
 deque<Parameter> parameterQueue;
 deque<string> identQueue;
+bool validBlock;
 
 %}
 
 %union {
     const char *text;
     Procedure *procedure;
-    deque<Parameter> parameterQueue;
+    Function *function;
+    Type *type;
     deque<string> identQueue;
 }
 
@@ -37,6 +39,8 @@ deque<string> identQueue;
 
 %start  CompilationUnit
 %type   <procedure> ProcedureHeading
+%type   <function>  FunctionHeading
+%type   <type> Type
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
@@ -61,6 +65,7 @@ ProgramModule      :  yprogram yident
                                 { 
                                     /* Enter Program Scope */
                                     scopeStack.createScope(string($2));
+                                    validBlock = true;
                                     /* TODO : Put Program parameters on stack?? */
                                 }
                       Block ydot
@@ -119,6 +124,21 @@ TypeDef            :  yident
                       yequal  Type
                    ;
 VariableDecl       :  IdentList  ycolon  Type
+                                {
+                                    /* TODO Search Symbol Table for Type corresponding to yident. */
+                                    /* If Type was  */
+                                    Type *type = NULL; // = foundType;
+                                    bool isFound = scopeStack.searchStack(yident, type);
+                                    /* Create parameters and add to parameter queue */
+                                    if (isFound)
+                                    {
+                                        while (!identQueue.empty()) {
+                                            Variable var(identQueue.front(), type);
+                                            // TODO Add symbol
+                                            identQueue.pop_front();
+                                        }
+                                    }
+                                }
                    ;
 
 /***************************  Const/Type Stuff  ******************************/
@@ -137,6 +157,11 @@ ConstFactor        :  yident    {
                    ;
 Type               :  yident    {
                                     printf("%s ", $1);
+                                    Type *type = NULL;
+                                    bool isFound = scopeStack.searchStack(yident, type);
+                                    if (isFound) {
+                                        $$ = type;
+                                    }
                                 }
                    |  ArrayType
                    |  PointerType
@@ -330,9 +355,9 @@ ProcedureDecl      :  ProcedureHeading  ysemicolon
                                 /* Put procedure in parent scope */
                                 scopeStack.current->add(&$1);
                                 /* Enter Procedure Scope */
-                                scopeStack.createScope($1.name);
+                                scopeStack.createScope($1->name);
                                 /* Put procedure params on symbol stack. */
-                                std::vector<Procedure> toPutOnStack = $1.getParameters();
+                                std::vector<Parameter> toPutOnStack = $1->getParameters();
                                 for (int i = 0; i < toPutOnStack.size(); i++) {
                                     current->add(toPutOnStack[i]);
                                 }
@@ -350,16 +375,48 @@ ProcedureDecl      :  ProcedureHeading  ysemicolon
                             }
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident
+                            {
+                                /* TODO: put in actions.cpp */
+                                /* Check if return type is valid */
+                                Type *type = NULL;
+                                validBlock = scopeStack.searchStack(yident, type);
+                                /* Put function in parent scope */
+                                if (validBlock)
                                 {
-                                    printf("%s ", $3);
+                                    scopeStack.current->add(&$1);
+                                    /* Enter Function Scope */
+                                    scopeStack.createScope($1->name);
+                                    /* Put procedure params on symbol stack. */
+                                    std::vector<Parameter> toPutOnStack = $1->getParameters();
+                                    for (int i = 0; i < toPutOnStack.size(); i++) {
+                                        current->add(toPutOnStack[i]);
+                                    }
                                 }
+                                else    //New scope not created, new parameters not added
+                                {
+                                    //Do Mem management 
+                                }
+                            }
                       ysemicolon  Block
+                            {
+                                /* TODO: put in actions.cpp */
+                                /* Exit Function scope */
+                                if (validBlock)
+                                {
+                                    StackFrame *scope = stackScope.leaveScope();
+                                    /* Print exited scope. */
+                                    cout << scope;
+                                    /* Mem management */
+                                    delete scope;
+                                    scope = NULL;
+                                }
+                                validBlock = true;
+                            }
                    ;
 ProcedureHeading   :  yprocedure yident {
                                 {
-                                    printf("%s ", $2);
-                                    /* create procedure */
-                                    Procedure procedure(string($2));
+                                    /* create procedure Check if name already taken? */
+                                    Procedure *procedure = new Procedure(string($2));
                                     /* Pass procedure back */
                                     $$ = procedure;
                                 }
@@ -370,23 +427,38 @@ ProcedureHeading   :  yprocedure yident {
                       FormalParameters
                                 {
                                     /* Create procedure */
-                                    Procedure procedure(string($2)); // NOTE May need to dynamically create?
+                                    Procedure *procedure = new Procedure(string($2)); // NOTE May need to dynamically create?
                                     /* Add parameters */
                                     while (!procedureQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
                                         procedure.addParameter(procedureQueue.front());
                                         procedureQueue.pop_front();
                                     }
+                                    $$ = procedure;
                                 }
                    ;
 FunctionHeading    :  yfunction  yident
                                 {
                                     printf("%s ", $2);
+                                    /* create function  Check if name already taken? */
+                                    Function *function = new Function(string($2));
+                                    /* Pass function back */
+                                    $$ = function;
                                 }
                    |  yfunction  yident
                                 {
                                     printf("%s ", $2);
                                 }
                       FormalParameters
+                                {
+                                    /* Create function */
+                                    Function *function = new Function(string($2)); // NOTE May need to dynamically create?
+                                    /* Add parameters */
+                                    while (!procedureQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
+                                        function.addParameter(functionQueue.front());
+                                        functionQueue.pop_front();
+                                    }
+                                    $$ = function;
+                                }
                    ;
 FormalParameters   :  yleftparen FormalParamList yrightparen
                                 {
@@ -411,7 +483,8 @@ OneFormalParam     :  yvar  IdentList  ycolon  yident
                                     /* Create parameters and add to parameter queue */
                                     if (isFound)
                                     {
-                                        while (!identQueue.empty()) {
+                                        while (!identQueue.empty()) 
+                                        {
                                             Parameter param(identQueue.front(), type, true);
                                             parameterQueue.push_back(param);
                                             identQueue.pop_front();
@@ -423,12 +496,15 @@ OneFormalParam     :  yvar  IdentList  ycolon  yident
                                     printf("%s ", $3);
                                     /* TODO Search Symbol Table for Type corresponding to yident. */
                                     Type *type = NULL; // = foundType;
-                                
+                                    bool isFound = scopeStack.searchStack(yident, type);
                                     /* Create parameters and add to parameter queue */
-                                    while (!identQueue.empty()) {
-                                        Parameter param(identQueue.front(), type, false);
-                                        parameterQueue.push_back(param);
-                                        identQueue.pop_front();
+                                    if (isFound)
+                                    {
+                                        while (!identQueue.empty()) {
+                                            Parameter param(identQueue.front(), type, false);
+                                            parameterQueue.push_back(param);
+                                            identQueue.pop_front();
+                                        }
                                     }
                                 }
                    ;
