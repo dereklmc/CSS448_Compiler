@@ -21,6 +21,9 @@
 extern Stack scopeStack;
 using namespace std;
 
+deque<Parameter> parameterQueue;
+deque<string> identQueue;
+
 %}
 
 %union {
@@ -34,14 +37,12 @@ using namespace std;
 
 %start  CompilationUnit
 %type   <procedure> ProcedureHeading
-%type   <parameterQueue> FormalParameters FormalParamList OneFormalParam
-%type   <identQueue> IdentList
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
         yleftparen yless ylessequal yminus ymod ymultiply ynew ynil ynot 
         ynotequal ynumber yof  yor yplus yprocedure yprogram yread yreadln  
-        yrecord yrepeat yrightbracket yrightparen  ysemicolon yset 
+        yrecord yrepeat yrightbracket yrightparen  ysemicoalon yset 
         ythen  yto ytrue ytype  yuntil  yvar ywhile ywrite ywriteln yunknown
 %token <text> yident ystring
 
@@ -69,12 +70,12 @@ ProgramParameters  :  yleftparen  IdentList  yrightparen
 IdentList          :  yident 
                                 {
                                     printf("%s ", $1);
-                                    $$.push_back($1);
+                                    identQueue.push_back($1);
                                 }
                    |  IdentList ycomma yident
                                 {
                                     printf("%s ", $3);
-                                    $$.push_back($1);
+                                    identQueue.push_back($1);
                                 }
                    ;
 
@@ -371,14 +372,11 @@ ProcedureHeading   :  yprocedure yident {
                                     /* Create procedure */
                                     Procedure procedure(string($2)); // NOTE May need to dynamically create?
                                     /* Add parameters */
-                                    while (!$4.empty()) {
-                                        procedure.addParameter($4.front());
-                                        $4.pop_front();
+                                    while (!procedureQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
+                                        procedure.addParameter(procedureQueue.front());
+                                        procedureQueue.pop_front();
                                     }
-                                    /* Pass procedure back */
-                                    $$ = procedure;
                                 }
-                      
                    ;
 FunctionHeading    :  yfunction  yident
                                 {
@@ -409,24 +407,28 @@ OneFormalParam     :  yvar  IdentList  ycolon  yident
                                     printf("%s ", $4);
                                     /* Search Symbol Table for Type corresponding to yident. */
                                     Type *type = NULL; // = foundType;
+                                    bool isFound = scopeStack.searchStack(yident, type);
                                     /* Create parameters and add to parameter queue */
-                                    while (!$2.empty()) {
-                                        Parameter param($2.front(), type, true);
-                                        $$.push_back(param);
-                                        $2.pop_front();
+                                    if (isFound)
+                                    {
+                                        while (!identQueue.empty()) {
+                                            Parameter param(identQueue.front(), type, true);
+                                            parameterQueue.push_back(param);
+                                            identQueue.pop_front();
+                                        }
                                     }
-                                    
                                 }
                    |  IdentList  ycolon  yident
                                 {
                                     printf("%s ", $3);
-                                    /* TODOSearch Symbol Table for Type corresponding to yident. */
+                                    /* TODO Search Symbol Table for Type corresponding to yident. */
                                     Type *type = NULL; // = foundType;
+                                
                                     /* Create parameters and add to parameter queue */
-                                    while (!$2.empty()) {
-                                        Parameter param($2.front(), type, false);
-                                        $$.push_back(param);
-                                        $2.pop_front();
+                                    while (!identQueue.empty()) {
+                                        Parameter param(identQueue.front(), type, false);
+                                        parameterQueue.push_back(param);
+                                        identQueue.pop_front();
                                     }
                                 }
                    ;
