@@ -19,11 +19,11 @@ class Procedure : public Symbol {
 
     public:
         // ctr inherited from Symbol.
-        Procedure(string);
+        Procedure(std::string);
         // Add a new parameter that must be given when calling the procedure.
         bool addParameter(const Parameter&);
         // Checks if param with given name is in the current procedure.
-        bool hasParameter(const string&) const;
+        bool hasParameter(const std::string&) const;
 	protected:
 		void print(std::ostream& out) const;
 
