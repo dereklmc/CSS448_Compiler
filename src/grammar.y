@@ -12,6 +12,7 @@
 /* declarations section */
 #include "stack.h"
 #include "Procedure.h"
+#include "function.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -129,10 +130,10 @@ VariableDecl       :  IdentList  ycolon  Type
                                     //Type *type = NULL; // = foundType;
                                     //bool isFound = scopeStack.searchStack(yident, type);
                                     /* Create parameters and add to parameter queue */
-                                    if (isFound)
+                                    if ($3 != NULL)
                                     {
                                         while (!identQueue.empty()) {
-                                            Variable var(identQueue.front(), type);
+                                            Variable var(identQueue.front(), $3);
                                             // TODO Add symbol
                                             identQueue.pop_front();
                                         }
@@ -156,9 +157,12 @@ ConstFactor        :  yident    {
                    ;
 Type               :  yident    {
                                     printf("%s ", $1);
-                                    Type *type = NULL;
-                                    bool isFound = scopeStack.searchStack($1, type);
+                                    Symbol *typeSymbol = NULL;
+                                    bool isFound = scopeStack.searchStack(string($1), typeSymbol);
+                                    Type *type = dynamic_cast<Type*>(typeSymbol);
                                     if (isFound) {
+                                        $$ = type;
+                                    } else {
                                         $$ = type;
                                     }
                                 }
@@ -364,20 +368,20 @@ ProcedureDecl      :  ProcedureHeading  ysemicolon
                             {
                                 /* TODO: put in actions.cpp */
                                 /* Put procedure in parent scope */
-                                scopeStack.current->add(&$1);
+                                scopeStack.current->addSymbol($1);
                                 /* Enter Procedure Scope */
                                 scopeStack.createScope($1->name);
                                 /* Put procedure params on symbol stack. */
                                 std::vector<Parameter> toPutOnStack = $1->getParameters();
                                 for (int i = 0; i < toPutOnStack.size(); i++) {
-                                    current->add(toPutOnStack[i]);
+                                    scopeStack.current->addSymbol(&toPutOnStack[i]);
                                 }
                             }
                       Block
                             {
                                 /* TODO: put in actions.cpp */
                                 /* Exit Procedure scope */
-                                StackFrame *scope = stackScope.leaveScope();
+                                StackFrame *scope = scopeStack.leaveScope();
                                 /* Print exited scope. */
                                 cout << scope;
                                 /* Mem management */
@@ -389,18 +393,19 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                             {
                                 /* TODO: put in actions.cpp */
                                 /* Check if return type is valid */
-                                Type *type = NULL;
-                                validBlock = scopeStack.searchStack($3, type);
+                                Symbol *symbolType = NULL;
+                                validBlock = scopeStack.searchStack($3, symbolType);
+                                Type *type = dynamic_cast<Type*>(symbolType);
                                 /* Put function in parent scope */
                                 if (validBlock)
                                 {
-                                    scopeStack.current->add(&$1);
+                                    scopeStack.current->addSymbol($1);
                                     /* Enter Function Scope */
                                     scopeStack.createScope($1->name);
                                     /* Put procedure params on symbol stack. */
                                     std::vector<Parameter> toPutOnStack = $1->getParameters();
                                     for (int i = 0; i < toPutOnStack.size(); i++) {
-                                        current->add(toPutOnStack[i]);
+                                        scopeStack.current->addSymbol(&toPutOnStack[i]);
                                     }
                                 }
                                 else    //New scope not created, new parameters not added
@@ -414,7 +419,7 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                                 /* Exit Function scope */
                                 if (validBlock)
                                 {
-                                    StackFrame *scope = stackScope.leaveScope();
+                                    StackFrame *scope = scopeStack.leaveScope();
                                     /* Print exited scope. */
                                     cout << scope;
                                     /* Mem management */
@@ -440,9 +445,9 @@ ProcedureHeading   :  yprocedure yident
                                     /* Create procedure */
                                     Procedure *procedure = new Procedure(string($2)); // NOTE May need to dynamically create?
                                     /* Add parameters */
-                                    while (!procedureQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
-                                        procedure.addParameter(procedureQueue.front());
-                                        procedureQueue.pop_front();
+                                    while (!parameterQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
+                                        procedure->addParameter(parameterQueue.front());
+                                        parameterQueue.pop_front();
                                     }
                                     $$ = procedure;
                                 }
@@ -464,9 +469,9 @@ FunctionHeading    :  yfunction  yident
                                     /* Create function */
                                     Function *function = new Function(string($2)); // NOTE May need to dynamically create?
                                     /* Add parameters */
-                                    while (!procedureQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
-                                        function.addParameter(functionQueue.front());
-                                        functionQueue.pop_front();
+                                    while (!parameterQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
+                                        function->addParameter(parameterQueue.front());
+                                        parameterQueue.pop_front();
                                     }
                                     $$ = function;
                                 }
@@ -480,8 +485,9 @@ OneFormalParam     :  yvar IdentList ycolon yident
                                 {
                                     printf("%s ", $4);
                                     /* Search Symbol Table for Type corresponding to yident. */
-                                    Type *type = NULL; // = foundType;
-                                    bool isFound = scopeStack.searchStack($<text>4, type);
+                                    Symbol *symbolType;
+                                    bool isFound = scopeStack.searchStack(string($4), symbolType);
+                                    Type *type = dynamic_cast<Type*>(symbolType); // = foundType;
                                     /* Create parameters and add to parameter queue */
                                     
                                     if (isFound)
@@ -499,8 +505,9 @@ OneFormalParam     :  yvar IdentList ycolon yident
                                 {
                                     printf("%s ", $3);
                                     /* TODO Search Symbol Table for Type corresponding to yident. */
-                                    Type *type = NULL; // = foundType;
-                                    bool isFound = scopeStack.searchStack(yident, type);
+                                    Symbol *symbolType;
+                                    bool isFound = scopeStack.searchStack(string($3), symbolType);
+                                    Type *type = dynamic_cast<Type*>(symbolType); // = foundType;
                                     /* Create parameters and add to parameter queue */
                                     
                                     if (isFound)

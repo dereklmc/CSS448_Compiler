@@ -24,6 +24,7 @@ class Procedure : public Symbol {
         bool addParameter(const Parameter&);
         // Checks if param with given name is in the current procedure.
         bool hasParameter(const std::string&) const;
+        std::vector<Parameter> getParameters() const;
 	protected:
 		void print(std::ostream& out) const;
 

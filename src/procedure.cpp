@@ -48,6 +48,17 @@ bool Procedure::hasParameter(const string &paramName) const
     return false;
 }
 
+
+
+/*******************************************************************************
+ *
+ * TODO
+ */
+std::vector<Parameter> Procedure::getParameters() const
+{
+    return parameters;
+}
+
 void Procedure::print(std::ostream& out) const
 {
     out << name;
