@@ -13,7 +13,7 @@ class Parameter : public Variable {
     public:
         // ctr, creates a parameter with a name and a type that is passed by ref
         // or by value.
-        Parameter(string, Type*, bool);
+        Parameter(std::string, Type*, bool);
 
     private:
         // records how the parameter is passed:
