@@ -92,7 +92,7 @@ void createProcedureDecl(Procedure*);
 
 void createTypeSymbol(const char *, Type*);
 
-void createPointer(Symbol*&);
+void createPointer(PointerType*&);
 
 void getTypeOfSymbol(const char*, Type *&);
 

@@ -187,10 +187,9 @@ void createTypeSymbol(const char *ident, Type *type)
     }
 }
 
-void createPointer(Symbol*& pointee)
+void createPointer(PointerType*& ptr)
 {
-    PointerType ptr(pointee);
-    ptrBuffer.push_back(ptr);
+    ptrBuffer.push_back(*ptr);
 }
 
 void getTypeOfSymbol(const char *name, Type *&type)

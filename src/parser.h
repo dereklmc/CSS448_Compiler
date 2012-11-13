@@ -5,6 +5,7 @@
 #include "function.h"
 #include "Type.h"
 #include "constvalue.h"
+#include "PointerType.h"
 
 typedef union {
     const char *text;
@@ -13,6 +14,7 @@ typedef union {
     Type *type;
     ConstValue *constvalue;
     UnaryOperator unaryop;
+    PointerType* pointertype;
 } YYSTYPE;
 
 #endif

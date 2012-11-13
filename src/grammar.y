@@ -26,9 +26,10 @@ using namespace std;
 %start  CompilationUnit
 %type   <procedure> ProcedureHeading
 %type   <function>  FunctionHeading
-%type   <type> Type ArrayType SetType PointerType RecordType
+%type   <type> Type ArrayType SetType RecordType
 %type   <constvalue> ConstFactor ConstExpression
 %type   <unaryop> UnaryOperator
+%type   <pointertype> PointerType
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
@@ -147,9 +148,10 @@ Type               :  yident    {
                                     getTypeOfSymbol($1, $$);
                                 }
                    |  ArrayType
+
                    |  PointerType
                                 {
-                                    //createPointer($1);
+                                    createPointer($1);
                                     $$ = NULL;
                                 }
                    |  RecordType
@@ -189,7 +191,10 @@ SetType            :  yset  yof  Subrange
 PointerType        :  ycaret  yident
                                 {
                                     printf("%s ", $2);
-                                    //$$ = $2;
+                                    //Gives symbol to pointer
+                                    Symbol* symbol = new Symbol($2);
+                                    PointerType* ptr = new PointerType(symbol);
+                                    $$ = ptr;
                                 }
                    ;
 FieldListSequence  :  FieldList  
