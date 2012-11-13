@@ -15,12 +15,15 @@
  */
 
 #include "y.tab.h"
+#include "parser.h"
 
 #include <stdio.h>
 #include <string.h>
 
 #include <iostream>	// For cout
 #include <iomanip>	// For setw and left
+
+extern YYSTYPE yylval;
 
 %}
 

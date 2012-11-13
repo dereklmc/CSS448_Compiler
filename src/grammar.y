@@ -12,28 +12,17 @@
 /* declarations section */
 #include "stack.h"
 #include "Procedure.h"
-#include "function.h"
+#include "actions.h"
+#include "parser.h"
+#include "Variable.h"
 
 #include <stdio.h>
 #include <iostream>
 #include <vector>
-#include <deque>
 
-extern Stack scopeStack;
 using namespace std;
 
-deque<Parameter> parameterQueue;
-deque<string> identQueue;
-bool validBlock;
-
 %}
-
-%union {
-    const char *text;
-    Procedure *procedure;
-    Function *function;
-    Type *type;
-}
 
 /* definition section */
 
@@ -46,7 +35,7 @@ bool validBlock;
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
         yleftparen yless ylessequal yminus ymod ymultiply ynew ynil ynot 
         ynotequal ynumber yof  yor yplus yprocedure yprogram yread yreadln  
-        yrecord yrepeat yrightbracket yrightparen  ysemicoalon yset 
+        yrecord yrepeat yrightbracket yrightparen  ysemicolon yset 
         ythen  yto ytrue ytype  yuntil  yvar ywhile ywrite ywriteln yunknown
 %token <text> yident ystring
 
@@ -454,11 +443,7 @@ ProcedureHeading   :  yprocedure yident
                    ;
 FunctionHeading    :  yfunction  yident
                                 {
-                                    printf("%s ", $2);
-                                    /* create function  Check if name already taken? */
-                                    Function *function = new Function(string($2));
-                                    /* Pass function back */
-                                    $$ = function;
+                                    createFunction($2, $$);
                                 }
                    |  yfunction  yident
                                 {
@@ -466,14 +451,7 @@ FunctionHeading    :  yfunction  yident
                                 }
                       FormalParameters
                                 {
-                                    /* Create function */
-                                    Function *function = new Function(string($2)); // NOTE May need to dynamically create?
-                                    /* Add parameters */
-                                    while (!parameterQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
-                                        function->addParameter(parameterQueue.front());
-                                        parameterQueue.pop_front();
-                                    }
-                                    $$ = function;
+                                    createFunctionWithParams($2, $$);
                                 }
                    ;
 FormalParameters   :  yleftparen FormalParamList yrightparen
@@ -483,41 +461,12 @@ FormalParamList    :  OneFormalParam
                    ;
 OneFormalParam     :  yvar IdentList ycolon yident
                                 {
-                                    printf("%s ", $4);
-                                    /* Search Symbol Table for Type corresponding to yident. */
-                                    Symbol *symbolType;
-                                    bool isFound = scopeStack.searchStack(string($4), symbolType);
-                                    Type *type = dynamic_cast<Type*>(symbolType); // = foundType;
-                                    /* Create parameters and add to parameter queue */
-                                    
-                                    if (isFound)
-                                    {
-                                        while (!identQueue.empty()) 
-                                        {
-                                            Parameter param(identQueue.front(), type, true);
-                                            parameterQueue.push_back(param);
-                                            identQueue.pop_front();
-                                        }
-                                    }
+                                    createParameter($4);
                                     
                                 }
                    |  IdentList ycolon yident
                                 {
-                                    printf("%s ", $3);
-                                    /* TODO Search Symbol Table for Type corresponding to yident. */
-                                    Symbol *symbolType;
-                                    bool isFound = scopeStack.searchStack(string($3), symbolType);
-                                    Type *type = dynamic_cast<Type*>(symbolType); // = foundType;
-                                    /* Create parameters and add to parameter queue */
-                                    
-                                    if (isFound)
-                                    {
-                                        while (!identQueue.empty()) {
-                                            Parameter param(identQueue.front(), type, false);
-                                            parameterQueue.push_back(param);
-                                            identQueue.pop_front();
-                                        }
-                                    }
+                                   createParameter($3);
                                     
                                 }
                    ;

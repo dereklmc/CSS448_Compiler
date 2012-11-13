@@ -11,8 +11,8 @@
 # make into thinking that the file y3.y has been changed by updating its date.
 
 OBJ = y.tab.o main.o lex.yy.o # actions.o     # all object files, the  .o  files
-H = y.tab.h             
-# ACT = actions.h      
+H = y.tab.h parser.h      
+ACT = actions.h      
 
 # The $ is a macro reference.  The following ident is replaced with the
 # specified list.  Parens must be used if the ident is longer than one char.
@@ -23,8 +23,8 @@ a.out: $(OBJ) $H  # $(ACT)         # a.out depends on everything
 main.o: main.cpp                   # main.o depends on main.cpp
 	g++ -g -c  main.cpp
 
-# actions.o: $(ACT) actions.cpp    # actions.o depends on the .h and .cpp
-#	g++ -c actions.cpp
+actions.o: $(ACT) actions.cpp    # actions.o depends on the .h and .cpp
+	g++ -c actions.cpp
 
 lex.yy.o: lex.yy.c                 # lex.yy.o depend on lex.yy.c
 	g++ -g -c lex.yy.c         # include this if you used (f)lex
