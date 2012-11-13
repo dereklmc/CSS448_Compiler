@@ -29,7 +29,7 @@ using namespace std;
 %type   <procedure> ProcedureHeading
 %type   <function>  FunctionHeading
 %type   <type> Type
-//%type   <text> PointerType
+
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
@@ -52,11 +52,7 @@ ProgramModule      :  yprogram yident
                                 }
                       ProgramParameters ysemicolon
                                 { 
-                                    /* Enter Program Scope */
-                                    //std::string ident($2);
-                                    //scopeStack.createScope(ident);
-                                    //validBlock = true;
-                                    /* TODO : Put Program parameters on stack?? */
+									createProgram($2);
                                 }
                       Block ydot
                    ;
@@ -65,12 +61,14 @@ ProgramParameters  :  yleftparen  IdentList  yrightparen
 IdentList          :  yident 
                                 {
                                     printf("%s ", $1);
-                                    //identQueue.push_back($1);
+									addToIdentBuffer($1);
+                                    //identBuffer.push_back($1);
                                 }
                    |  IdentList ycomma yident
                                 {
                                     printf("%s ", $3);
-                                    //identQueue.push_back($3);
+									addToIdentBuffer($3);
+                                    //identBuffer.push_back($3);
                                 }
                    ;
 
@@ -116,7 +114,6 @@ TypeDef            :  yident
 VariableDecl       :  IdentList  ycolon  Type
                                 {
                                     /* TODO Search Symbol Table for Type corresponding to yident. */
-                                    /* If Type was  */
                                     //Type *type = NULL; // = foundType;
                                     //bool isFound = scopeStack.searchStack(yident, type);
                                     /* Create parameters and add to parameter queue 
@@ -376,8 +373,9 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                    ;
 ProcedureHeading   :  yprocedure yident
                                 {
-                                    Procedure *procedure = new Procedure(std::string($2)); /* Check if name already taken */
-                                    $$ = procedure; /* Pass procedure back */
+									//Create procedure, TODO check if name is already taken
+                                    Procedure *procedure = new Procedure(std::string($2)); 
+                                    $$ = procedure; // Pass procedure back
                                 }
                    |  yprocedure yident
                                 {
@@ -385,15 +383,11 @@ ProcedureHeading   :  yprocedure yident
                                 }
                       FormalParameters
                                 {
-                                    /* Create procedure 
-                                    Procedure *procedure = new Procedure(std::string($2)); // NOTE May need to dynamically create?
-                                    // Add parameters 
-                                    while (!parameterQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
-                                        procedure->addParameter(parameterQueue.front());
-                                        parameterQueue.pop_front();
-                                    }
-                                    $$ = procedure;
-                                    */
+									//Create procedure, TODO check if name is already taken
+									// NOTE May need to dynamically create?	
+									Procedure *procedure = new Procedure(std::string($2)); 
+									$$ = procedure;
+                                  
                                 }
                    ;
 FunctionHeading    :  yfunction  yident

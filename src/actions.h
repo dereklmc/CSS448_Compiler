@@ -25,6 +25,10 @@ template <class T>
  *****************************************************************************/
 bool searchStack(const char*, T*&);
 
+void createProgram(const char* ident);
+
+void addToIdentBuffer(const char* ident);
+
 /******************************************************************************
  * createParameter
  * Attempts to create parameters based on a char array representing the type

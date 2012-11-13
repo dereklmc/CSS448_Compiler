@@ -28,6 +28,28 @@ bool searchStack(const char *ident, T *&castSymbol)
     return isFound;
 }
 
+void createProgram(const char* ident)
+{
+	std::string programName(ident);
+	/* Enter program scope */
+	symbolTable.createScope(programName);
+
+	/* Put program parameters on the stack */
+	while (!identBuffer.empty())
+	{
+		//TODO : are we going to put the program parameters in the symbol
+		// 		 table?
+		identBuffer.pop_front();
+	}
+}
+
+void addToIdentBuffer(const char* ident)
+{
+	std::string identStr(ident);
+	identBuffer.push_back(identStr);
+}
+
+
 /******************************************************************************
  * createParameter
  * Attempts to create parameters based on a char array representing the type
@@ -134,7 +156,6 @@ void createProcedureDecl(Procedure* ident)
     for (int i = 0; i < toPutOnStack.size(); i++) {
         symbolTable.current->addSymbol(&toPutOnStack[i]);
     }
-
 }
 
 void createPointer(Symbol*& pointee)
@@ -142,6 +163,7 @@ void createPointer(Symbol*& pointee)
     PointerType ptr(pointee);
     ptrBuffer.push_back(ptr);
 }
+
 
 /******************************************************************************
  * exitScope

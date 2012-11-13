@@ -11,7 +11,7 @@
 # make into thinking that the file y3.y has been changed by updating its date.
 
 OBJ = y.tab.o main.o lex.yy.o actions.o parameter.o pointertype.o procedure.o recordtype.o type.o variable.o     # all object files, the  .o  files
-H = y.tab.h parser.h      
+H = y.tab.h parser.h stack.h     
 ACT = actions.h      
 
 # The $ is a macro reference.  The following ident is replaced with the
