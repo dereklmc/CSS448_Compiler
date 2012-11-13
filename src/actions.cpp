@@ -2,6 +2,7 @@
 
 std::deque<Parameter> paramBuffer;
 std::deque<std::string> identBuffer;
+std::deque<PointerType> ptrBuffer;
 
 Stack symbolTable;
 
@@ -26,6 +27,28 @@ bool searchStack(const char *ident, T *&castSymbol)
     castSymbol = dynamic_cast<T*>(symbol); // = foundType;
     return isFound;
 }
+
+void createProgram(const char* ident)
+{
+	std::string programName(ident);
+	/* Enter program scope */
+	symbolTable.createScope(programName);
+
+	/* Put program parameters on the stack */
+	while (!identBuffer.empty())
+	{
+		//TODO : are we going to put the program parameters in the symbol
+		// 		 table?
+		identBuffer.pop_front();
+	}
+}
+
+void addToIdentBuffer(const char* ident)
+{
+	std::string identStr(ident);
+	identBuffer.push_back(identStr);
+}
+
 
 /******************************************************************************
  * createParameter
@@ -134,6 +157,12 @@ void createProcedureDecl(Procedure* ident)
         symbolTable.current->addSymbol(&toPutOnStack[i]);
     }
 
+}
+
+void createPointer(const char* n, Symbol*& pointee)
+{
+	PointerType ptr(n, pointee);
+	ptrBuffer.push_back(ptr);
 }
 
 /******************************************************************************

@@ -25,6 +25,10 @@ template <class T>
  *****************************************************************************/
 bool searchStack(const char*, T*&);
 
+void createProgram(const char* ident);
+
+void addToIdentBuffer(const char* ident);
+
 /******************************************************************************
  * createParameter
  * Attempts to create parameters based on a char array representing the type
@@ -74,6 +78,8 @@ void createFunctionDecl(const char*, Function*&);
  * to the new current Procedure scope.
  *****************************************************************************/
 void createProcedureDecl(Procedure*);
+
+void createPointer(const char*, Symbol*&);
 
 /******************************************************************************
  * exitScope

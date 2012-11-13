@@ -14,7 +14,7 @@
 3. _2nd Easiest_ Add Variable declarations to ST
 4. Deal with issues with invalidity and recursion (email zander)
 5. TEST EVERYTHING
-
+6. Comments
 
 ## Zander email:
 
