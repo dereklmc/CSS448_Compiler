@@ -9,10 +9,10 @@
 
 #include <deque>
 
-Stack scopeStack;
+Stack symbolTable;
 
-std::deque<Parameter> parameterQueue;
-std::deque<std::string> identQueue;
+std::deque<Parameter> paramBuffer;
+std::deque<std::string> identBuffer;
 
 template <class T>
 bool searchStack(const char*, T*&);
@@ -25,7 +25,7 @@ void createFunctionWithParams(const char*, Function*&);
 
 void createFunctionDecl(const char*, Function*&);
 
-void createProcedureDecl(const char*);
+void createProcedureDecl(Procedure*);
 
 void exitScope();
 

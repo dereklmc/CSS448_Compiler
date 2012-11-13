@@ -5,7 +5,7 @@ bool searchStack(const char *ident, T *&castSymbol)
 {
     Symbol *symbol = NULL;
     std::string identStr(ident);
-    bool isFound = scopeStack.searchStack(identStr, symbol);
+    bool isFound = symbolTable.searchStack(identStr, symbol);
     castSymbol = dynamic_cast<T*>(symbol); // = foundType;
     return isFound;
 }
@@ -20,11 +20,11 @@ void createParameter(const char* ident)
     
     if (isFound)
     {
-        while (!identQueue.empty()) 
+        while (!identBuffer.empty()) 
         {
-            Parameter param(identQueue.front(), type, true);
-            parameterQueue.push_back(param);
-            identQueue.pop_front();
+            Parameter param(identBuffer.front(), type, true);
+            paramBuffer.push_back(param);
+            identBuffer.pop_front();
         }
     }
 }
@@ -38,9 +38,9 @@ void createFunctionWithParams(const char *ident, Function *&funcPtr)
 {
     createFunction(ident, funcPtr);
     /* Add parameters */
-    while (!parameterQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
-        funcPtr->addParameter(parameterQueue.front());
-        parameterQueue.pop_front();
+    while (!paramBuffer.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
+        funcPtr->addParameter(paramBuffer.front());
+        paramBuffer.pop_front();
     }
 }
 
@@ -48,31 +48,31 @@ void createFunctionDecl(const char* ident, Function*& funcPtr)
 {
     /* Check if return type is valid */
     Symbol *symbolType = NULL;
-    scopeStack.searchStack(ident, symbolType);
+    symbolTable.searchStack(ident, symbolType);
     Type *type = dynamic_cast<Type*>(symbolType);
     /* Put function in parent scope */
-    scopeStack.current->addSymbol(funcPtr);
+    symbolTable.current->addSymbol(funcPtr);
     /* Enter Function Scope */
-    scopeStack.createScope(funcPtr->name);
+    symbolTable.createScope(funcPtr->name);
     /* Put procedure params on symbol stack. */
     std::vector<Parameter> toPutOnStack = funcPtr->getParameters();
     for (int i = 0; i < toPutOnStack.size(); i++) {
-        scopeStack.current->addSymbol(&toPutOnStack[i]);
+        symbolTable.current->addSymbol(&toPutOnStack[i]);
     }
 
 }
 
-void createProcedureDecl(const char* ident)
+void createProcedureDecl(Procedure* ident)
 {
     /* TODO: put in actions.cpp */
     /* Put procedure in parent scope */
-    scopeStack.current->addSymbol(ident);
+    symbolTable.current->addSymbol(ident);
     /* Enter Procedure Scope */
-    scopeStack.createScope(ident->name);
+    symbolTable.createScope(ident->name);
     /* Put procedure params on symbol stack. */
     std::vector<Parameter> toPutOnStack = ident->getParameters();
     for (int i = 0; i < toPutOnStack.size(); i++) {
-        scopeStack.current->addSymbol(&toPutOnStack[i]);
+        symbolTable.current->addSymbol(&toPutOnStack[i]);
     }
 
 }
@@ -80,9 +80,9 @@ void createProcedureDecl(const char* ident)
 void exitScope()
 {
     /* Exit Function scope */
-    StackFrame *scope = scopeStack.leaveScope();
+    StackFrame *scope = symbolTable.leaveScope();
     /* Print exited scope. */
-    cout << scope;
+    std::cout << scope;
     /* Mem management */
     delete scope;
     scope = NULL;
