@@ -137,9 +137,9 @@ void createProcedureDecl(Procedure* ident)
 
 }
 
-void createPointer(const char* n, Symbol*& pointee)
+void createPointer(Symbol*& pointee)
 {
-    PointerType ptr(n, pointee);
+    PointerType ptr(pointee);
     ptrBuffer.push_back(ptr);
 }
 

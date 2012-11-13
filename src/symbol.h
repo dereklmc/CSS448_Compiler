@@ -18,6 +18,9 @@ class Symbol
 
     public:
         std::string name;
+        Symbol()
+        {
+        }
         Symbol(std::string n) : name(n)
         {
         }

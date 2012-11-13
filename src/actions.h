@@ -75,7 +75,7 @@ void createFunctionDecl(const char*, Function*&);
  *****************************************************************************/
 void createProcedureDecl(Procedure*);
 
-void createPointer(const char*, Symbol*&);
+void createPointer(Symbol*&);
 
 /******************************************************************************
  * exitScope
