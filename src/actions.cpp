@@ -165,6 +165,7 @@ void createPointer(Symbol*& pointee)
 }
 
 
+
 /******************************************************************************
  * exitScope
  * Calls the symbol table's leaveScope() method, which returns the stackframe

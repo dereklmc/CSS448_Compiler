@@ -18,7 +18,7 @@ class Type : public Symbol {
     
     public:
         // Standard ctr, see Symbol.
-        Type(){};
+        Type() : Symbol("") {};
         void setName(std::string n){name = n;};
 };
 
