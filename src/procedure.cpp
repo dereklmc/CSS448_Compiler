@@ -4,7 +4,7 @@
  *
  * Standard constructor inherited from Symbol. See Symbol.
  */
-Procedure::Procedure(string name) :
+Procedure::Procedure(std::string name) :
         Symbol(name)
 {
 }
@@ -36,7 +36,7 @@ bool Procedure::addParameter(const Parameter &param)
  * @param paramName - paramName to search for.
  * @return return true if paramater exists in vector, false otherwise.
  */
-bool Procedure::hasParameter(const string &paramName) const
+bool Procedure::hasParameter(const std::string &paramName) const
 {
     
     std::vector<Parameter>::const_iterator it;

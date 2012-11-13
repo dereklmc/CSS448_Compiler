@@ -8,7 +8,7 @@
  * assigns itself a pseudo-scope within the parent scope. This pseudo-scope is
  * used for printing fields.
  */
-RecordType::RecordType(string name, int parentScope) :
+RecordType::RecordType(std::string name, int parentScope) :
         Type(name)
 {
     this->scope = parentScope + 1;
@@ -33,7 +33,7 @@ bool RecordType::addField(const Variable &field)
  * Checks if the record has a field with a given name. Returns true if
  * it does, otherwise false.
  */
-bool RecordType::hasField(const string &fieldName) const
+bool RecordType::hasField(const std::string &fieldName) const
 {
     
     std::vector<Variable>::const_iterator it;

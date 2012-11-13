@@ -17,11 +17,11 @@ class RecordType : public Type {
 
     public:
         // ctr that creates a record with a name and a given pseudo-scope
-        RecordType(string, int);
+        RecordType(std::string, int);
         // Add a new field to the current record.
         bool addField(const Variable&);
         // Checks if field with given name is in the current record.
-        bool hasField(const string&) const;
+        bool hasField(const std::string&) const;
         
     protected:
         // overriddent print method from Symbol. Prints name and fields.

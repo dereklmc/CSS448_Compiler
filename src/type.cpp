@@ -6,7 +6,7 @@
  *
  * See symbol for definition.
  */
-Type::Type(string name) :
+Type::Type(std::string name) :
         Symbol(name)
 {
 }

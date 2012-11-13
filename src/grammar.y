@@ -54,7 +54,7 @@ ProgramModule      :  yprogram yident
                                 { 
                                     /* Enter Program Scope */
                                     scopeStack.createScope(string($2));
-                                    validBlock = true;
+                                    //validBlock = true;
                                     /* TODO : Put Program parameters on stack?? */
                                 }
                       Block ydot
@@ -383,39 +383,28 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                                 /* TODO: put in actions.cpp */
                                 /* Check if return type is valid */
                                 Symbol *symbolType = NULL;
-                                validBlock = scopeStack.searchStack($3, symbolType);
+                                scopeStack.searchStack($3, symbolType);
                                 Type *type = dynamic_cast<Type*>(symbolType);
                                 /* Put function in parent scope */
-                                if (validBlock)
-                                {
-                                    scopeStack.current->addSymbol($1);
-                                    /* Enter Function Scope */
-                                    scopeStack.createScope($1->name);
-                                    /* Put procedure params on symbol stack. */
-                                    std::vector<Parameter> toPutOnStack = $1->getParameters();
-                                    for (int i = 0; i < toPutOnStack.size(); i++) {
-                                        scopeStack.current->addSymbol(&toPutOnStack[i]);
-                                    }
-                                }
-                                else    //New scope not created, new parameters not added
-                                {
-                                    //Do Mem management 
+                                scopeStack.current->addSymbol($1);
+                                /* Enter Function Scope */
+                                scopeStack.createScope($1->name);
+                                /* Put procedure params on symbol stack. */
+                                std::vector<Parameter> toPutOnStack = $1->getParameters();
+                                for (int i = 0; i < toPutOnStack.size(); i++) {
+                                    scopeStack.current->addSymbol(&toPutOnStack[i]);
                                 }
                             }
                       ysemicolon  Block
                             {
                                 /* TODO: put in actions.cpp */
                                 /* Exit Function scope */
-                                if (validBlock)
-                                {
-                                    StackFrame *scope = scopeStack.leaveScope();
-                                    /* Print exited scope. */
-                                    cout << scope;
-                                    /* Mem management */
-                                    delete scope;
-                                    scope = NULL;
-                                }
-                                validBlock = true;
+                                StackFrame *scope = scopeStack.leaveScope();
+                                /* Print exited scope. */
+                                cout << scope;
+                                /* Mem management */
+                                delete scope;
+                                scope = NULL;
                             }
                    ;
 ProcedureHeading   :  yprocedure yident

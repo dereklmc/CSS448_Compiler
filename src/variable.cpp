@@ -6,7 +6,7 @@
  *
  * Creates a variable with a name and a type. Extends the constructor in Symbol.
  */
-Variable::Variable(string name, Type *type) :
+Variable::Variable(std::string name, Type *type) :
         Symbol(name)
 {
     this->type = type;
