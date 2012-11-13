@@ -18,8 +18,8 @@ class Type : public Symbol {
     
     public:
         // Standard ctr, see Symbol.
-        Type(){};
-        setName(std::string n){name = n};
+        Type() : Symbol("") {};
+        void setName(std::string n){name = n;};
 };
 
 #endif
