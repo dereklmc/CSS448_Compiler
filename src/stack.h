@@ -15,11 +15,15 @@ class Stack
         StackFrame* current;
         StackFrame* zeroeth;
         // Constructor
-        Stack(){zeroeth = new StackFrame(); current = zeroeth;}
+        Stack()
+        {
+            zeroeth = new StackFrame("language");
+            current = zeroeth;
+        }
         // Destructor
         ~Stack()
         {
-            while(current!=zeroeth)
+            while(current != zeroeth)
             {
                 StackFrame* temp = current;
                 current = current->previous;
@@ -62,8 +66,9 @@ class Stack
 				//Now calls StackFrame's findMatch which will return the matching
 				//Symbol if found, else NULL
 				bool wasFound = temp->findMatch(s, found);
-				if (wasFound)
+				if (wasFound) {
 					return true;
+				}
 				temp = temp->previous;
             }
             return false;
