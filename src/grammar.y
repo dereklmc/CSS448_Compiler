@@ -52,7 +52,7 @@ ProgramModule      :  yprogram yident
                       ProgramParameters ysemicolon
                                 { 
                                     /* Enter Program Scope */
-                                    scopeStack.createScope(string($2));
+                                    scopeStack.createScope(std::string($2));
                                     //validBlock = true;
                                     /* TODO : Put Program parameters on stack?? */
                                 }
@@ -146,7 +146,7 @@ ConstFactor        :  yident    {
 Type               :  yident    {
                                     printf("%s ", $1);
                                     Symbol *typeSymbol = NULL;
-                                    bool isFound = scopeStack.searchStack(string($1), typeSymbol);
+                                    bool isFound = scopeStack.searchStack(std::string($1), typeSymbol);
                                     Type *type = dynamic_cast<Type*>(typeSymbol);
                                     if (isFound) {
                                         $$ = type;
@@ -409,7 +409,7 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
 ProcedureHeading   :  yprocedure yident
                                 {
                                     /* create procedure Check if name already taken? */
-                                    Procedure *procedure = new Procedure(string($2));
+                                    Procedure *procedure = new Procedure(std::string($2));
                                     /* Pass procedure back */
                                     $$ = procedure;
                                 }
@@ -420,7 +420,7 @@ ProcedureHeading   :  yprocedure yident
                       FormalParameters
                                 {
                                     /* Create procedure */
-                                    Procedure *procedure = new Procedure(string($2)); // NOTE May need to dynamically create?
+                                    Procedure *procedure = new Procedure(std::string($2)); // NOTE May need to dynamically create?
                                     /* Add parameters */
                                     while (!parameterQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
                                         procedure->addParameter(parameterQueue.front());
