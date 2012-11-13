@@ -156,14 +156,17 @@ void createProcedureDecl(Procedure* ident)
     for (int i = 0; i < toPutOnStack.size(); i++) {
         symbolTable.current->addSymbol(&toPutOnStack[i]);
     }
-
 }
 
 void createPointer(const char* n, Symbol*& pointee)
 {
-	PointerType ptr(n, pointee);
-	ptrBuffer.push_back(ptr);
+       PointerType ptr(n, pointee);
+      ptrBuffer.push_back(ptr);
 }
+PointerType ptr(n, pointee);
+ptrBuffer.push_back(ptr);
+}
+
 
 /******************************************************************************
  * exitScope

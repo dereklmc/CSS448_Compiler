@@ -25,11 +25,20 @@ class StackFrame
 
     public:
         StackFrame* previous;
-        StackFrame(){};
-        StackFrame(std::string n)
+        
+        StackFrame(std::string name)
         {
-            name = n;
+            this->name = name;
+            previous = NULL;
         }
+        
+        ~StackFrame() {
+            for (int i = 0; i < symbols.size(); i++) {
+                delete symbols[i];
+            }
+            symbols.clear();
+        }
+        
         bool addSymbol(Symbol* s)
         {
             symbols.push_back(s);
