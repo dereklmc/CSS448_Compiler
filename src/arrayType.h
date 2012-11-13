@@ -38,5 +38,4 @@ class ArrayType : public Type
             out << " " << type;
         }
 };
-
 #endif

@@ -168,7 +168,6 @@ void createProcedureDecl(Procedure* ident)
     for (int i = 0; i < toPutOnStack.size(); i++) {
         symbolTable.current->addSymbol(&toPutOnStack[i]);
     }
-
 }
 
 void createTypeSymbol(const char *ident, Type *type)
