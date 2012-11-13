@@ -15,6 +15,7 @@ class Variable : public Symbol {
 	friend std::ostream& operator<<(std::ostream& out, const Variable s)
     {
         s.print(out);
+        return out;
     }
     public:
         // ctr, creates a variable with a name and a type.

@@ -8,6 +8,7 @@ class Stack
     friend std::ostream& operator<<(std::ostream& out, const Stack& s)
     {
         s.print(out);
+        return out;
     }
     public:
         // Public pointers are bad, mmkay?

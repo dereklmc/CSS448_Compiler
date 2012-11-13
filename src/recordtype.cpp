@@ -42,7 +42,7 @@ bool RecordType::hasField(const std::string &fieldName) const
             return true;
         }
     }
-    false;
+    return false;
 }
 
 /*******************************************************************************

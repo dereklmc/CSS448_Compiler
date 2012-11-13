@@ -15,6 +15,7 @@ class Procedure : public Symbol {
 	friend std::ostream& operator<<(std::ostream& out, const Procedure s)
     {
         s.print(out);
+        return out;
     }
 
     public:
@@ -26,7 +27,7 @@ class Procedure : public Symbol {
         bool hasParameter(const std::string&) const;
         std::vector<Parameter> getParameters() const;
 	protected:
-		void print(std::ostream& out) const;
+		virtual void print(std::ostream& out) const;
 
     private:
         // parameters required when calling the procedure.

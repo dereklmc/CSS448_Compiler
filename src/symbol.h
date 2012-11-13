@@ -7,6 +7,7 @@ class Symbol
     friend std::ostream& operator<<(std::ostream& out, const Symbol s)
     {
         s.print(out);
+        return out;
     }
     
     protected:
@@ -20,6 +21,7 @@ class Symbol
         Symbol(std::string n) : name(n)
         {
         }
+        virtual ~Symbol() {}
         virtual bool operator==(const Symbol& rhs)
         {
             if(name==rhs.name) {

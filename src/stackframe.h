@@ -10,6 +10,7 @@ class StackFrame
     friend std::ostream& operator<<(std::ostream& out, const StackFrame& f)
     {
         f.print(out);
+        return out;
     }
     private:
         std::string name;
@@ -31,8 +32,8 @@ class StackFrame
         }
         bool addSymbol(Symbol* s)
         {
-            
             symbols.push_back(s);
+            return true;
         }
 
 	//Searches the entire StackFrame for a Symbol matching the name

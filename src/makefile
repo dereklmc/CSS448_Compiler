@@ -10,18 +10,36 @@
 # The 'touch' command is useful for faking an update.  'touch y3.y' fools
 # make into thinking that the file y3.y has been changed by updating its date.
 
-OBJ = y.tab.o main.o lex.yy.o actions.o     # all object files, the  .o  files
+OBJ = y.tab.o main.o lex.yy.o actions.o parameter.o pointertype.o procedure.o recordtype.o type.o variable.o     # all object files, the  .o  files
 H = y.tab.h parser.h      
 ACT = actions.h      
 
 # The $ is a macro reference.  The following ident is replaced with the
 # specified list.  Parens must be used if the ident is longer than one char.
 
-a.out: $(OBJ) $H  # $(ACT)         # a.out depends on everything
+a.out: $(OBJ) $H $(ACT)         # a.out depends on everything
 	g++ -g $(OBJ) -o a.out
 
 main.o: main.cpp                   # main.o depends on main.cpp
 	g++ -g -c  main.cpp
+
+parameter.o: parameter.cpp
+	g++ -g -c parameter.cpp
+
+pointertype.o: pointertype.cpp
+	g++ -g -c pointertype.cpp
+
+procedure.o: procedure.cpp
+	g++ -g -c procedure.cpp
+
+recordtype.o: recordtype.cpp
+	g++ -g -c recordtype.cpp
+
+type.o: type.cpp
+	g++ -g -c type.cpp
+
+variable.o: variable.cpp
+	g++ -g -c variable.cpp
 
 actions.o: $(ACT) actions.cpp    # actions.o depends on the .h and .cpp
 	g++ -g -c actions.cpp
