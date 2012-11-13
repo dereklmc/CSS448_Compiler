@@ -1,5 +1,10 @@
 #include "actions.h"
 
+std::deque<Parameter> paramBuffer;
+std::deque<std::string> identBuffer;
+
+Stack symbolTable;
+
 template <class T>
 bool searchStack(const char *ident, T *&castSymbol)
 {

@@ -1,2 +1,0 @@
-{"ts":1352701410391,"silentsave":true,"restoring":false,"patch":[[]],"length":0}
-{"ts":1352702379588,"patch":[[{"diffs":[[1,"\nfunction Apple\n\n    type: color\n    \n    function Orange\n        \n        var red : color;\n        \n        function Kiwi\n        \n            red = \"some reddish color\";"]],"start1":0,"start2":0,"length1":0,"length2":171}]],"length":171,"saved":false}

@@ -1,3 +1,0 @@
-{"ts":1352697952708,"silentsave":true,"restoring":false,"patch":[[]],"length":0}
-{"contributors":[],"silentsave":false,"ts":1352698582976,"patch":[[{"diffs":[[1,"#ifndef FUNCTION_H\n#define FUNCTION_H\n#include \"Type.h\"\nclass Function : public Procedure\n{\n    public:\n        Function(std::string s) : Procedure(s){}\n    private:\n        Type returnType;\n};\n\n#endif"]],"start1":0,"start2":0,"length1":0,"length2":201}]],"length":201,"saved":false}
-{"contributors":["hugo.ribeiro@comcast.net"],"silentsave":false,"ts":1352699218255,"patch":[[{"diffs":[[0,"ure(s){}"],[1,";\n        void setType(const Type t)    {returnType = t;}"],[0,"\n    pri"]],"start1":144,"start2":144,"length1":16,"length2":73}]],"length":258,"saved":false}

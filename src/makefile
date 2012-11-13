@@ -57,4 +57,4 @@ y.tab.c: grammar.y                 # y.tab.c depends on the yacc file, y
 	yacc -d -v grammar.y       # -d separates out defines into .h file
 
 clean:
-	rm *.o y.tab.c lex.yy.c a.out
+	rm *.o y.tab.c y.tab.h lex.yy.c a.out

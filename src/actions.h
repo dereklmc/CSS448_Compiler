@@ -9,10 +9,7 @@
 
 #include <deque>
 
-Stack symbolTable;
-
-std::deque<Parameter> paramBuffer;
-std::deque<std::string> identBuffer;
+extern Stack symbolTable;
 
 template <class T>
 bool searchStack(const char*, T*&);
