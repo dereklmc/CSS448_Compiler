@@ -2,6 +2,7 @@
 
 std::deque<Parameter> paramBuffer;
 std::deque<std::string> identBuffer;
+std::deque<PointerType> ptrBuffer;
 
 Stack symbolTable;
 
@@ -80,6 +81,12 @@ void createProcedureDecl(Procedure* ident)
         symbolTable.current->addSymbol(&toPutOnStack[i]);
     }
 
+}
+
+void createPointer(const char* n, Symbol*& pointee)
+{
+    PointerType ptr(n, pointee);
+    ptrBuffer.push_back(ptr);
 }
 
 void exitScope()
