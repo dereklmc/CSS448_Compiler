@@ -1,27 +1,37 @@
 #ifndef CONSTANT_H
 #define CONSTANT_H
-#include "symbol.h"
 
-template <class T>
+#include "symbol.h"
+#include "constvalue.h"
+
 class Constant : public Symbol
 {
+
+    friend std::ostream& operator<<(std::ostream& out, const Constant s)
+	{
+    	s.print(out);
+	    return out;
+	}
+	
     private:
-        T type;
+         ConstValue *value;
+         
     public:
-	    friend std::ostream& operator<<(std::ostream& out, const Constant s)
-    	{
-        	s.print(out);
-		    return out;
-    	}
-        Constant(std::string n, T t) : Symbol(n)
+        Constant(std::string name, ConstValue *value) : Symbol(name)
         {
-            type = t;
+            this->value = value;
         }
+        
+        ~Constant() {
+            delete value;
+            value = NULL;
+        }
+        
 	protected:
         void print(std::ostream& out) const
         {
-            	Symbol::print(out);
-				out << " " << type;
+        	Symbol::print(out);
+			out << " " << *value;
         }
 };
 

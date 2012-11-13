@@ -93,11 +93,10 @@ VariableDeclBlock  :  yvar VariableDeclList
 VariableDeclList   :  VariableDecl ysemicolon
            |  VariableDeclList VariableDecl ysemicolon
                    ;  
-ConstantDef        :  yident
+ConstantDef        :  yident yequal ConstExpression
                                 {
-                                    printf("%s ", $1);
+                                    createConstant($1, $3);
                                 }
-                      yequal  ConstExpression
                    ;
 TypeDef            :  yident yequal  Type
                                 {

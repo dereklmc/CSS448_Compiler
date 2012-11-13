@@ -12,6 +12,7 @@
 #include "setType.h"
 #include "RecordType.h"
 #include "constvalue.h"
+#include "constant.h"
 
 #include <deque>
 
@@ -118,6 +119,8 @@ void createConstStringValue(ConstValue*&, const char*);
 void createConstNilValue(ConstValue*&);
 
 void createConstValue(ConstValue*&, const char*, ConstValueType);
+
+void createConstant(const char*, ConstValue*);
 
 /******************************************************************************
  * exitScope

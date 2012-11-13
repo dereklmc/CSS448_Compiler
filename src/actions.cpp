@@ -283,6 +283,11 @@ void createConstValue(ConstValue *&constValue, const char *value, ConstValueType
     constValue = new ConstValue(std::string(value), type);
 }
 
+void createConstant(const char *ident, ConstValue *value) {
+    Symbol *symbol = new Constant(std::string(ident), value);
+    symbolTable.current->addSymbol(symbol);
+}
+
 /******************************************************************************
  * exitScope
  * Calls the symbol table's leaveScope() method, which returns the stackframe
