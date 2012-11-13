@@ -54,11 +54,11 @@ bool RecordType::hasField(const std::string &fieldName) const
 void RecordType::print(std::ostream &output) const
 {
     Type::print(output);
-    output << endl;
+    output << std::endl;
     
     std::vector<Variable>::const_iterator it;
     for(it = fields.begin(); it != fields.end(); ++it) {
-        std::cout << *it << endl;
+        std::cout << *it << std::endl;
     }
 }
 

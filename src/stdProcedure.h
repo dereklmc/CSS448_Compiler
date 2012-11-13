@@ -17,7 +17,7 @@ class StdProcedure : public Procedure
         static const StdProcedure DISPOSE;
     
     private:
-        StdProcedure(string name) : Procedure(name) {};
+        StdProcedure(std::string name) : Procedure(name) {};
 
         void print(std::ostream& out)
         {

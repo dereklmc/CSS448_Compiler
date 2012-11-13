@@ -14,7 +14,7 @@ class StdConstant : public Constant<bool>
         // to add to scope 0
         static const StdConstant TRUE;
         static const StdConstant FALSE;
-        StdConstant(string name, bool value) : Constant(name, value) {};
+        StdConstant(std::string name, bool value) : Constant(name, value) {};
     protected:
 	    void print(std::ostream& out) const
 	    {

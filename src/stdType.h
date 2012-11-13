@@ -17,7 +17,7 @@ friend std::ostream& operator<<(std::ostream& out, const StdType s)
 	static const StdType CHAR;
 
 	StdType() : Symbol("") { }
-	StdType(string name) : Symbol(name) { }
+	StdType(std::string name) : Symbol(name) { }
 
 	private:
 
