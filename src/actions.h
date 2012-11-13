@@ -23,4 +23,10 @@ void createFunction(const char*, Function*&);
 
 void createFunctionWithParams(const char*, Function*&);
 
+void createFunctionDecl(const char*, Function*&);
+
+void createProcedureDecl(const char*);
+
+void exitScope();
+
 #endif

@@ -52,7 +52,8 @@ ProgramModule      :  yprogram yident
                       ProgramParameters ysemicolon
                                 { 
                                     /* Enter Program Scope */
-                                    scopeStack.createScope(std::string($2));
+                                    std::string ident($2);
+                                    scopeStack.createScope(ident);
                                     //validBlock = true;
                                     /* TODO : Put Program parameters on stack?? */
                                 }
@@ -354,64 +355,26 @@ SubprogDeclList    :  /*** empty ***/
                    ;
 ProcedureDecl      :  ProcedureHeading  ysemicolon
                             {
-                                /* TODO: put in actions.cpp */
-                                /* Put procedure in parent scope */
-                                scopeStack.current->addSymbol($1);
-                                /* Enter Procedure Scope */
-                                scopeStack.createScope($1->name);
-                                /* Put procedure params on symbol stack. */
-                                std::vector<Parameter> toPutOnStack = $1->getParameters();
-                                for (int i = 0; i < toPutOnStack.size(); i++) {
-                                    scopeStack.current->addSymbol(&toPutOnStack[i]);
-                                }
+                                createProcedureDecl($1);
                             }
                       Block
                             {
-                                /* TODO: put in actions.cpp */
-                                /* Exit Procedure scope */
-                                StackFrame *scope = scopeStack.leaveScope();
-                                /* Print exited scope. */
-                                cout << scope;
-                                /* Mem management */
-                                delete scope;
-                                scope = NULL;
-                            }
+                                exitScope();
+                            } 
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident
                             {
-                                /* TODO: put in actions.cpp */
-                                /* Check if return type is valid */
-                                Symbol *symbolType = NULL;
-                                scopeStack.searchStack($3, symbolType);
-                                Type *type = dynamic_cast<Type*>(symbolType);
-                                /* Put function in parent scope */
-                                scopeStack.current->addSymbol($1);
-                                /* Enter Function Scope */
-                                scopeStack.createScope($1->name);
-                                /* Put procedure params on symbol stack. */
-                                std::vector<Parameter> toPutOnStack = $1->getParameters();
-                                for (int i = 0; i < toPutOnStack.size(); i++) {
-                                    scopeStack.current->addSymbol(&toPutOnStack[i]);
-                                }
+                                createFunctionDecl($3, $1);
                             }
                       ysemicolon  Block
                             {
-                                /* TODO: put in actions.cpp */
-                                /* Exit Function scope */
-                                StackFrame *scope = scopeStack.leaveScope();
-                                /* Print exited scope. */
-                                cout << scope;
-                                /* Mem management */
-                                delete scope;
-                                scope = NULL;
+                                exitScope();
                             }
                    ;
 ProcedureHeading   :  yprocedure yident
                                 {
-                                    /* create procedure Check if name already taken? */
-                                    Procedure *procedure = new Procedure(std::string($2));
-                                    /* Pass procedure back */
-                                    $$ = procedure;
+                                    Procedure *procedure = new Procedure(std::string($2)); /* Check if name already taken */
+                                    $$ = procedure; /* Pass procedure back */
                                 }
                    |  yprocedure yident
                                 {
