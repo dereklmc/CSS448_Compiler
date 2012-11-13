@@ -4,7 +4,8 @@ template <class T>
 bool searchStack(const char *ident, T *&castSymbol)
 {
     Symbol *symbol = NULL;
-    bool isFound = scopeStack.searchStack(std::string(ident), symbol);
+    std::string identStr(ident);
+    bool isFound = scopeStack.searchStack(identStr, symbol);
     castSymbol = dynamic_cast<T*>(symbol); // = foundType;
     return isFound;
 }
@@ -41,4 +42,48 @@ void createFunctionWithParams(const char *ident, Function *&funcPtr)
         funcPtr->addParameter(parameterQueue.front());
         parameterQueue.pop_front();
     }
+}
+
+void createFunctionDecl(const char* ident, Function*& funcPtr)
+{
+    /* Check if return type is valid */
+    Symbol *symbolType = NULL;
+    scopeStack.searchStack(ident, symbolType);
+    Type *type = dynamic_cast<Type*>(symbolType);
+    /* Put function in parent scope */
+    scopeStack.current->addSymbol(funcPtr);
+    /* Enter Function Scope */
+    scopeStack.createScope(funcPtr->name);
+    /* Put procedure params on symbol stack. */
+    std::vector<Parameter> toPutOnStack = funcPtr->getParameters();
+    for (int i = 0; i < toPutOnStack.size(); i++) {
+        scopeStack.current->addSymbol(&toPutOnStack[i]);
+    }
+
+}
+
+void createProcedureDecl(const char* ident)
+{
+    /* TODO: put in actions.cpp */
+    /* Put procedure in parent scope */
+    scopeStack.current->addSymbol(ident);
+    /* Enter Procedure Scope */
+    scopeStack.createScope(ident->name);
+    /* Put procedure params on symbol stack. */
+    std::vector<Parameter> toPutOnStack = ident->getParameters();
+    for (int i = 0; i < toPutOnStack.size(); i++) {
+        scopeStack.current->addSymbol(&toPutOnStack[i]);
+    }
+
+}
+
+void exitScope()
+{
+    /* Exit Function scope */
+    StackFrame *scope = scopeStack.leaveScope();
+    /* Print exited scope. */
+    cout << scope;
+    /* Mem management */
+    delete scope;
+    scope = NULL;
 }
