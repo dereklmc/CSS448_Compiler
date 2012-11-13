@@ -8,8 +8,7 @@
  * assigns itself a pseudo-scope within the parent scope. This pseudo-scope is
  * used for printing fields.
  */
-RecordType::RecordType(std::string name, int parentScope) :
-        Type(name)
+RecordType::RecordType(int parentScope)
 {
     this->scope = parentScope + 1;
 }

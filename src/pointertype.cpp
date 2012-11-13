@@ -7,8 +7,7 @@
  * Creates a pointer with a name that points to a given ident. Extends the 
  * constructor in Symbol.
  */
-PointerType::PointerType(std::string name, Symbol *pointee) :
-        Type(name)
+PointerType::PointerType(Symbol *pointee)
 {
     this->pointee = pointee;
 }
@@ -37,3 +36,4 @@ void PointerType::print(std::ostream &output) const
     Symbol::print(output);
     output << " ^ " << pointee->name;
 }
+

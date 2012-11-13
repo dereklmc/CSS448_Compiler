@@ -10,7 +10,7 @@ template <class T>
 class SetType : public Type
 {
     public:
-        SetType(std::string n, Range<T> r) : Type(n)
+        SetType(Range<T> r) : Type()
         {
             range = r;
         }

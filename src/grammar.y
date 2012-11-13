@@ -29,6 +29,7 @@ using namespace std;
 %type   <procedure> ProcedureHeading
 %type   <function>  FunctionHeading
 %type   <type> Type
+%type   <text> PointerType
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
@@ -161,6 +162,7 @@ Type               :  yident    {
                                 }
                    |  PointerType
                                 {
+                                    createPointer(std::string($1));
                                     $$ = NULL;
                                 }
                    |  RecordType
@@ -188,6 +190,7 @@ SetType            :  yset  yof  Subrange
 PointerType        :  ycaret  yident
                                 {
                                     printf("%s ", $2);
+                                    $$ = $2;
                                 }
                    ;
 FieldListSequence  :  FieldList  
