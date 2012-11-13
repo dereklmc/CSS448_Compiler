@@ -10,7 +10,6 @@
  */
 
 /* declarations section */
-#include "stack.h"
 #include "Procedure.h"
 #include "actions.h"
 #include "parser.h"

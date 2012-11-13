@@ -28,11 +28,13 @@ void createParameter(const char* ident)
     }
 }
 
-void createFunction(const char *ident, Function *&funcPtr) {
+void createFunction(const char *ident, Function *&funcPtr)
+{
     funcPtr = new Function(std::string(ident)); // NOTE May need to dynamically create?
 }
 
-void createFunctionWithParams(const char *ident, Function *&funcPtr) {
+void createFunctionWithParams(const char *ident, Function *&funcPtr)
+{
     createFunction(ident, funcPtr);
     /* Add parameters */
     while (!parameterQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
