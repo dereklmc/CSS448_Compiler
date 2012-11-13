@@ -6,12 +6,19 @@
 #include "function.h"
 #include "Type.h"
 #include "stack.h"
+#include "PointerType.h"
+#include "TypeSymbol.h"
+#include "arrayType.h"
+#include "setType.h"
+#include "RecordType.h"
+#include "constvalue.h"
 
 #include <deque>
 
 extern Stack symbolTable;
 
-template <class T>
+void addIdent(const char *);
+
 /******************************************************************************
  * searchStack
  * Takes in a char array representing the name that will be searched for in
@@ -23,7 +30,10 @@ template <class T>
  * Returns: bool isFound - true if a symbol with a matching name was found in
  *					the symbol table
  *****************************************************************************/
+template <class T>
 bool searchStack(const char*, T*&);
+
+void createProgramScope(const char*);
 
 /******************************************************************************
  * createParameter
@@ -35,6 +45,10 @@ bool searchStack(const char*, T*&);
  * paramBuffer.
  *****************************************************************************/
 void createParameter(const char*);
+
+void createProcedure(const char*, Procedure*&);
+
+void createProcedureWithParams(const char*, Procedure*&);
 
 /******************************************************************************
  * createFunction
@@ -75,7 +89,35 @@ void createFunctionDecl(const char*, Function*&);
  *****************************************************************************/
 void createProcedureDecl(Procedure*);
 
-void createPointer(const char*, Symbol*&);
+void createTypeSymbol(const char *, Type*);
+
+void createPointer(Symbol*&);
+
+void getTypeOfSymbol(const char*, Type *&);
+
+void createArrayType(Type *&, Type *);
+
+void createSetType(Type *&);
+
+void createStringRange(const char*, const char*);
+
+void createConstRange(ConstValue*, ConstValue*);
+
+void createVariableList(Type *);
+
+void createRecordType(Type *&);
+
+void createConstSymbolValue(ConstValue*&, const char*);
+
+void createConstNumberValue(ConstValue*&, const char*);
+
+void createConstBoolValue(ConstValue*&, const char*);
+
+void createConstStringValue(ConstValue*&, const char*);
+
+void createConstNilValue(ConstValue*&);
+
+void createConstValue(ConstValue*&, const char*, ConstValueType);
 
 /******************************************************************************
  * exitScope

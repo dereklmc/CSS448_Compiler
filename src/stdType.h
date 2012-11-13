@@ -1,31 +1,23 @@
 #ifndef STDTYPE_H
 #define STDTYPE_H
 
-#include "symbol.h"
+#include "Type.h"
 
-class StdType : public Symbol
-{
+#include <vector>
 
-friend std::ostream& operator<<(std::ostream& out, const StdType s)
+class StdType : public Type
 {
-    s.print(out);
-}
+    
 	public:
-	static const StdType INTEGER;
-	static const StdType BOOL;
-	static const StdType REAL;
-	static const StdType CHAR;
-
-	StdType() : Symbol("") { }
-	StdType(std::string name) : Symbol(name) { }
-
+	    StdType(std::string name);
+    
+        std::string getName() const;
+    
 	private:
+	    std::string name;
+	    
 
-	protected:
-	void print(std::ostream& out) const
-    {
-         out << name; 
-    }
+	    void print(std::ostream& out) const;
 };
 
 #endif

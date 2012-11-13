@@ -10,10 +10,8 @@
  */
 
 /* declarations section */
-#include "Procedure.h"
 #include "actions.h"
 #include "parser.h"
-#include "Variable.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -28,8 +26,9 @@ using namespace std;
 %start  CompilationUnit
 %type   <procedure> ProcedureHeading
 %type   <function>  FunctionHeading
-%type   <type> Type
-%type   <text> PointerType
+%type   <type> Type ArrayType SetType PointerType RecordType
+%type   <constvalue> ConstFactor ConstExpression
+%type   <unaryop> UnaryOperator
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
@@ -37,7 +36,7 @@ using namespace std;
         ynotequal ynumber yof  yor yplus yprocedure yprogram yread yreadln  
         yrecord yrepeat yrightbracket yrightparen  ysemicolon yset 
         ythen  yto ytrue ytype  yuntil  yvar ywhile ywrite ywriteln yunknown
-%token <text> yident ystring
+%token <text> yident ystring ynumber
 
 %%
 /* rules section */
@@ -46,31 +45,24 @@ using namespace std;
 
 CompilationUnit    :  ProgramModule
                    ;
-ProgramModule      :  yprogram yident
+ProgramModule      :  yprogram yident ProgramParameters ysemicolon
                                 {
-                                    printf("%s ", $2);
-                                }
-                      ProgramParameters ysemicolon
-                                { 
-                                    /* Enter Program Scope */
-                                    //std::string ident($2);
-                                    //scopeStack.createScope(ident);
-                                    //validBlock = true;
-                                    /* TODO : Put Program parameters on stack?? */
+                                    createProgramScope($2);
                                 }
                       Block ydot
+                                {
+                                    exitScope();
+                                }
                    ;
 ProgramParameters  :  yleftparen  IdentList  yrightparen
                    ;
 IdentList          :  yident 
                                 {
-                                    printf("%s ", $1);
-                                    //identQueue.push_back($1);
+                                    addIdent($1);
                                 }
                    |  IdentList ycomma yident
                                 {
-                                    printf("%s ", $3);
-                                    //identQueue.push_back($3);
+                                    addIdent($3);
                                 }
                    ;
 
@@ -107,96 +99,107 @@ ConstantDef        :  yident
                                 }
                       yequal  ConstExpression
                    ;
-TypeDef            :  yident
+TypeDef            :  yident yequal  Type
                                 {
-                                    printf("%s ", $1);
+                                    createTypeSymbol($1, $3);
                                 }
-                      yequal  Type
                    ;
 VariableDecl       :  IdentList  ycolon  Type
                                 {
-                                    /* TODO Search Symbol Table for Type corresponding to yident. */
-                                    /* If Type was  */
-                                    //Type *type = NULL; // = foundType;
-                                    //bool isFound = scopeStack.searchStack(yident, type);
-                                    /* Create parameters and add to parameter queue 
-                                    if ($3 != NULL)
-                                    {
-                                        while (!identQueue.empty()) {
-                                            Variable var(identQueue.front(), $3);
-                                            // TODO Add symbol
-                                            identQueue.pop_front();
-                                        }
-                                    }*/
+                                    
                                 }
                    ;
 
 /***************************  Const/Type Stuff  ******************************/
 
 ConstExpression    :  UnaryOperator ConstFactor
-           |  ConstFactor
+                                {
+                                    $2->setOperator($1);
+                                    $$ = $2;
+                                }
+                   |  ConstFactor
                    |  ystring
-           |  ynil
+                                {
+                                    createConstStringValue($$, $1);
+                                }
+                   |  ynil
+                                {
+                                    createConstNilValue($$);
+                                }
                    ;
-ConstFactor        :  yident    {
-                                    printf("%s ", $1);
+ConstFactor        :  yident
+                                {
+                                    createConstSymbolValue($$, $1);
                                 }
                    |  ynumber
+                                {
+                                    createConstNumberValue($$, $1);
+                                }
                    |  ytrue
+                                {
+                                    createConstBoolValue($$, "true");
+                                }
                    |  yfalse
+                                {
+                                    createConstBoolValue($$, "false");
+                                }
                    ;
 Type               :  yident    {
-                                    /*printf("%s ", $1);
-                                    Symbol *typeSymbol = NULL;
-                                    bool isFound = scopeStack.searchStack(std::string($1), typeSymbol);
-                                    Type *type = dynamic_cast<Type*>(typeSymbol);
-                                    if (isFound) {
-                                        $$ = type;
-                                    } else {
-                                        $$ = type;
-                                    }*/
+                                    getTypeOfSymbol($1, $$);
                                 }
                    |  ArrayType
-                                {
-                                    $$ = NULL;
-                                }
                    |  PointerType
                                 {
-                                    createPointer(std::string($1));
+                                    //createPointer($1);
                                     $$ = NULL;
                                 }
                    |  RecordType
                                 {
-                                    $$ = NULL;
+                                    createRecordType($$);
                                 }
                    |  SetType
-                                {
-                                    $$ = NULL;
-                                }
                    ;
 ArrayType          :  yarray yleftbracket Subrange SubrangeList
-                      yrightbracket  yof Type
+                      yrightbracket yof Type
+                                {
+                                    createArrayType($$, $7);
+                                }
                    ;
 SubrangeList       :  /*** empty ***/
                    |  SubrangeList ycomma Subrange 
                    ;
 Subrange           :  ConstFactor ydotdot ConstFactor
+                                {
+                                    createConstRange($1, $3);
+                                }
                    |  ystring ydotdot  ystring
+                                {
+                                    createStringRange($1, $3);
+                                }
                    ;
 RecordType         :  yrecord  FieldListSequence  yend
+                                {
+                                    createRecordType($$);
+                                }
                    ;
 SetType            :  yset  yof  Subrange
+                                {
+                                    createSetType($$);
+                                }
                    ;
 PointerType        :  ycaret  yident
                                 {
                                     printf("%s ", $2);
-                                    $$ = $2;
+                                    //$$ = $2;
                                 }
                    ;
 FieldListSequence  :  FieldList  
                    |  FieldListSequence  ysemicolon  FieldList
                    ;
 FieldList          :  IdentList  ycolon  Type
+                                {
+                                    createVariableList($3);
+                                }
                    ;
 
 /***************************  Statements  ************************************/
@@ -376,35 +379,18 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                    ;
 ProcedureHeading   :  yprocedure yident
                                 {
-                                    Procedure *procedure = new Procedure(std::string($2)); /* Check if name already taken */
-                                    $$ = procedure; /* Pass procedure back */
+                                    createProcedure($2, $$);
                                 }
-                   |  yprocedure yident
+                   |  yprocedure yident FormalParameters
                                 {
-                                    printf("%s ", $2);
-                                }
-                      FormalParameters
-                                {
-                                    /* Create procedure 
-                                    Procedure *procedure = new Procedure(std::string($2)); // NOTE May need to dynamically create?
-                                    // Add parameters 
-                                    while (!parameterQueue.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
-                                        procedure->addParameter(parameterQueue.front());
-                                        parameterQueue.pop_front();
-                                    }
-                                    $$ = procedure;
-                                    */
+                                    createProcedureWithParams($2, $$);
                                 }
                    ;
 FunctionHeading    :  yfunction  yident
                                 {
                                     createFunction($2, $$);
                                 }
-                   |  yfunction  yident
-                                {
-                                    printf("%s ", $2);
-                                }
-                      FormalParameters
+                   |  yfunction  yident FormalParameters
                                 {
                                     createFunctionWithParams($2, $$);
                                 }
@@ -428,7 +414,14 @@ OneFormalParam     :  yvar IdentList ycolon yident
 
 /***************************  More Operators  ********************************/
 
-UnaryOperator      :  yplus | yminus
+UnaryOperator      :  yplus
+                                {
+                                    $$ = PLUS;
+                                }
+                   |  yminus
+                                {
+                                    $$ = MINUS;
+                                }
                    ;
 MultOperator       :  ymultiply | ydivide | ydiv | ymod | yand
                    ;

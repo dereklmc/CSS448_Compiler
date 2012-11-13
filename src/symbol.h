@@ -4,7 +4,7 @@
 #include <iostream>
 class Symbol
 {
-    friend std::ostream& operator<<(std::ostream& out, const Symbol s)
+    friend std::ostream& operator<<(std::ostream& out, const Symbol &s)
     {
         s.print(out);
         return out;

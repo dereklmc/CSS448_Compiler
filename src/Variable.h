@@ -12,11 +12,6 @@
  */
 class Variable : public Symbol {
 
-	friend std::ostream& operator<<(std::ostream& out, const Variable s)
-    {
-        s.print(out);
-        return out;
-    }
     public:
         // ctr, creates a variable with a name and a type.
         Variable(std::string, Type*);
@@ -30,7 +25,7 @@ class Variable : public Symbol {
         
     protected:
         // overriden print method from Symbol. Prints name and type's name.
-        void print(std::ostream&) const;
+        virtual void print(std::ostream&) const;
 
 };
 

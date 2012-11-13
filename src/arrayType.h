@@ -2,12 +2,41 @@
 #define ARRAYTYPE_H
 
 #include "Type.h"
+#include "range.h"
 
-template <class T>
 class ArrayType : public Type
 {
+    public:
+        ArrayType(Type *type)
+        {
+            this->type = type;
+        }
+        
+        ~ArrayType()
+        {
+            type = NULL;
+            for (int i = 0; i < ranges.size(); i++) {
+                delete ranges[i];
+            }
+        }
+        
+        void addRange(Range *range)
+        {
+            ranges.push_back(range);
+        }
+    
     private:
         Type* type;
-        std::vector<Range<T>> range;
-}
+        std::vector<Range*> ranges;
+        
+    protected:
+        void print(std::ostream& out) const
+        {
+            for (int i = 0; i < ranges.size(); i++) {
+                out << *ranges[i];
+            }
+            out << " " << type;
+        }
+};
+
 #endif

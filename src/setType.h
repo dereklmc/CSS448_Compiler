@@ -2,26 +2,31 @@
 #define SETTYPE_H
 
 #include "Type.h"
-#inlcude "Range.h"
+#include "range.h"
 
 #include <iostream>
 
-template <class T>
 class SetType : public Type
 {
     public:
-        SetType(Range<T> r) : Type()
+        SetType(Range* range)
         {
-            range = r;
+            this->range = range;
         }
+        
+        ~SetType()
+        {
+            delete range;
+            range = NULL;
+        }
+        
     private:
-        Range<T> range;
+        Range* range;
 
     protected:
         void print(std::ostream& out) const
         {
-            Type::print(out);
-            range.print(out);
+            out << *range;
         }
 };
 

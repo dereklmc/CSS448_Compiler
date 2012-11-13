@@ -10,7 +10,7 @@
 # The 'touch' command is useful for faking an update.  'touch y3.y' fools
 # make into thinking that the file y3.y has been changed by updating its date.
 
-OBJ = y.tab.o main.o lex.yy.o actions.o parameter.o pointertype.o procedure.o recordtype.o type.o variable.o     # all object files, the  .o  files
+OBJ = y.tab.o main.o lex.yy.o actions.o parameter.o pointertype.o procedure.o recordtype.o variable.o stdtype.o typesymbol.o   # all object files, the  .o  files
 H = y.tab.h parser.h stack.h     
 ACT = actions.h      
 
@@ -35,11 +35,14 @@ procedure.o: procedure.cpp
 recordtype.o: recordtype.cpp
 	g++ -g -c recordtype.cpp
 
-type.o: type.cpp
-	g++ -g -c type.cpp
-
 variable.o: variable.cpp
 	g++ -g -c variable.cpp
+
+stdtype.o: stdtype.cpp
+	g++ -g -c stdtype.cpp
+	
+typesymbol.o: typesymbol.cpp
+	g++ -g -c typesymbol.cpp
 
 actions.o: $(ACT) actions.cpp    # actions.o depends on the .h and .cpp
 	g++ -g -c actions.cpp

@@ -19,10 +19,10 @@ RecordType::RecordType(int parentScope)
  */
 bool RecordType::addField(const Variable &field)
 {
-    
     if (hasField(field.name)) {
         return false;
     }
+    std::cout << "RECORD-->ADD FIELD \"" << field << "\"" << std::endl;
     fields.push_back(field);
     return true;
 }
@@ -52,12 +52,10 @@ bool RecordType::hasField(const std::string &fieldName) const
  */
 void RecordType::print(std::ostream &output) const
 {
-    Type::print(output);
     output << std::endl;
     
-    std::vector<Variable>::const_iterator it;
-    for(it = fields.begin(); it != fields.end(); ++it) {
-        std::cout << *it << std::endl;
+    for(int i = 0; i < fields.size(); i++) {
+        std::cout << fields[i] << std::endl;
     }
 }
 

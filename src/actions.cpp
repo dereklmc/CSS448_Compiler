@@ -1,12 +1,19 @@
 #include "actions.h"
 
+#include <iostream>
+
 std::deque<Parameter> paramBuffer;
 std::deque<std::string> identBuffer;
 std::deque<PointerType> ptrBuffer;
+std::deque<Range*> rangeBuffer;
+std::deque<Variable> variableBuffer;
 
 Stack symbolTable;
 
-template <class T>
+void addIdent(const char *ident)
+{
+    identBuffer.push_back(std::string(ident));
+}
 
 /******************************************************************************
  * searchStack
@@ -19,13 +26,24 @@ template <class T>
  * Returns: bool isFound - true if a symbol with a matching name was found in
  *					the symbol table
  *****************************************************************************/
+template <class T>
 bool searchStack(const char *ident, T *&castSymbol)
 {
     Symbol *symbol = NULL;
     std::string identStr(ident);
     bool isFound = symbolTable.searchStack(identStr, symbol);
-    castSymbol = dynamic_cast<T*>(symbol); // = foundType;
+    if (!isFound) {
+        castSymbol = NULL;
+        // TODO print error?
+    } else {
+        castSymbol = dynamic_cast<T*>(symbol); // = foundType;
+    }
     return isFound;
+}
+
+void createProgramScope(const char *ident) {
+    std::string scopeName(ident);
+    symbolTable.createScope(scopeName);
 }
 
 /******************************************************************************
@@ -57,6 +75,21 @@ void createParameter(const char* ident)
     }
 }
 
+void createProcedure(const char *ident, Procedure *&procedurePtr)
+{
+    procedurePtr = new Procedure(std::string(ident));
+}
+
+void createProcedureWithParams(const char *ident, Procedure *&procedurePtr)
+{
+    createProcedure(ident, procedurePtr);
+    /* Add parameters */
+    while (!paramBuffer.empty()) {
+        procedurePtr->addParameter(paramBuffer.front());
+        paramBuffer.pop_front();
+    }
+}
+
 /******************************************************************************
  * createFunction
  * Takes in an array of chars which will represent the name of the new function
@@ -65,7 +98,7 @@ void createParameter(const char* ident)
  *****************************************************************************/
 void createFunction(const char *ident, Function *&funcPtr)
 {
-    funcPtr = new Function(std::string(ident)); // NOTE May need to dynamically create?
+    funcPtr = new Function(std::string(ident));
 }
 
 /******************************************************************************
@@ -99,10 +132,11 @@ void createFunctionWithParams(const char *ident, Function *&funcPtr)
 void createFunctionDecl(const char* ident, Function*& funcPtr)
 {
     /* Check if return type is valid */
-    Symbol *symbolType = NULL;
-    symbolTable.searchStack(ident, symbolType);
-    Type *type = dynamic_cast<Type*>(symbolType); // Wasn't this already dynamically cast
-													// in searchStack?
+    TypeSymbol *symbolType = NULL;
+    bool found = searchStack<TypeSymbol>(ident, symbolType);
+    // TODO print error message if bad type was found.
+    funcPtr->setType(symbolType->type);
+    
     /* Put function in parent scope */
     symbolTable.current->addSymbol(funcPtr);
     /* Enter Function Scope */
@@ -137,10 +171,117 @@ void createProcedureDecl(Procedure* ident)
 
 }
 
-void createPointer(const char* n, Symbol*& pointee)
+void createTypeSymbol(const char *ident, Type *type)
 {
-    PointerType ptr(n, pointee);
+    std::cout << "CREATING SYMBOL TYPE \"" << ident << "\"=>[[";
+    if (type == NULL) {
+        std::cout << "NULL";
+    } else {
+        std::cout << *type;
+    }
+    std::cout << "]]";
+    std::cout << std::endl;
+    if (type != NULL) {
+        std::string name(ident);
+        Symbol *symbol = new TypeSymbol(name, type);
+        symbolTable.current->addSymbol(symbol);
+    }
+}
+
+void createPointer(Symbol*& pointee)
+{
+    PointerType ptr(pointee);
     ptrBuffer.push_back(ptr);
+}
+
+void getTypeOfSymbol(const char *name, Type *&type)
+{
+    TypeSymbol *symbol = NULL;
+    if (searchStack(name, symbol)) {
+        type = symbol->type;
+    } else {
+        type = NULL;
+        // TODO error message?
+    }
+}
+
+void createArrayType(Type *&createdType, Type *contentsType)
+{
+    ArrayType *arrayType = new ArrayType(contentsType);
+    /* Add ranges */
+    while (!rangeBuffer.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
+        arrayType->addRange(rangeBuffer.front());
+        rangeBuffer.pop_front();
+    }
+    createdType = arrayType;
+}
+
+void createSetType(Type *&createdType)
+{
+    createdType = new SetType(rangeBuffer.front());
+    rangeBuffer.pop_front();
+}
+
+void createStringRange(const char* start, const char* stop) {
+    Range *range = new CharRange(start[0], stop[0]);
+    rangeBuffer.push_back(range);
+}
+
+void createConstRange(ConstValue *start, ConstValue *stop) {
+    Range *range = new ConstRange(start, stop);
+    rangeBuffer.push_back(range);
+}
+
+void createVariableList(Type *type) {
+    if (type != NULL) {
+        while (!identBuffer.empty()) {
+            std::string ident = identBuffer.front();
+            std::cout << "CREATE VAR \"" << ident << "\"=>" << *type << std::endl;
+            identBuffer.pop_front();
+            
+            Variable var(ident,type);
+            variableBuffer.push_back(var);
+        }
+    }
+}
+
+void createRecordType(Type *&createdType) {
+    RecordType *record = new RecordType(symbolTable.currentScope);
+    while (!variableBuffer.empty()) {
+        Variable var = variableBuffer.front();
+        std::cout << "ADD FIELD \"" << var << "\"" << std::endl;
+        
+        if (!record->addField(var)) {
+            std::cout << "ERROR: " << var.name << "already exists in record" << std::endl;
+        }
+        variableBuffer.pop_front();
+        std::cout << "ADDED FIELD \"" << var << "\"" << std::endl;
+    }
+    createdType = record;
+}
+
+void createConstSymbolValue(ConstValue *&constValue, const char *value) {
+    createConstValue(constValue,value,SYMBOL);
+}
+
+void createConstNumberValue(ConstValue *&constValue, const char *value) {
+    createConstValue(constValue,value,NUMBER);
+}
+
+void createConstBoolValue(ConstValue *&constValue, const char *value) {
+    createConstValue(constValue,value,BOOLEAN);
+}
+
+void createConstStringValue(ConstValue *&constValue, const char *value) {
+    createConstValue(constValue,value,STRING);
+}
+
+void createConstNilValue(ConstValue *&constValue) {
+    createConstValue(constValue,"nil",NIL);
+}
+
+void createConstValue(ConstValue *&constValue, const char *value, ConstValueType type) {
+    constValue = new ConstValue(std::string(value), type);
 }
 
 /******************************************************************************
@@ -154,7 +295,7 @@ void exitScope()
     /* Exit Function scope */
     StackFrame *scope = symbolTable.leaveScope();
     /* Print exited scope. */
-    std::cout << scope;
+    std::cout << *scope;
     /* Mem management */
     delete scope;
     scope = NULL;

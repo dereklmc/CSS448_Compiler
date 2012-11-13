@@ -4,7 +4,7 @@
 #include "symbol.h"
 
 /**
- * Represents an identifier for an arbitrary type in pascal. This is an
+ * Represents an arbitrary type in pascal. This is an
  * abstract base class for all types in pascal, including:
  * * Records
  * * Pointers
@@ -14,12 +14,19 @@
  * Currently, type is just a symbol with another name. Type may have specific
  * methods in later phases of the compiler.
  */
-class Type : public Symbol {
+class Type 
+{
+    friend std::ostream& operator<<(std::ostream& out, const Type &t)
+    {
+        t.print(out);
+        return out;
+    }
     
     public:
-        // Standard ctr, see Symbol.
-        Type(){};
-        setName(std::string n){name = n};
+        virtual ~Type() {}
+        
+    protected:
+        virtual void print(std::ostream& out) const =0;
 };
 
 #endif

@@ -1,7 +1,11 @@
-#include "stackframe.h"
-#include <iostream>
 #ifndef STACK_H
 #define STACK_H
+
+#include "stackframe.h"
+#include "stdType.h"
+#include "TypeSymbol.h"
+
+#include <iostream>
 
 class Stack
 {
@@ -14,12 +18,27 @@ class Stack
         // Public pointers are bad, mmkay?
         StackFrame* current;
         StackFrame* zeroeth;
+        
+        int currentScope;
+        
         // Constructor
         Stack()
         {
             zeroeth = new StackFrame("language");
             current = zeroeth;
+            currentScope = 0;
+            
+            // Add standard idents to type.
+            Symbol *symInt = new TypeSymbol("integer", new StdType("integer"));
+            Symbol *symBool = new TypeSymbol("boolean", new StdType("boolean"));
+            Symbol *symStr = new TypeSymbol("string", new StdType("string"));
+            Symbol *symReal = new TypeSymbol("real", new StdType("real"));
+            zeroeth->addSymbol(symInt);
+            zeroeth->addSymbol(symBool);
+            zeroeth->addSymbol(symStr);
+            zeroeth->addSymbol(symReal);
         }
+        
         // Destructor
         ~Stack()
         {
@@ -42,6 +61,7 @@ class Stack
             StackFrame* temp = new StackFrame(s);
             temp->previous = current;
             current = temp;
+            currentScope++;
             return true;
         }
         //---------------------------------------------------------------------
@@ -51,6 +71,7 @@ class Stack
         {
             StackFrame* temp = current;
             current = current->previous;
+            currentScope--;
             return temp;
         }
 
