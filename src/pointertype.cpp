@@ -37,6 +37,10 @@ PointerType::~PointerType()
  */
 void PointerType::print(std::ostream &output) const
 {
-    output << " ^ " << pointee->name;
+    if (hasSymbol) {
+        output << symbolName;
+    } else {
+        output << " ^ " << pointee->name;
+    }
 }
 
