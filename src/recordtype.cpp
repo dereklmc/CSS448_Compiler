@@ -15,9 +15,7 @@ RecordType::RecordType(int parentScope) : Type()
 
 RecordType::~RecordType()
 {
-    std::cout << "RECORD TYPE DTR" << std::endl;
     for (int i = 0; i < fields.size(); i++) {
-        std::cout << "DELETE FIELD " << fields[i]->name << std::endl;
         delete fields[i];
     }
 }
@@ -28,7 +26,7 @@ RecordType::~RecordType()
  */
 bool RecordType::addField(Variable *&field)
 {
-    std::cout << "RECORD-->ADD FIELD \"" << *field << "\"" << std::endl;
+    //std::cout << "RECORD-->ADD FIELD \"" << *field << "\"" << std::endl;
     if (hasField(field->name)) {
         return false;
     }

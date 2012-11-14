@@ -20,7 +20,7 @@ class Symbol
         {
         }
         
-        virtual ~Symbol() { std::cout << "SYMBOL DTR \"" << name << "\"" << std::endl; }
+        virtual ~Symbol() {  }
         
         virtual bool operator==(const Symbol& rhs)
         {

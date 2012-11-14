@@ -19,9 +19,8 @@ class ArrayType : public Type
         
         ~ArrayType()
         {
-            std::cout << "DTR ARRAY" << std::endl; 
+            
             if (type != NULL && !(type->hasSymbol)) {
-                std::cout << "DELETE VARIABLE TYPE " << *type << std::endl;
                 delete type;
             }
             for (int i = 0; i < ranges.size(); i++) {

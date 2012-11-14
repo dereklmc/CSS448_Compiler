@@ -31,7 +31,6 @@ class Type
         }
         virtual ~Type()
         {
-            std::cout << "TYPE DTR   [[hasSymbol==" << (hasSymbol ? "true" : "false") << "]]" << std::endl;
         }
         
     protected:
