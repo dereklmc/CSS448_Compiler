@@ -7,7 +7,7 @@
  * Creates a pointer with a name that points to a given ident. Extends the 
  * constructor in Symbol.
  */
-PointerType::PointerType(Symbol *pointee)
+PointerType::PointerType(Symbol *pointee) : Type()
 {
     this->pointee = pointee;
 }
