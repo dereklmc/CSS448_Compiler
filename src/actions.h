@@ -17,6 +17,7 @@
 #include <deque>
 
 extern Stack symbolTable;
+void checkPointers();
 
 void addIdent(const char *);
 

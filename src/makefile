@@ -11,7 +11,7 @@
 # make into thinking that the file y3.y has been changed by updating its date.
 
 OBJ = y.tab.o main.o lex.yy.o actions.o parameter.o pointertype.o procedure.o recordtype.o variable.o stdtype.o typesymbol.o   # all object files, the  .o  files
-H = y.tab.h parser.h stack.h     
+H = y.tab.h parser.h stack.h actions.h arrayType.h constant.h constvalue.h function.h Parameter.h PointerType.h Procedure.h range.h RecordType.h setType.h stackframe.h stdconstant.h stdProcedure.h stdType.h symbol.h Type.h TypeSymbol.h Variable.h
 ACT = actions.h      
 
 # The $ is a macro reference.  The following ident is replaced with the
@@ -20,40 +20,40 @@ ACT = actions.h
 a.out: $(OBJ) $H $(ACT)         # a.out depends on everything
 	g++ -g $(OBJ) -o a.out
 
-main.o: main.cpp                   # main.o depends on main.cpp
+main.o: $H main.cpp                   # main.o depends on main.cpp
 	g++ -g -c  main.cpp
 
-parameter.o: parameter.cpp
+parameter.o: $H parameter.cpp
 	g++ -g -c parameter.cpp
 
-pointertype.o: pointertype.cpp
+pointertype.o: $H pointertype.cpp
 	g++ -g -c pointertype.cpp
 
-procedure.o: procedure.cpp
+procedure.o: $H procedure.cpp
 	g++ -g -c procedure.cpp
 
-recordtype.o: recordtype.cpp
+recordtype.o: $H recordtype.cpp
 	g++ -g -c recordtype.cpp
 
-variable.o: variable.cpp
+variable.o: $H variable.cpp
 	g++ -g -c variable.cpp
 
-stdtype.o: stdtype.cpp
+stdtype.o: $H stdtype.cpp
 	g++ -g -c stdtype.cpp
 	
-typesymbol.o: typesymbol.cpp
+typesymbol.o: $H typesymbol.cpp
 	g++ -g -c typesymbol.cpp
 
-actions.o: $(ACT) actions.cpp    # actions.o depends on the .h and .cpp
+actions.o: $(ACT) $H actions.cpp    # actions.o depends on the .h and .cpp
 	g++ -g -c actions.cpp
 
-lex.yy.o: lex.yy.c                 # lex.yy.o depend on lex.yy.c
+lex.yy.o: $H lex.yy.c                 # lex.yy.o depend on lex.yy.c
 	g++ -g -c lex.yy.c         # include this if you used (f)lex
 
 lex.yy.c: $H lex.l                 # lex.yy.c depend on the lex file, lex.l
 	flex lex.l                 # include only if you used (f)lex
 
-y.tab.o: y.tab.c                   # y.tab.o depends on y.tab.c
+y.tab.o: $H y.tab.c                   # y.tab.o depends on y.tab.c
 	g++ -g -c y.tab.c
 
 y.tab.c: grammar.y                 # y.tab.c depends on the yacc file, y   
