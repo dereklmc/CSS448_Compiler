@@ -8,7 +8,7 @@
  * assigns itself a pseudo-scope within the parent scope. This pseudo-scope is
  * used for printing fields.
  */
-RecordType::RecordType(int parentScope)
+RecordType::RecordType(int parentScope) : Type()
 {
     this->scope = parentScope + 1;
 }

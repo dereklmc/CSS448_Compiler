@@ -114,6 +114,7 @@ TypeDef            :  yident yequal  Type
                    ;
 VariableDecl       :  IdentList  ycolon  Type
                                 {
+                                    checkPointers();
                                     createVariableList($3);
                                 }
                    ;
