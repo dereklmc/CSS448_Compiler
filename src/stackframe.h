@@ -21,13 +21,12 @@ class StackFrame
         void print(std::ostream& out) const
         {
             printScopeTabs(out);
-            out << name << " " << "contains: (symbols= "<< symbols.size() 
-<< std::endl;
+            out << name << " " << "contains: " << std::endl;
 	    int symbolSize = symbols.size();
             for(int x = 0; x < symbolSize; x++) {
                 printScopeTabs(out);
                 out << "\t" << *symbols[x];
-		out << "<test>" << std::endl;
+		out << std::endl;
             }
             out << std::endl;
         }
