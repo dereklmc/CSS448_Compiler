@@ -94,9 +94,12 @@ TypeDefList        :  TypeDef  ysemicolon
                    |  TypeDefList TypeDef ysemicolon
                    ;
 VariableDeclBlock  :  yvar VariableDeclList
+                                {
+                                    
+                                }
            |  /*** empty ***/
                    ;
-VariableDeclList   :  VariableDecl ysemicolon     
+VariableDeclList   :  VariableDecl ysemicolon        
            |  VariableDeclList VariableDecl ysemicolon
                    ;  
 ConstantDef        :  yident yequal ConstExpression
