@@ -17,6 +17,7 @@ class PointerType : public Type {
         // Defined to release PointerType's reference to Symbol.
         // Since pointee is also in the symbol table, the ST will deallocate 
         // pointee.
+        Symbol* getPointee() const;
         virtual ~PointerType();
 
     private:

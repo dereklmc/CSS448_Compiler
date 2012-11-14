@@ -12,6 +12,10 @@ PointerType::PointerType(Symbol *pointee)
     this->pointee = pointee;
 }
 
+Symbol* PointerType::getPointee() const
+{
+    return pointee;
+}
 /*******************************************************************************
  *
  * Destructor.

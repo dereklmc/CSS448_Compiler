@@ -4,7 +4,7 @@
 
 std::deque<Parameter> paramBuffer;
 std::deque<std::string> identBuffer;
-std::deque<PointerType> ptrBuffer;
+std::deque<PointerType*> ptrBuffer;
 std::deque<Range*> rangeBuffer;
 std::deque<Variable*> variableBuffer;
 
@@ -189,7 +189,7 @@ void createTypeSymbol(const char *ident, Type *type)
 
 void createPointer(PointerType*& ptr)
 {
-    ptrBuffer.push_back(*ptr);
+    ptrBuffer.push_back(ptr);
 }
 
 void getTypeOfSymbol(const char *name, Type *&type)
@@ -289,19 +289,19 @@ void createConstant(const char *ident, ConstValue *value) {
 
 void checkPointers()
 {
-    while(!ptrBuffer.isEmpty())
+    while(!ptrBuffer.empty())
     {
         PointerType* ptr = ptrBuffer.front();
         std::cout << "ADDING POINTER TO \"" << *ptr << "\"" << std::endl;
         Symbol* temp = NULL;
-        SymbolTable.searchStack(ptr->pointee->name, temp);
+        symbolTable.searchStack(ptr->getPointee()->name, temp);
         if(temp != NULL)
         {
             std::cout << "POINTEE FOUND!" << std::endl;
-            //TODO actually add the pointers because Derek wants a gitpush
+            symbolTable.current->addSymbol(temp);
         }
         else
-            cout << "ERROR! POINTEE NOT FOUND!" << std::endl;
+            std::cout << "ERROR! POINTEE NOT FOUND!" << std::endl;
         ptrBuffer.pop_front();
     }
 }
