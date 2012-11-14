@@ -23,7 +23,15 @@ class Type
     }
     
     public:
-        virtual ~Type() {}
+        bool hasSymbol;
+        Type()
+        {
+            hasSymbol = false;
+        }
+        virtual ~Type()
+        {
+            std::cout << "TYPE DTR" << std::endl;
+        }
         
     protected:
         virtual void print(std::ostream& out) const =0;

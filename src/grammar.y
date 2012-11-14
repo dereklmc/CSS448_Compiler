@@ -164,9 +164,6 @@ Type               :  yident    {
                                     $$ = NULL;
                                 }
                    |  RecordType
-                                {
-                                    createRecordType($$);
-                                }
                    |  SetType
                    ;
 ArrayType          :  yarray yleftbracket Subrange SubrangeList

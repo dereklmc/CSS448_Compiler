@@ -14,6 +14,7 @@ class TypeSymbol : public Symbol {
         
         // Standard ctr, see Symbol.
         TypeSymbol(std::string, Type *);
+        ~TypeSymbol();
     
     protected:
         

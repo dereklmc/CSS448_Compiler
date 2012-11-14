@@ -24,7 +24,7 @@ class Symbol
         Symbol(std::string n) : name(n)
         {
         }
-        virtual ~Symbol() {}
+        virtual ~Symbol() { std::cout << "SYMBOL DTR \"" << name << "\"" << std::endl; }
         virtual bool operator==(const Symbol& rhs)
         {
             if(name==rhs.name) {
