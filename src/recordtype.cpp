@@ -10,7 +10,7 @@
  */
 RecordType::RecordType(int parentScope) : Type()
 {
-    this->scope = parentScope + 1;
+    this->scope = parentScope + 2;
 }
 
 RecordType::~RecordType()
@@ -62,6 +62,7 @@ void RecordType::print(std::ostream &output) const
     output << std::endl;
     
     for(int i = 0; i < fields.size(); i++) {
+        printScopeTabs(output);
         fields[i]->print(output);
         output << std::endl;
     }
