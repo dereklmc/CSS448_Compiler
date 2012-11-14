@@ -68,7 +68,6 @@ void createParameter(const char* ident)
     /* Create parameters and add to parameter queue */  
     if (isFound)
     {
-        std::cout << "CREATING PARAMETER \"" << ident << "\"==>" << *(type->type) << std::endl;
         while (!identBuffer.empty()) 
         {
 			// Check if name is already taken
@@ -178,14 +177,6 @@ void createProcedureDecl(Procedure* ident)
 
 void createTypeSymbol(const char *ident, Type *type)
 {
-    std::cout << "CREATING SYMBOL TYPE \"" << ident << "\"=>[[";
-    if (type == NULL) {
-        std::cout << "NULL";
-    } else {
-        std::cout << *type;
-    }
-    std::cout << "]]";
-    std::cout << std::endl;
     if (type != NULL) {
         std::string name(ident);
         Symbol *symbol = new TypeSymbol(name, type);
@@ -245,7 +236,7 @@ void createVariableList(Type *type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
-            std::cout << "CREATE VAR \"" << ident << "\"=>" << *type << std::endl;
+
             identBuffer.pop_front();
             
             Variable* var = new Variable(ident,type);
@@ -258,7 +249,7 @@ void createVariables(Type *type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
-            std::cout << "CREATE VAR \"" << ident << "\"=>" << *type << std::endl;
+	   
             identBuffer.pop_front();
             
             Variable* var = new Variable(ident,type);
@@ -271,15 +262,14 @@ void createRecordType(Type *&createdType) {
     RecordType *record = new RecordType(symbolTable.currentScope);
     while (!variableBuffer.empty()) {
         Variable *var = variableBuffer.front();
-        std::cout << "ADD FIELD \"" << *var << "\"" << std::endl;
-        
+        //std::cout << "ADD FIELD \"" << *var << "\"" << std::endl;
         if (!record->addField(var)) {
             std::cout << "ERROR: " << var->name << "already exists in record" << std::endl;
         }
         variableBuffer.pop_front();
-        std::cout << "ADDED FIELD \"" << *var << "\"" << std::endl;
+	//std::cout << "ADDED FIELD \"" << *var << "\"" << std::endl;
     }
-    std::cout << "CREATED RECORD :: " << *record << std::endl;
+  // std::cout << "CREATED RECORD :: " << *record << std::endl;
     createdType = record;
 }
 
@@ -314,19 +304,16 @@ void createConstant(const char *ident, ConstValue *value) {
 
 void checkPointers()
 {
-    std::cout << "POINTER BUFFER SIZE" << ptrBuffer.size() << std::endl;
     while(!ptrBuffer.empty())
     {
         PointerType* ptr = ptrBuffer.front();
-        std::cout << "ADDING POINTER TO \"" << *ptr << "\"" << std::endl;
         Symbol* temp = NULL;
         symbolTable.searchStack(ptr->getPointee()->name, temp);
         if(temp != NULL)
         {
-            std::cout << "POINTEE FOUND!" << std::endl;
+            //std::cout << "POINTEE FOUND!" << std::endl;
         }
-        else
-            std::cout << "ERROR! POINTEE NOT FOUND!" << std::endl;
+     
         ptrBuffer.pop_front();
     }
 }
@@ -344,7 +331,6 @@ void exitScope()
     /* Print exited scope. */
     std::cout << *scope;
     /* Mem management */
-    std::cout << "DELETE Scope " << scope->name << std::endl;
     delete scope;
     scope = NULL;
 }
