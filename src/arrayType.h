@@ -35,7 +35,7 @@ class ArrayType : public Type
             for (int i = 0; i < ranges.size(); i++) {
                 out << *ranges[i];
             }
-            out << " " << type;
+            out << " " << *type;
         }
 };
 #endif

@@ -14,6 +14,7 @@ class Parameter : public Variable {
         // ctr, creates a parameter with a name and a type that is passed by ref
         // or by value.
         Parameter(std::string, Type*, bool);
+	~Parameter();
 
     private:
         // records how the parameter is passed:

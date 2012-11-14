@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "symbol.h"
+#include "Parameter.h"
 
 class StackFrame 
 {
@@ -34,7 +35,9 @@ class StackFrame
         
         ~StackFrame() {
             for (int i = 0; i < symbols.size(); i++) {
-                delete symbols[i];
+                if (dynamic_cast<Parameter*>(symbols[i]) != NULL) {
+                    delete symbols[i];
+                }
             }
             symbols.clear();
         }

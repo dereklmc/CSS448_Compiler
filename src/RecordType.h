@@ -18,8 +18,9 @@ class RecordType : public Type {
     public:
         // ctr that creates a record with a name and a given pseudo-scope
         RecordType(int);
+	~RecordType();
         // Add a new field to the current record.
-        bool addField(const Variable&);
+        bool addField(Variable*);
         // Checks if field with given name is in the current record.
         bool hasField(const std::string&) const;
     protected:
@@ -28,7 +29,7 @@ class RecordType : public Type {
 
     private:
         // The set of fields within a record.
-        std::vector<Variable> fields;
+        std::vector<Variable*> fields;
         // The pseudo-scope level used for printing purposes.
         int scope;
         // Helper method for #print, prints tabs indicated by scope.

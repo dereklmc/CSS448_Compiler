@@ -6,7 +6,7 @@ std::deque<Parameter> paramBuffer;
 std::deque<std::string> identBuffer;
 std::deque<PointerType> ptrBuffer;
 std::deque<Range*> rangeBuffer;
-std::deque<Variable> variableBuffer;
+std::deque<Variable*> variableBuffer;
 
 Stack symbolTable;
 
@@ -237,7 +237,7 @@ void createVariableList(Type *type) {
             std::cout << "CREATE VAR \"" << ident << "\"=>" << *type << std::endl;
             identBuffer.pop_front();
             
-            Variable var(ident,type);
+            Variable *var = new Variable(ident,type);
             variableBuffer.push_back(var);
         }
     }
@@ -246,14 +246,14 @@ void createVariableList(Type *type) {
 void createRecordType(Type *&createdType) {
     RecordType *record = new RecordType(symbolTable.currentScope);
     while (!variableBuffer.empty()) {
-        Variable var = variableBuffer.front();
-        std::cout << "ADD FIELD \"" << var << "\"" << std::endl;
+        Variable *var = variableBuffer.front();
+        std::cout << "ADD FIELD \"" << *var << "\"" << std::endl;
         
         if (!record->addField(var)) {
-            std::cout << "ERROR: " << var.name << "already exists in record" << std::endl;
+            std::cout << "ERROR: " << var->name << "already exists in record" << std::endl;
         }
         variableBuffer.pop_front();
-        std::cout << "ADDED FIELD \"" << var << "\"" << std::endl;
+        std::cout << "ADDED FIELD \"" << *var << "\"" << std::endl;
     }
     createdType = record;
 }
@@ -285,6 +285,25 @@ void createConstValue(ConstValue *&constValue, const char *value, ConstValueType
 void createConstant(const char *ident, ConstValue *value) {
     Symbol *symbol = new Constant(std::string(ident), value);
     symbolTable.current->addSymbol(symbol);
+}
+
+void checkPointers()
+{
+    while(!ptrBuffer.isEmpty())
+    {
+        PointerType* ptr = ptrBuffer.front();
+        std::cout << "ADDING POINTER TO \"" << *ptr << "\"" << std::endl;
+        Symbol* temp = NULL;
+        SymbolTable.searchStack(ptr->pointee->name, temp);
+        if(temp != NULL)
+        {
+            std::cout << "POINTEE FOUND!" << std::endl;
+            //TODO actually add the pointers because Derek wants a gitpush
+        }
+        else
+            cout << "ERROR! POINTEE NOT FOUND!" << std::endl;
+        ptrBuffer.pop_front();
+    }
 }
 
 /******************************************************************************

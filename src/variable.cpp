@@ -21,6 +21,7 @@ Variable::Variable(std::string name, Type *type) :
  */
 Variable::~Variable()
 {
+    delete type;
     this->type = NULL;
 }
 

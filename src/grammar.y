@@ -91,7 +91,7 @@ TypeDefList        :  TypeDef  ysemicolon
 VariableDeclBlock  :  yvar VariableDeclList
            |  /*** empty ***/
                    ;
-VariableDeclList   :  VariableDecl ysemicolon
+VariableDeclList   :  VariableDecl ysemicolon     
            |  VariableDeclList VariableDecl ysemicolon
                    ;  
 ConstantDef        :  yident yequal ConstExpression
@@ -106,7 +106,7 @@ TypeDef            :  yident yequal  Type
                    ;
 VariableDecl       :  IdentList  ycolon  Type
                                 {
-                                    
+                                    createVariableList($3);
                                 }
                    ;
 

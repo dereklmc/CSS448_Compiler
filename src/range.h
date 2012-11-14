@@ -26,7 +26,7 @@ class CharRange : public Range
         
     protected:
         void print(std::ostream& out) const {
-            out << start << " " << end;
+            out << "[ " << start << " " << end << "] ";
         }
         
     private:

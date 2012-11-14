@@ -13,6 +13,11 @@ Parameter::Parameter(std::string name, Type *type, bool byReference) :
     this->byReference = byReference;
 }
 
+Parameter::~Parameter()
+{
+    std::cout << "IN PARAM DESTRUCTOR" << std::endl;
+}
+
 /*******************************************************************************
  *
  * Overloaded print from Variable.

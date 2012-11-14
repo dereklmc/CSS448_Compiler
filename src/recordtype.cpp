@@ -13,16 +13,23 @@ RecordType::RecordType(int parentScope)
     this->scope = parentScope + 1;
 }
 
+RecordType::~RecordType()
+{
+    for (int i = 0; i < fields.size(); i++) {
+        delete fields[i];
+    }
+}
+
 /*******************************************************************************
  *
  * Add a new field to the current record.
  */
-bool RecordType::addField(const Variable &field)
+bool RecordType::addField(Variable *field)
 {
-    if (hasField(field.name)) {
+    if (hasField(field->name)) {
         return false;
     }
-    std::cout << "RECORD-->ADD FIELD \"" << field << "\"" << std::endl;
+    std::cout << "RECORD-->ADD FIELD \"" << *field << "\"" << std::endl;
     fields.push_back(field);
     return true;
 }
@@ -34,10 +41,8 @@ bool RecordType::addField(const Variable &field)
  */
 bool RecordType::hasField(const std::string &fieldName) const
 {
-    
-    std::vector<Variable>::const_iterator it;
-    for(it = fields.begin(); it != fields.end(); ++it) {
-        if (it->name == fieldName) {
+    for(int i = 0; i < fields.size(); i++) {
+        if (fields[i]->name == fieldName) {
             return true;
         }
     }
@@ -55,7 +60,7 @@ void RecordType::print(std::ostream &output) const
     output << std::endl;
     
     for(int i = 0; i < fields.size(); i++) {
-        std::cout << fields[i] << std::endl;
+        std::cout << *fields[i] << std::endl;
     }
 }
 
