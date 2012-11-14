@@ -26,7 +26,7 @@ RecordType::~RecordType()
  */
 bool RecordType::addField(Variable *&field)
 {
-    std::cout << "RECORD-->ADD FIELD \"" << *field << "\"" << std::endl;
+    //std::cout << "RECORD-->ADD FIELD \"" << *field << "\"" << std::endl;
     if (hasField(field->name)) {
         return false;
     }
