@@ -14,6 +14,7 @@ class Stack
         s.print(out);
         return out;
     }
+    
     public:
         // Public pointers are bad, mmkay?
         StackFrame* current;
@@ -24,9 +25,9 @@ class Stack
         // Constructor
         Stack()
         {
-            zeroeth = new StackFrame("language");
+            currentScope = -1;
+            zeroeth = new StackFrame(currentScope, "language");
             current = zeroeth;
-            currentScope = 0;
             
             // Add standard idents to type.
             Symbol *symInt = new TypeSymbol("integer", new StdType("integer"));
@@ -58,10 +59,10 @@ class Stack
         // Linked-List.
         bool createScope(std::string s)
         {
-            StackFrame* temp = new StackFrame(s);
+            currentScope++;
+            StackFrame* temp = new StackFrame(currentScope,s);
             temp->previous = current;
             current = temp;
-            currentScope++;
             return true;
         }
         //---------------------------------------------------------------------

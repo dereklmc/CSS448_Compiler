@@ -16,19 +16,33 @@ class StackFrame
     private:
         std::string name;
         std::vector<Symbol*> symbols; 
+        
+        int scope;
+        
         void print(std::ostream& out) const
         {
+            printScopeTabs(out);
             out << name << " " << "contains: " << std::endl;
-            for(int x = 0; x < symbols.size(); x++)
-                out << " " << *symbols[x] << std::endl;
+            for(int x = 0; x < symbols.size(); x++) {
+                printScopeTabs(out);
+                out << "\t" << *symbols[x] << std::endl;
+            }
             out << std::endl;
-        }     
+        }
+        
+        void printScopeTabs(std::ostream &output) const
+        {    
+            for(int i = 0; i < scope; i++) {
+                std::cout << "\t";
+            }
+        }
 
     public:
         StackFrame* previous;
         
-        StackFrame(std::string name)
+        StackFrame(int scope, std::string name)
         {
+            this->scope = scope;
             this->name = name;
             previous = NULL;
         }
