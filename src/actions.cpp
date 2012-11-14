@@ -289,6 +289,7 @@ void createConstant(const char *ident, ConstValue *value) {
 
 void checkPointers()
 {
+    std::cout << "CHECKING POINTERS!" << std::endl;
     while(!ptrBuffer.empty())
     {
         PointerType* ptr = ptrBuffer.front();

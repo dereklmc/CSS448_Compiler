@@ -84,6 +84,11 @@ ConstDefList       :  ConstantDef ysemicolon
                    ;
 TypeDefBlock       :  /*** empty ***/
                    |  ytype  TypeDefList
+                                {
+                                    //loop throught all pointers
+                                    //add to symbol table
+                                    checkPointers();
+                                }
                    ;
 TypeDefList        :  TypeDef  ysemicolon
                    |  TypeDefList TypeDef ysemicolon
