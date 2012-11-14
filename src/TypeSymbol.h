@@ -13,7 +13,7 @@ class TypeSymbol : public Symbol {
         Type *type;
         
         // Standard ctr, see Symbol.
-        TypeSymbol(std::string, Type *);
+        TypeSymbol(std::string, Type *&);
         ~TypeSymbol();
     
     protected:

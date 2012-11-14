@@ -157,12 +157,7 @@ Type               :  yident    {
                                     getTypeOfSymbol($1, $$);
                                 }
                    |  ArrayType
-
                    |  PointerType
-                                {
-                                    createPointer($1);
-                                    $$ = NULL;
-                                }
                    |  RecordType
                    |  SetType
                    ;
@@ -196,11 +191,7 @@ SetType            :  yset  yof  Subrange
                    ;
 PointerType        :  ycaret  yident
                                 {
-                                    printf("%s ", $2);
-                                    //Gives symbol to pointer
-                                    Symbol* symbol = new Symbol($2);
-                                    PointerType* ptr = new PointerType(symbol);
-                                    $$ = ptr;
+                                    createPointer($$, $2);
                                 }
                    ;
 FieldListSequence  :  FieldList  
