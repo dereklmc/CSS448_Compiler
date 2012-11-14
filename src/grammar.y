@@ -26,10 +26,9 @@ using namespace std;
 %start  CompilationUnit
 %type   <procedure> ProcedureHeading
 %type   <function>  FunctionHeading
-%type   <type> Type ArrayType SetType RecordType
+%type   <type> Type ArrayType SetType RecordType PointerType
 %type   <constvalue> ConstFactor ConstExpression
 %type   <unaryop> UnaryOperator
-%type   <pointertype> PointerType
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket

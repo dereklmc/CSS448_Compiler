@@ -12,7 +12,7 @@ class ArrayType : public Type
 	    return out;
     }
     public:
-        ArrayType(Type *&type)
+        ArrayType(Type *type)
         {
             this->type = type;
         }

@@ -14,7 +14,6 @@ typedef union {
     Type *type;
     ConstValue *constvalue;
     UnaryOperator unaryop;
-    PointerType* pointertype;
 } YYSTYPE;
 
 #endif

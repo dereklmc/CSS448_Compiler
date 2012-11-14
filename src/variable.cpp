@@ -25,8 +25,8 @@ Variable::~Variable()
     if (type != NULL && !type->hasSymbol) {
         std::cout << "DELETE VARIABLE TYPE " << *type << std::endl;
         delete type;
-        type = NULL;
     }
+    type = NULL;
 }
 
 /*******************************************************************************
