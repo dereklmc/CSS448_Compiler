@@ -158,6 +158,9 @@ Type               :  yident    {
                                 }
                    |  ArrayType
                    |  PointerType
+                                {
+                                    $$ = $1;
+                                }
                    |  RecordType
                    |  SetType
                    ;

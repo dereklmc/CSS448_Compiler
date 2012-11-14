@@ -196,7 +196,7 @@ void createTypeSymbol(const char *ident, Type *type)
 void createPointer(Type*& createdType, const char *ident)
 {
     // Find symbol for ident
-    Symbol *s;
+    Symbol *s = new Symbol(*indent);
     
     PointerType ptr = new PointerType(s);
     ptrBuffer.push_back(ptr);
@@ -312,7 +312,6 @@ void checkPointers()
         if(temp != NULL)
         {
             std::cout << "POINTEE FOUND!" << std::endl;
-            symbolTable.current->addSymbol(temp);
         }
         else
             std::cout << "ERROR! POINTEE NOT FOUND!" << std::endl;
