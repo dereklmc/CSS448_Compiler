@@ -8,8 +8,8 @@ class ArrayType : public Type
 {
     friend std::ostream& operator<<(std::ostream& out, const ArrayType s)
     {
-	s.print(out);
-	return out;
+	    s.print(out);
+	    return out;
     }
     public:
         ArrayType(Type *&type)
@@ -19,10 +19,15 @@ class ArrayType : public Type
         
         ~ArrayType()
         {
-            type = NULL;
+            std::cout << "DTR ARRAY" << std::endl; 
+            if (type != NULL && !(type->hasSymbol)) {
+                std::cout << "DELETE VARIABLE TYPE " << *type << std::endl;
+                delete type;
+            }
             for (int i = 0; i < ranges.size(); i++) {
                 delete ranges[i];
             }
+            type = NULL;
         }
         
         void addRange(Range *range)
@@ -31,7 +36,7 @@ class ArrayType : public Type
         }
     
     private:
-        Type* type;
+        Type *type;
         std::vector<Range*> ranges;
         
     protected:
