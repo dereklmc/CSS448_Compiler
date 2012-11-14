@@ -25,7 +25,7 @@ class StackFrame
             out << name << " " << "contains: (symbols= "<< symbols.size() 
 << std::endl;
 	    int symbolSize = symbols.size();
-            for(int x = symbolSize - 1; x > -1; x--) {
+            for(int x = 0; x < symbolSize; x++) {
                 printScopeTabs(out);
                 out << "\t" << *symbols[x];
 		out << "<test>" << std::endl;
