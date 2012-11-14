@@ -19,11 +19,7 @@ class ArrayType : public Type
         
         ~ArrayType()
         {
-            
-            if (type != NULL || !type->hasSymbol) {
-                delete type;
-                type = NULL;
-            }
+            type = NULL;
             for (int i = 0; i < ranges.size(); i++) {
                 delete ranges[i];
             }
