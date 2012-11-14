@@ -7,7 +7,7 @@
 class ArrayType : public Type
 {
     public:
-        ArrayType(Type *type)
+        ArrayType(Type *&type)
         {
             this->type = type;
         }

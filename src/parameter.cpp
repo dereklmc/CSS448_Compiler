@@ -7,7 +7,7 @@
  * Creates a parameter with a name and a type that is either passed by reference
  * or by value. Extends the constructor in Variable.
  */
-Parameter::Parameter(std::string name, Type *type, bool byReference) :
+Parameter::Parameter(std::string name, Type *&type, bool byReference) :
         Variable(name, type)
 {
     this->byReference = byReference;

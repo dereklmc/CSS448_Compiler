@@ -61,11 +61,11 @@ void createParameter(const char* ident)
     /* Search Symbol Table for Type corresponding to yident. */
     TypeSymbol *type = NULL;
     bool isFound = searchStack<TypeSymbol>(ident, type);
-    std::cout << "CREATING PARAMETER \"" << ident << "\"==>" << *(type->type) << std::endl;
 
     /* Create parameters and add to parameter queue */  
     if (isFound)
     {
+        std::cout << "CREATING PARAMETER \"" << ident << "\"==>" << *(type->type) << std::endl;
         while (!identBuffer.empty()) 
         {
 			// Check if name is already taken
@@ -73,6 +73,8 @@ void createParameter(const char* ident)
             paramBuffer.push_back(param);
             identBuffer.pop_front();
         }
+    } else {
+        std::cout << "ERROR! Type \"" << ident << "\" is undefined." << std::endl;
     }
 }
 
@@ -256,6 +258,7 @@ void createRecordType(Type *&createdType) {
         variableBuffer.pop_front();
         std::cout << "ADDED FIELD \"" << *var << "\"" << std::endl;
     }
+    std::cout << "CREATED RECORD :: " << *record << std::endl;
     createdType = record;
 }
 
@@ -339,6 +342,7 @@ void exitScope()
     /* Print exited scope. */
     std::cout << *scope;
     /* Mem management */
+    std::cout << "DELETE Scope " << scope->name << std::endl;
     delete scope;
     scope = NULL;
 }

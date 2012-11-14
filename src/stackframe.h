@@ -14,7 +14,6 @@ class StackFrame
         return out;
     }
     private:
-        std::string name;
         std::vector<Symbol*> symbols; 
         
         int scope;
@@ -39,6 +38,7 @@ class StackFrame
 
     public:
         StackFrame* previous;
+        std::string name;
         
         StackFrame(int scope, std::string name)
         {
