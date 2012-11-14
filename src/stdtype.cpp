@@ -1,6 +1,6 @@
 #include "stdType.h"
     
-StdType::StdType(std::string name) {
+StdType::StdType(std::string name) : Type() {
     this->name = name;
 }
 

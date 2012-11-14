@@ -294,7 +294,7 @@ void createConstant(const char *ident, ConstValue *value) {
 
 void checkPointers()
 {
-    std::cout << "CHECKING POINTERS!" << std::endl;
+    std::cout << "POINTER BUFFER SIZE" << ptrBuffer.size() << std::endl;
     while(!ptrBuffer.empty())
     {
         PointerType* ptr = ptrBuffer.front();
