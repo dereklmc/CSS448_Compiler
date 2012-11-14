@@ -107,6 +107,8 @@ void createConstRange(ConstValue*, ConstValue*);
 
 void createVariableList(Type *);
 
+void createVariables(Type *);
+
 void createRecordType(Type *&);
 
 void createConstSymbolValue(ConstValue*&, const char*);

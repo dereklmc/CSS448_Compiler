@@ -26,12 +26,12 @@ RecordType::~RecordType()
  *
  * Add a new field to the current record.
  */
-bool RecordType::addField(Variable *field)
+bool RecordType::addField(Variable *&field)
 {
+    std::cout << "RECORD-->ADD FIELD \"" << *field << "\"" << std::endl;
     if (hasField(field->name)) {
         return false;
     }
-    std::cout << "RECORD-->ADD FIELD \"" << *field << "\"" << std::endl;
     fields.push_back(field);
     return true;
 }

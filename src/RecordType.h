@@ -20,7 +20,7 @@ class RecordType : public Type {
         RecordType(int);
 	~RecordType();
         // Add a new field to the current record.
-        bool addField(Variable*);
+        bool addField(Variable*&);
         // Checks if field with given name is in the current record.
         bool hasField(const std::string&) const;
     protected:

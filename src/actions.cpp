@@ -249,8 +249,20 @@ void createVariableList(Type *type) {
             identBuffer.pop_front();
             
             Variable* var = new Variable(ident,type);
-	    symbolTable.current->addSymbol(var);
-            //variableBuffer.push_back(var);
+            variableBuffer.push_back(var);
+        }
+    }
+}
+
+void createVariables(Type *type) {
+    if (type != NULL) {
+        while (!identBuffer.empty()) {
+            std::string ident = identBuffer.front();
+            std::cout << "CREATE VAR \"" << ident << "\"=>" << *type << std::endl;
+            identBuffer.pop_front();
+            
+            Variable* var = new Variable(ident,type);
+	        symbolTable.current->addSymbol(var);
         }
     }
 }
