@@ -43,6 +43,9 @@ bool searchStack(const char *ident, T *&castSymbol)
 
 void createProgramScope(const char *ident) {
     std::string scopeName(ident);
+    while (!identBuffer.empty()) {
+	identBuffer.pop_front();
+    }	
     symbolTable.createScope(scopeName);
 }
 
@@ -238,8 +241,9 @@ void createVariableList(Type *type) {
             std::cout << "CREATE VAR \"" << ident << "\"=>" << *type << std::endl;
             identBuffer.pop_front();
             
-            Variable *var = new Variable(ident,type);
-            variableBuffer.push_back(var);
+            Variable* var = new Variable(ident,type);
+	    symbolTable.current->addSymbol(var);
+            //variableBuffer.push_back(var);
         }
     }
 }
@@ -305,24 +309,6 @@ void checkPointers()
         else
             std::cout << "ERROR! POINTEE NOT FOUND!" << std::endl;
         ptrBuffer.pop_front();
-    }
-}
-
-void pushVarOnStack()
-{
-    while(!variableBuffer.empty())
-    {
-        Variable* var = variableBuffer.front();
-        std::cout << "ADDING VARIABLE \"" << var->name << "\" TO STACK!" << std::endl;
-        Symbol* temp = NULL;
-        symbolTable.searchStack(var->name, temp);
-        if(temp == NULL)
-        {
-            symbolTable.current->addSymbol(temp);
-        }
-        else
-            std::cout << "ERROR! VARIABLE " << var->name << "ALREADY EXISTS!" << std::endl;
-        variableBuffer.pop_front();
     }
 }
 

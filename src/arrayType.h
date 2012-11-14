@@ -6,6 +6,11 @@
 
 class ArrayType : public Type
 {
+    friend std::ostream& operator<<(std::ostream& out, const ArrayType s)
+    {
+	s.print(out);
+	return out;
+    }
     public:
         ArrayType(Type *type)
         {
