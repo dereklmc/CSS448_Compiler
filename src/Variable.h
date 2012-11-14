@@ -25,14 +25,11 @@ s)
         // Defined to release Variable's reference to Type.
         // Since type is also in the symbol table, the ST will deallocate type.
         virtual ~Variable();
-		
-
-    private:
-        Type *type; // The type associated with this variable.
-        
-    protected:
         // overriden print method from Symbol. Prints name and type's name.
         virtual void print(std::ostream&) const;
+		
+    private:
+        Type *type; // The type associated with this variable.
 
 };
 

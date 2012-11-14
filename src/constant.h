@@ -27,7 +27,6 @@ class Constant : public Symbol
             value = NULL;
         }
         
-	protected:
         void print(std::ostream& out) const
         {
         	Symbol::print(out);

@@ -62,7 +62,8 @@ void RecordType::print(std::ostream &output) const
     output << std::endl;
     
     for(int i = 0; i < fields.size(); i++) {
-        std::cout << *fields[i] << std::endl;
+        fields[i]->print(output);
+        output << std::endl;
     }
 }
 
