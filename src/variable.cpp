@@ -22,10 +22,10 @@ Variable::Variable(std::string name, Type *&type) :
 Variable::~Variable()
 {
     std::cout << "VARIABLE DTR" << std::endl;
-    if (!type->hasSymbol) {
+    if (type != NULL || !type->hasSymbol) {
         delete type;
+        type = NULL;
     }
-    this->type = NULL;
 }
 
 /*******************************************************************************
