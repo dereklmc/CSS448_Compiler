@@ -22,16 +22,16 @@ class Procedure : public Symbol {
         // ctr inherited from Symbol.
         Procedure(std::string);
         // Add a new parameter that must be given when calling the procedure.
-        bool addParameter(const Parameter&);
+        bool addParameter(Parameter*);
         // Checks if param with given name is in the current procedure.
         bool hasParameter(const std::string&) const;
-        std::vector<Parameter> getParameters() const;
+        std::vector<Parameter*> getParameters() const;
 	protected:
 		virtual void print(std::ostream& out) const;
 
     private:
         // parameters required when calling the procedure.
-        std::vector<Parameter> parameters;
+        std::vector<Parameter*> parameters;
 };
 
 #endif

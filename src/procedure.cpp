@@ -19,9 +19,9 @@ Procedure::Procedure(std::string name) :
  * @return true if the parameter can be added (does not already exist), 
  *          otherwise false.
  */
-bool Procedure::addParameter(const Parameter &param)
+bool Procedure::addParameter(Parameter *param)
 {
-    if (hasParameter(param.name)) {
+    if (hasParameter(param->name)) {
         return false;
     }
     parameters.push_back(param);
@@ -38,10 +38,8 @@ bool Procedure::addParameter(const Parameter &param)
  */
 bool Procedure::hasParameter(const std::string &paramName) const
 {
-    
-    std::vector<Parameter>::const_iterator it;
-    for(it = parameters.begin(); it != parameters.end(); it++) {
-        if (it->name == paramName) {
+    for(int i = 0; i < parameters.size(); i++) {
+        if (parameters[i]->name == paramName) {
             return true;
         }
     }
@@ -54,7 +52,7 @@ bool Procedure::hasParameter(const std::string &paramName) const
  *
  * TODO
  */
-std::vector<Parameter> Procedure::getParameters() const
+std::vector<Parameter*> Procedure::getParameters() const
 {
     return parameters;
 }

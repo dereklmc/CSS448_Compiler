@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-std::deque<Parameter> paramBuffer;
+std::deque<Parameter*> paramBuffer;
 std::deque<std::string> identBuffer;
 std::deque<PointerType*> ptrBuffer;
 std::deque<Range*> rangeBuffer;
@@ -59,8 +59,9 @@ void createParameter(const char* ident)
 {
     //printf("%s ", ident);
     /* Search Symbol Table for Type corresponding to yident. */
-    Type *type = NULL;
-    bool isFound = searchStack<Type>(ident, type);
+    TypeSymbol *type = NULL;
+    bool isFound = searchStack<TypeSymbol>(ident, type);
+    std::cout << "CREATING PARAMETER \"" << ident << "\"==>" << *(type->type) << std::endl;
 
     /* Create parameters and add to parameter queue */  
     if (isFound)
@@ -68,7 +69,7 @@ void createParameter(const char* ident)
         while (!identBuffer.empty()) 
         {
 			// Check if name is already taken
-            Parameter param(identBuffer.front(), type, true);
+            Parameter *param = new Parameter(identBuffer.front(), type->type, true);
             paramBuffer.push_back(param);
             identBuffer.pop_front();
         }
@@ -142,9 +143,9 @@ void createFunctionDecl(const char* ident, Function*& funcPtr)
     /* Enter Function Scope */
     symbolTable.createScope(funcPtr->name);
     /* Put procedure params on symbol stack. */
-    std::vector<Parameter> toPutOnStack = funcPtr->getParameters();
+    std::vector<Parameter*> toPutOnStack = funcPtr->getParameters();
     for (int i = 0; i < toPutOnStack.size(); i++) {
-        symbolTable.current->addSymbol(&toPutOnStack[i]);
+        symbolTable.current->addSymbol(toPutOnStack[i]);
     }
 
 }
@@ -164,9 +165,9 @@ void createProcedureDecl(Procedure* ident)
     /* Enter Procedure Scope */
     symbolTable.createScope(ident->name);
     /* Put procedure params on symbol stack. */
-    std::vector<Parameter> toPutOnStack = ident->getParameters();
+    std::vector<Parameter*> toPutOnStack = ident->getParameters();
     for (int i = 0; i < toPutOnStack.size(); i++) {
-        symbolTable.current->addSymbol(&toPutOnStack[i]);
+        symbolTable.current->addSymbol(toPutOnStack[i]);
     }
 }
 

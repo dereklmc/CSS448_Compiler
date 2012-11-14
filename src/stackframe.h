@@ -35,7 +35,7 @@ class StackFrame
         
         ~StackFrame() {
             for (int i = 0; i < symbols.size(); i++) {
-                if (dynamic_cast<Parameter*>(symbols[i]) != NULL) {
+                if (dynamic_cast<Parameter*>(symbols[i]) == NULL) {
                     delete symbols[i];
                 }
             }
