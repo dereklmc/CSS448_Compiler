@@ -37,7 +37,18 @@ PointerType::~PointerType()
  */
 void PointerType::print(std::ostream &output) const
 {
-    if (hasSymbol) {
+    print(output, hasSymbol);
+}
+
+/*******************************************************************************
+ *
+ * Overloaded print method from Symbol.
+ *
+ * Prints name of the pointer and name of what the pointer is pointing to.
+ */
+void PointerType::print(std::ostream &output, bool printSymbolName) const
+{
+    if (printSymbolName) {
         output << symbolName;
     } else {
         output << " ^ " << pointee->name;
