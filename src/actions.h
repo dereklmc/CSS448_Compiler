@@ -123,6 +123,8 @@ void createConstValue(ConstValue*&, const char*, ConstValueType);
 
 void createConstant(const char*, ConstValue*);
 
+void pushVarOnStack();
+
 /******************************************************************************
  * exitScope
  * Calls the symbol table's leaveScope() method, which returns the stackframe

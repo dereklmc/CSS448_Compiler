@@ -308,6 +308,24 @@ void checkPointers()
     }
 }
 
+void pushVarOnStack()
+{
+    while(!variableBuffer.empty())
+    {
+        Variable* var = variableBuffer.front();
+        std::cout << "ADDING VARIABLE \"" << var->name << "\" TO STACK!" << std::endl;
+        Symbol* temp = NULL;
+        symbolTable.searchStack(var->name, temp);
+        if(temp == NULL)
+        {
+            symbolTable.current->addSymbol(temp);
+        }
+        else
+            std::cout << "ERROR! VARIABLE " << var->name << "ALREADY EXISTS!" << std::endl;
+        variableBuffer.pop_front();
+    }
+}
+
 /******************************************************************************
  * exitScope
  * Calls the symbol table's leaveScope() method, which returns the stackframe
