@@ -24,6 +24,7 @@ class Type
     
     public:
         bool hasSymbol;
+        std::string symbolName;
         Type()
         {
             hasSymbol = false;

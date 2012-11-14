@@ -6,6 +6,7 @@ TypeSymbol::TypeSymbol(std::string name, Type *&type) :
 {
     this->type = type;
     type->hasSymbol = true;
+    type->symbolName = name;
 }
 
 TypeSymbol::~TypeSymbol()

@@ -11,7 +11,7 @@
 # make into thinking that the file y3.y has been changed by updating its date.
 
 OBJ = y.tab.o main.o lex.yy.o actions.o parameter.o pointertype.o procedure.o recordtype.o variable.o stdtype.o typesymbol.o   # all object files, the  .o  files
-H = y.tab.h parser.h stack.h actions.h arrayType.h constant.h constvalue.h function.h Parameter.h PointerType.h Procedure.h range.h RecordType.h setType.h stackframe.h stdconstant.h stdProcedure.h stdType.h symbol.h Type.h TypeSymbol.h Variable.h
+H = y.tab.h parser.h stack.h actions.h arrayType.h constant.h constvalue.h function.h Parameter.h PointerType.h Procedure.h range.h RecordType.h setType.h stackframe.h  stdProcedure.h stdType.h symbol.h Type.h TypeSymbol.h Variable.h
 ACT = actions.h      
 
 # The $ is a macro reference.  The following ident is replaced with the

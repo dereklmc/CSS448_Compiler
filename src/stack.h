@@ -4,6 +4,7 @@
 #include "stackframe.h"
 #include "stdType.h"
 #include "TypeSymbol.h"
+#include "constant.h"
 
 #include <iostream>
 
@@ -38,10 +39,14 @@ class Stack
             Symbol *symBool = new TypeSymbol("boolean", boolType);
             Symbol *symStr = new TypeSymbol("string", strType);
             Symbol *symReal = new TypeSymbol("real", realType);
+            Symbol *symTrue = new Constant("true", new ConstValue("true", BOOLEAN));
+            Symbol *symFalse = new Constant("false", new ConstValue("false", BOOLEAN));
             zeroeth->addSymbol(symInt);
             zeroeth->addSymbol(symBool);
             zeroeth->addSymbol(symStr);
             zeroeth->addSymbol(symReal);
+            zeroeth->addSymbol(symTrue);
+            zeroeth->addSymbol(symFalse);
         }
         
         // Destructor
