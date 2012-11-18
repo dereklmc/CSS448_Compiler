@@ -3,6 +3,7 @@
 
 #include "symbol.h"
 #include "Type.h"
+#include "PointerType.h"
 
 /**
  * Represents an identifier for an arbitrary type in pascal.

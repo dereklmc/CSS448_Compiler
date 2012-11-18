@@ -19,7 +19,10 @@ class PointerType : public Type {
         // pointee.
         Symbol* getPointee() const;
         
-        virtual ~PointerType();
+        ~PointerType();
+        
+        // overriden print method from Symbol. Prints name and pointee's name
+        void print(std::ostream&, bool) const;
 
     private:
         // The ident that the pointer points to.

@@ -18,5 +18,10 @@ TypeSymbol::~TypeSymbol()
 void TypeSymbol::print(std::ostream& out) const
 {
      Symbol::print(out);
-     out << " " << *type;
+     PointerType *ptr = dynamic_cast<PointerType*>(type);
+     if (ptr != NULL) {
+         ptr->print(out, false);
+     } else {
+        out << " " << *type;
+     }
 }
