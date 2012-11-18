@@ -392,10 +392,12 @@ ProcedureHeading   :  yprocedure yident
 FunctionHeading    :  yfunction  yident
                                 {
                                     createFunction($2, $$);
+                                    //Check parameters
                                 }
                    |  yfunction  yident FormalParameters
                                 {
                                     createFunctionWithParams($2, $$);
+                                    //Check parameters
                                 }
                    ;
 FormalParameters   :  yleftparen FormalParamList yrightparen
