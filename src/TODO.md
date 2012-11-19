@@ -1,7 +1,7 @@
 # TODO List
 
-1. _Hugo_ Change Union
-    - %type <arraytype> ArrayType
+1. <s>_Hugo_ Change Union</s>
+    - <s>%type <arraytype> ArrayType</s>
 2. _Hugo_ Add to Type
     - virtual std::string Type::generateCode() const
 3. _Nina_ Actions.h
