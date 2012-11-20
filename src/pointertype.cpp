@@ -54,4 +54,9 @@ void PointerType::print(std::ostream &output, bool printSymbolName) const
         output << " ^ " << pointee->name;
     }
 }
+std::string PointerType::generateCode() const
+{
+    std::string tempString = "RecordType code here!\n";
+    return tempString;
+}
 

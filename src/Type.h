@@ -35,6 +35,7 @@ class Type
         
     protected:
         virtual void print(std::ostream& out) const =0;
+        virtual std::string generateCode() const =0;
 };
 
 #endif

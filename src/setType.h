@@ -28,6 +28,11 @@ class SetType : public Type
         {
             out << *range;
         }
+        std::string generateCode() const
+        {
+            std::string tempString = "setType code here!\n";
+            return tempString;
+        }
 };
 
 #endif

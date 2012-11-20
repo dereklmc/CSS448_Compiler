@@ -34,7 +34,7 @@
         - __EMAIL ZANDER!__
 7. <s>_Hugo_ Errors</s>
     - <s>Should we spit out code if we have determined that the expression might be illegal?</s>
-        - <s>__EMAIL ZANDER!__</s>
+        - <s>__EMAIL ZANDER!__</s> __CONTINUE ON!__
 8. _Derek_ Modify grammar so I/O statements are standard procedures in the SymbolTable
 9. Will be outputting curly-braces for all if/while (one line or not)
 10. _Derek_ Constants

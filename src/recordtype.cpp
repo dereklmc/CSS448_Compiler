@@ -78,3 +78,9 @@ void RecordType::printScopeTabs(std::ostream &output) const
         std::cout << "\t";
     }
 }
+
+std::string RecordType::generateCode() const
+{
+    std::string tempString = "RecordType code here!\n";
+    return tempString;
+}

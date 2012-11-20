@@ -15,7 +15,7 @@ class StdType : public Type
     
 	private:
 	    std::string name;
-	    
+	    std::string generateCode() const;
 
 	    void print(std::ostream& out) const;
 };

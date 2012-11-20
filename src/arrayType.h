@@ -46,5 +46,11 @@ class ArrayType : public Type
             }
             out << " " << *type;
         }
+        std::string generateCode() const
+        {
+            std::string tempString = "RecordType code here!\n";
+            return tempString;
+        }
+
 };
 #endif

@@ -31,6 +31,7 @@ class PointerType : public Type {
     protected:
         // overriden print method from Symbol. Prints name and pointee's name
         void print(std::ostream&) const;
+        std::string generateCode() const;
 
 };
 
