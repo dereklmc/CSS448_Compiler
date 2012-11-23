@@ -23,7 +23,7 @@
 #include <iostream>	// For cout
 #include <iomanip>	// For setw and left
 
-extern YYSTYPE yylval;
+void saveText();
 
 %}
 
@@ -162,6 +162,7 @@ writeln			{ return ywriteln; }
 										}
 
 %%
+
 
 int yywrap()
 {

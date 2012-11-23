@@ -1,4 +1,4 @@
-#include"Parameter.h"
+#include "parameter.h"
 
 /*******************************************************************************
  *
@@ -13,9 +13,14 @@ Parameter::Parameter(std::string name, Type *&type, bool byReference) :
     this->byReference = byReference;
 }
 
-Parameter::~Parameter()
+Variable* Parameter::getVariable() const
 {
-    std::cout << "IN PARAM DESTRUCTOR" << std::endl;
+    return new Variable(name, type->clone());
+}
+
+bool Parameter::operator==(const Parameter &other) const
+{
+    return other.name == name;
 }
 
 /*******************************************************************************
@@ -29,5 +34,5 @@ void Parameter::print(std::ostream &output) const
     if (byReference) {
         output << "var ";
     }
-    Variable::print(output);
+    var.print(output);
 }

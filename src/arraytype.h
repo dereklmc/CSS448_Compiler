@@ -6,11 +6,7 @@
 
 class ArrayType : public Type
 {
-    friend std::ostream& operator<<(std::ostream& out, const ArrayType s)
-    {
-	    s.print(out);
-	    return out;
-    }
+
     public:
         ArrayType(Type *type)
         {
@@ -19,19 +15,26 @@ class ArrayType : public Type
         
         ~ArrayType()
         {
-            
-            if (type != NULL && !(type->hasSymbol)) {
-                delete type;
-            }
             for (int i = 0; i < ranges.size(); i++) {
                 delete ranges[i];
             }
+            ranges.clear();
+            delete type;
             type = NULL;
         }
         
         void addRange(Range *range)
         {
             ranges.push_back(range);
+        }
+        
+        Type* clone() const
+        {
+            ArrayType *clone = new ArrayType(type->clone());
+            for (int i = 0; i < ranges.size(); i++) {
+                clone->ranges.push_back(ranges[i]->clone());
+            }
+            return clone;
         }
     
     private:

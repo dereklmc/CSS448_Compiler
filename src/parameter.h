@@ -8,15 +8,19 @@
  * A parameter is a variable because it has a name and a type.
  * A parameter can also be passed by reference or by value.
  */
-class Parameter : public Variable {
+class Parameter : public Variable
+{
 
     public:
         // ctr, creates a parameter with a name and a type that is passed by ref
         // or by value.
-        Parameter(std::string, Type*&, bool);
-	    ~Parameter();
+        Parameter(std::string, Type *&, bool);
+        Variable* getVariable() const;
+        
+        bool operator==(const Parameter&) const;
 
     private:
+        Variable var;
         // records how the parameter is passed:
         // true if by reference
         // false if by value.

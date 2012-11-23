@@ -19,6 +19,8 @@
 
 using namespace std;
 
+extern YYSTYPE yylval;
+
 %}
 
 /* definition section */
@@ -38,6 +40,12 @@ using namespace std;
         yrecord yrepeat yrightbracket yrightparen  ysemicolon yset 
         ythen  yto ytrue ytype  yuntil  yvar ywhile ywrite ywriteln yunknown
 %token <text> yident ystring ynumber
+
+%{
+
+// CODE BLOCK FOO
+
+%}
 
 %%
 /* rules section */
@@ -129,38 +137,38 @@ ConstExpression    :  UnaryOperator ConstFactor
                    |  ConstFactor
                    |  ystring
                                 {
-                                    createConstStringValue($$, $1);
+                                    createConstValue($$, $1, STRING);
                                 }
                    |  ynil
                                 {
-                                    createConstNilValue($$);
+                                    createConstValue($$, "nil", NIL);
                                 }
                    ;
 ConstFactor        :  yident
                                 {
-                                    createConstSymbolValue($$, $1);
+                                    createConstValue($$, $1, SYMBOL);
                                 }
                    |  ynumber
                                 {
-                                    createConstNumberValue($$, $1);
+                                    createConstValue($$, $1, NUMBER);
                                 }
                    |  ytrue
                                 {
-                                    createConstBoolValue($$, "true");
+                                    createConstValue($$, "true", BOOLEAN);
                                 }
                    |  yfalse
                                 {
-                                    createConstBoolValue($$, "false");
+                                    createConstValue($$, "false", BOOLEAN);
                                 }
                    ;
 Type               :  yident    {
-                                    getTypeOfSymbol($1, $$);
+                                    getSymbolicType($$, $1);
                                 }
                    |  ArrayType
-                   |  PointerType
                                 {
-                                    $$ = $1;
+                                    $$ = dynamic_cast<Type*>($1);
                                 }
+                   |  PointerType
                    |  RecordType
                    |  SetType
                    ;
@@ -251,7 +259,17 @@ CaseList           :  Case
 Case               :  CaseLabelList  ycolon  Statement
                    ;
 CaseLabelList      :  ConstExpression
+                                {
+                                    /* TODO */
+                                    delete $1;
+                                    $1 = NULL;
+                                }
                    |  CaseLabelList  ycomma  ConstExpression
+                                {
+                                    /* TODO */
+                                    delete $3;
+                                    $3 = NULL;
+                                }
                    ;
 WhileStatement     :  ywhile  Expression  ydo  Statement
                    ;
@@ -273,7 +291,6 @@ IOStatement        :  yread  yleftparen  DesignatorList  yrightparen
                    |  ywriteln  
                    |  ywriteln  yleftparen  ExpList  yrightparen
                    ;
-
 /***************************  Designator Stuff  ******************************/
 
 DesignatorList     :  Designator  
@@ -353,8 +370,20 @@ Setvalue           :  yleftbracket ElementList  yrightbracket
 ElementList        :  Element  
                    |  ElementList  ycomma  Element
                    ;
-Element            :  ConstExpression  
+Element            :  ConstExpression
+                                {
+                                    /* TODO */
+                                    delete $1;
+                                    $1 = NULL;
+                                }
                    |  ConstExpression  ydotdot  ConstExpression
+                                {
+                                    /* TODO */
+                                    delete $1;
+                                    $1 = NULL;
+                                    delete $3;
+                                    $3 = NULL;
+                                }
                    ;
 
 /***************************  Subprogram Stuff  ******************************/
@@ -387,18 +416,16 @@ ProcedureHeading   :  yprocedure yident
                                 }
                    |  yprocedure yident FormalParameters
                                 {
-                                    createProcedureWithParams($2, $$);
+                                    createProcedure($2, $$);
                                 }
                    ;
 FunctionHeading    :  yfunction  yident
                                 {
                                     createFunction($2, $$);
-                                    //Check parameters
                                 }
                    |  yfunction  yident FormalParameters
                                 {
-                                    createFunctionWithParams($2, $$);
-                                    //Check parameters
+                                    createFunction($2, $$);
                                 }
                    ;
 FormalParameters   :  yleftparen FormalParamList yrightparen
@@ -409,12 +436,10 @@ FormalParamList    :  OneFormalParam
 OneFormalParam     :  yvar IdentList ycolon yident
                                 {
                                     createParameter($4);
-                                    
                                 }
                    |  IdentList ycolon yident
                                 {
-                                   createParameter($3);
-                                    
+                                    createParameter($3);
                                 }
                    ;
 

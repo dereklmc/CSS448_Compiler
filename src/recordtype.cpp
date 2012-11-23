@@ -18,6 +18,16 @@ RecordType::~RecordType()
     for (int i = 0; i < fields.size(); i++) {
         delete fields[i];
     }
+    fields.clear();
+}
+
+Type* RecordType::clone() const
+{
+    RecordType *clone = new RecordType(scope);
+    for (int i = 0; i < fields.size(); i++) {
+        clone->fields.push_back(new Variable(*fields[i]));
+    }
+    return clone;
 }
 
 /*******************************************************************************

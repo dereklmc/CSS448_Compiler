@@ -11,6 +11,10 @@ class Range
         return out;
     }
     
+    public:
+        virtual Range* clone() const =0;
+        virtual ~Range() { }
+    
     protected:
         virtual void print(std::ostream& out) const =0;
 };
@@ -19,13 +23,20 @@ class CharRange : public Range
 {
 
     public:
-        CharRange(char start, char end) {
+        CharRange(char start, char end)
+        {
             this->start = start;
             this->end = end;
         }
         
+        Range* clone() const
+        {
+            return new CharRange(start, end);
+        }
+        
     protected:
-        void print(std::ostream& out) const {
+        void print(std::ostream& out) const
+        {
             out << start << " " << end;
         }
         
@@ -38,20 +49,28 @@ class ConstRange : public Range
 {
 
     public:
-        ConstRange(ConstValue *start, ConstValue *end) {
+        ConstRange(ConstValue *start, ConstValue *end)
+        {
             this->start = start;
             this->end = end;
         }
         
-        ~ConstRange() {
+        ~ConstRange()
+        {
             delete start;
             start = NULL;
             delete end;
             end = NULL;
         }
         
+        Range* clone() const
+        {
+            return new ConstRange(new ConstValue(*start), new ConstValue(*end));
+        }
+        
     protected:
-        void print(std::ostream& out) const {
+        void print(std::ostream& out) const
+        {
             out << *start << " " << *end;
         }
         

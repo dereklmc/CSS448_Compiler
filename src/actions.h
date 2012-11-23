@@ -2,17 +2,18 @@
 #define ACTIONS_H
 
 #include "y.tab.h"
-#include "Procedure.h"
+#include "procedure.h"
 #include "function.h"
 #include "Type.h"
 #include "stack.h"
 #include "PointerType.h"
 #include "TypeSymbol.h"
-#include "arrayType.h"
+#include "arraytype.h"
 #include "setType.h"
 #include "RecordType.h"
 #include "constvalue.h"
 #include "constant.h"
+#include "symbolictype.h"
 
 #include <deque>
 
@@ -95,9 +96,9 @@ void createTypeSymbol(const char *, Type*);
 
 void createPointer(Type*&, const char*);
 
-void getTypeOfSymbol(const char*, Type *&);
+void getSymbolicType(Type *&, const char*);
 
-void createArrayType(Type *&, Type *);
+void createArrayType(ArrayType *&, Type *);
 
 void createSetType(Type *&);
 
@@ -105,25 +106,15 @@ void createStringRange(const char*, const char*);
 
 void createConstRange(ConstValue*, ConstValue*);
 
-void createVariableList(Type *);
+void createVariableList(Type *&);
 
-void createVariables(Type *);
+void createVariables(Type *&);
 
 void createRecordType(Type *&);
 
-void createConstSymbolValue(ConstValue*&, const char*);
-
-void createConstNumberValue(ConstValue*&, const char*);
-
-void createConstBoolValue(ConstValue*&, const char*);
-
-void createConstStringValue(ConstValue*&, const char*);
-
-void createConstNilValue(ConstValue*&);
-
 void createConstValue(ConstValue*&, const char*, ConstValueType);
 
-void createConstant(const char*, ConstValue*);
+void createConstant(const char*, ConstValue*&);
 
 void pushVarOnStack();
 

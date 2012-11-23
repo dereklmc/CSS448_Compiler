@@ -6,32 +6,18 @@
 
 class Constant : public Symbol
 {
-
-    friend std::ostream& operator<<(std::ostream& out, const Constant s)
-	{
-    	s.print(out);
-	    return out;
-	}
 	
     private:
          ConstValue *value;
          
     public:
-        Constant(std::string name, ConstValue *value) : Symbol(name)
-        {
-            this->value = value;
-        }
+        Constant(std::string, ConstValue *);
         
-        ~Constant() {
-            delete value;
-            value = NULL;
-        }
+        ~Constant();
         
-        void print(std::ostream& out) const
-        {
-        	Symbol::print(out);
-			out << " " << *value;
-        }
+        std::string generateCode() const;
+        
+        void print(std::ostream&) const;
 };
 
 #endif

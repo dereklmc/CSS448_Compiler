@@ -2,6 +2,7 @@
 #define CONST_VALUE
 
 #include <string>
+#include <iostream>
 
 enum ConstValueType
 {
@@ -12,7 +13,8 @@ enum ConstValueType
     NIL
 };
 
-enum UnaryOperator {
+enum UnaryOperator
+{
     PLUS,
     MINUS,
     NONE
@@ -27,15 +29,9 @@ class ConstValue
     }
 
     public:
-        ConstValue(std::string value, ConstValueType type) {
-            this->value = value;
-            this->type = type;
-            this->op = NONE;
-        }
-        
-        void setOperator(UnaryOperator op) {
-            this->op = op;
-        }
+        ConstValue(std::string value, ConstValueType type);
+        void setOperator(UnaryOperator op);
+        std::string generateCode() const;
     
     private:
         std::string value;

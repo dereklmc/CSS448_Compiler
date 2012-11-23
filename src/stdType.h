@@ -12,6 +12,8 @@ class StdType : public Type
 	    StdType(std::string name);
     
         std::string getName() const;
+        
+        Type* clone() const;
     
 	private:
 	    std::string name;

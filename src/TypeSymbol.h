@@ -10,14 +10,15 @@
  */
 class TypeSymbol : public Symbol {
     
-    public:
-        Type *type;
-        
+    public:        
         // Standard ctr, see Symbol.
         TypeSymbol(std::string, Type *&);
         ~TypeSymbol();
         
         void print(std::ostream&) const;
+    
+    private:
+        Type *type;
 };
 
 #endif

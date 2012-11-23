@@ -16,8 +16,9 @@ class Symbol
         {
         }
         
-        Symbol(std::string n) : name(n)
+        Symbol(std::string name)
         {
+            this->name = name;
         }
         
         virtual ~Symbol() {  }

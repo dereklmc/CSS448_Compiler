@@ -1,12 +1,12 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "Procedure.h"
+#include "procedure.h"
 #include "function.h"
 #include "Type.h"
 #include "constvalue.h"
 #include "PointerType.h"
-#include "ArrayType.h"
+#include "arraytype.h"
 
 typedef union {
     const char *text;
@@ -15,7 +15,9 @@ typedef union {
     Type *type;
     ConstValue *constvalue;
     UnaryOperator unaryop;
-    ArrayType arraytype;
+    ArrayType *arraytype;
 } YYSTYPE;
+
+extern YYSTYPE yylval;
 
 #endif

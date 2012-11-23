@@ -1,15 +1,26 @@
 #include "Variable.h"
 
+Variable::Variable()
+{
+    type = NULL;
+}
+
 /*******************************************************************************
  *
  * Constructor
  *
  * Creates a variable with a name and a type. Extends the constructor in Symbol.
  */
-Variable::Variable(std::string name, Type *&type) :
+Variable::Variable(std::string name, Type *type) :
         Symbol(name)
 {
     this->type = type;
+}
+
+Variable::Variable(const Variable &other)
+{
+    this->type = NULL;
+    this->clone(other);
 }
 
 /*******************************************************************************
@@ -21,10 +32,26 @@ Variable::Variable(std::string name, Type *&type) :
  */
 Variable::~Variable()
 {
-    if (type != NULL && !type->hasSymbol) {
-        delete type;
-    }
+    delete type;
     type = NULL;
+}
+
+Variable& Variable::operator=(const Variable &rhs)
+{
+    if (this != &rhs) {
+        this->clone(rhs);
+    }
+    return *this;
+}
+
+void Variable::clone(const Variable &rhs)
+{
+    if (this->type != NULL) {
+        delete this->type;
+        this->type = NULL;
+    }
+    this->name = rhs.name;
+    this->type = rhs.type->clone();
 }
 
 /*******************************************************************************

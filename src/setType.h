@@ -20,6 +20,12 @@ class SetType : public Type
             range = NULL;
         }
         
+        Type* clone() const
+        {
+            Type *clone = new SetType(range->clone());
+            return clone;
+        }
+        
     private:
         Range* range;
 

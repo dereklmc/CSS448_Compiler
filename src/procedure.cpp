@@ -1,4 +1,4 @@
-#include"Procedure.h"
+#include "procedure.h"
 
 /*******************************************************************************
  *
@@ -7,6 +7,14 @@
 Procedure::Procedure(std::string name) :
         Symbol(name)
 {
+}
+
+Procedure::~Procedure()
+{ 
+    for (int i = 0; i < parameters.size(); i++) {
+        delete parameters[i];
+    }
+    parameters.clear();
 }
 
 /*******************************************************************************
@@ -21,7 +29,7 @@ Procedure::Procedure(std::string name) :
  */
 bool Procedure::addParameter(Parameter *param)
 {
-    if (hasParameter(param->name)) {
+    if (hasParameter(param)) {
         return false;
     }
     parameters.push_back(param);
@@ -36,10 +44,10 @@ bool Procedure::addParameter(Parameter *param)
  * @param paramName - paramName to search for.
  * @return return true if paramater exists in vector, false otherwise.
  */
-bool Procedure::hasParameter(const std::string &paramName) const
+bool Procedure::hasParameter(Parameter *param) const
 {
     for(int i = 0; i < parameters.size(); i++) {
-        if (parameters[i]->name == paramName) {
+        if (*parameters[i] == *param) {
             return true;
         }
     }
@@ -59,6 +67,5 @@ std::vector<Parameter*> Procedure::getParameters() const
 
 void Procedure::print(std::ostream& out) const
 {
-    out << name;
-	//out << " " << parameters; 
+    out << name; 
 }

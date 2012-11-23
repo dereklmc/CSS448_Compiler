@@ -18,7 +18,8 @@ class RecordType : public Type {
     public:
         // ctr that creates a record with a name and a given pseudo-scope
         RecordType(int);
-	~RecordType();
+        ~RecordType();
+        Type* clone() const;
         // Add a new field to the current record.
         bool addField(Variable*&);
         // Checks if field with given name is in the current record.

@@ -26,7 +26,8 @@ Symbol* PointerType::getPointee() const
  */
 PointerType::~PointerType()
 {
-    this->pointee = NULL;
+    delete pointee;
+    pointee = NULL;
 }
 
 /*******************************************************************************
@@ -37,26 +38,17 @@ PointerType::~PointerType()
  */
 void PointerType::print(std::ostream &output) const
 {
-    print(output, hasSymbol);
+    output << "^ " << pointee->name;
 }
 
-/*******************************************************************************
- *
- * Overloaded print method from Symbol.
- *
- * Prints name of the pointer and name of what the pointer is pointing to.
- */
-void PointerType::print(std::ostream &output, bool printSymbolName) const
+Type* PointerType::clone() const
 {
-    if (printSymbolName) {
-        output << symbolName;
-    } else {
-        output << " ^ " << pointee->name;
-    }
+    PointerType *clone = new PointerType(*this);
+    return clone;
 }
+
 std::string PointerType::generateCode() const
 {
     std::string tempString = "RecordType code here!\n";
     return tempString;
 }
-

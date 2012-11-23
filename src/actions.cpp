@@ -34,7 +34,7 @@ bool searchStack(const char *ident, T *&castSymbol)
     bool isFound = symbolTable.searchStack(identStr, symbol);
     if (!isFound) {
         castSymbol = NULL;
-        // TODO print error?
+        std::cout << "Ident \"" << ident << "\" does not name a symbol." << std::endl;
     } else {
         castSymbol = dynamic_cast<T*>(symbol); // = foundType;
     }
@@ -71,7 +71,8 @@ void createParameter(const char* ident)
         while (!identBuffer.empty()) 
         {
 			// Check if name is already taken
-            Parameter *param = new Parameter(identBuffer.front(), type->type, true);
+			Type *varType = new SymbolicType(type);
+            Parameter *param = new Parameter(identBuffer.front(), varType, true);
             paramBuffer.push_back(param);
             identBuffer.pop_front();
         }
@@ -83,11 +84,6 @@ void createParameter(const char* ident)
 void createProcedure(const char *ident, Procedure *&procedurePtr)
 {
     procedurePtr = new Procedure(std::string(ident));
-}
-
-void createProcedureWithParams(const char *ident, Procedure *&procedurePtr)
-{
-    createProcedure(ident, procedurePtr);
     /* Add parameters */
     while (!paramBuffer.empty()) {
         procedurePtr->addParameter(paramBuffer.front());
@@ -99,24 +95,12 @@ void createProcedureWithParams(const char *ident, Procedure *&procedurePtr)
  * createFunction
  * Takes in an array of chars which will represent the name of the new function
  * and a pointer to a reference of a Function object that will be initialized
- * with that name.
+ * with that name. It pops all of the parameters off of the paramBuffer, if any,
+ * and adds them to the function.
  *****************************************************************************/
 void createFunction(const char *ident, Function *&funcPtr)
 {
     funcPtr = new Function(std::string(ident));
-}
-
-/******************************************************************************
- * createFunctionWithParams
- * Like createFunction, this method takes in an array of chars that will 
- * represent the name of the new function and a pointer to a reference of a 
- * Function object that will be initialized with that name. After calling
- * createFunction to initialize its funcPtr, it pops all of the parameters off
- * of the paramBuffer and adds them to the function.
- *****************************************************************************/
-void createFunctionWithParams(const char *ident, Function *&funcPtr)
-{
-    createFunction(ident, funcPtr);
     /* Add parameters */
     while (!paramBuffer.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
         funcPtr->addParameter(paramBuffer.front());
@@ -140,7 +124,7 @@ void createFunctionDecl(const char* ident, Function*& funcPtr)
     TypeSymbol *symbolType = NULL;
     bool found = searchStack<TypeSymbol>(ident, symbolType);
     // TODO print error message if bad type was found.
-    funcPtr->setType(symbolType->type);
+    funcPtr->setType(new SymbolicType(symbolType));
     
     /* Put function in parent scope */
     symbolTable.current->addSymbol(funcPtr);
@@ -149,7 +133,8 @@ void createFunctionDecl(const char* ident, Function*& funcPtr)
     /* Put procedure params on symbol stack. */
     std::vector<Parameter*> toPutOnStack = funcPtr->getParameters();
     for (int i = 0; i < toPutOnStack.size(); i++) {
-        symbolTable.current->addSymbol(toPutOnStack[i]);
+        Symbol *paramVarSymbol = toPutOnStack[i]->getVariable();
+        symbolTable.current->addSymbol(paramVarSymbol);
     }
 
 }
@@ -171,7 +156,8 @@ void createProcedureDecl(Procedure* ident)
     /* Put procedure params on symbol stack. */
     std::vector<Parameter*> toPutOnStack = ident->getParameters();
     for (int i = 0; i < toPutOnStack.size(); i++) {
-        symbolTable.current->addSymbol(toPutOnStack[i]);
+        Symbol *paramVarSymbol = toPutOnStack[i]->getVariable();
+        symbolTable.current->addSymbol(paramVarSymbol);
     }
 }
 
@@ -194,26 +180,26 @@ void createPointer(Type*& createdType, const char *ident)
     createdType = ptr;
 }
 
-void getTypeOfSymbol(const char *name, Type *&type)
+void getSymbolicType(Type *&type, const char *name)
 {
-    TypeSymbol *symbol = NULL;
-    if (searchStack(name, symbol)) {
-        type = symbol->type;
+    TypeSymbol *typeSymbol = NULL;
+    bool isFound = searchStack<TypeSymbol>(name, typeSymbol);
+    if (isFound && typeSymbol != NULL) {
+        type = new SymbolicType(typeSymbol);
     } else {
         type = NULL;
-        // TODO error message?
+        std::cout << "ERROR! Type \"" << name << "\" is undefined." << std::endl;
     }
 }
 
-void createArrayType(Type *&createdType, Type *contentsType)
+void createArrayType(ArrayType *&arrayType, Type *contentsType)
 {
-    ArrayType *arrayType = new ArrayType(contentsType);
+    arrayType = new ArrayType(contentsType);
     /* Add ranges */
-    while (!rangeBuffer.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
+    while (!rangeBuffer.empty()) {
         arrayType->addRange(rangeBuffer.front());
         rangeBuffer.pop_front();
     }
-    createdType = arrayType;
 }
 
 void createSetType(Type *&createdType)
@@ -232,29 +218,33 @@ void createConstRange(ConstValue *start, ConstValue *stop) {
     rangeBuffer.push_back(range);
 }
 
-void createVariableList(Type *type) {
+void createVariableList(Type *&type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
 
             identBuffer.pop_front();
             
-            Variable* var = new Variable(ident,type);
+            Variable* var = new Variable(ident,type->clone());
             variableBuffer.push_back(var);
         }
+        delete type;
+        type = NULL;
     }
 }
 
-void createVariables(Type *type) {
+void createVariables(Type *&type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
 	   
             identBuffer.pop_front();
             
-            Variable* var = new Variable(ident,type);
+            Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
         }
+        delete type;
+        type = NULL;
     }
 }
 
@@ -262,44 +252,25 @@ void createRecordType(Type *&createdType) {
     RecordType *record = new RecordType(symbolTable.currentScope);
     while (!variableBuffer.empty()) {
         Variable *var = variableBuffer.front();
-        //std::cout << "ADD FIELD \"" << *var << "\"" << std::endl;
         if (!record->addField(var)) {
-            std::cout << "ERROR: " << var->name << "already exists in record" << std::endl;
+            std::cerr << "ERROR: " << var->name << "already exists in record" << std::endl;
+            delete var;
+            var = NULL;
         }
         variableBuffer.pop_front();
-	//std::cout << "ADDED FIELD \"" << *var << "\"" << std::endl;
     }
-  // std::cout << "CREATED RECORD :: " << *record << std::endl;
     createdType = record;
 }
 
-void createConstSymbolValue(ConstValue *&constValue, const char *value) {
-    createConstValue(constValue,value,SYMBOL);
-}
-
-void createConstNumberValue(ConstValue *&constValue, const char *value) {
-    createConstValue(constValue,value,NUMBER);
-}
-
-void createConstBoolValue(ConstValue *&constValue, const char *value) {
-    createConstValue(constValue,value,BOOLEAN);
-}
-
-void createConstStringValue(ConstValue *&constValue, const char *value) {
-    createConstValue(constValue,value,STRING);
-}
-
-void createConstNilValue(ConstValue *&constValue) {
-    createConstValue(constValue,"nil",NIL);
-}
-
 void createConstValue(ConstValue *&constValue, const char *value, ConstValueType type) {
-    constValue = new ConstValue(std::string(value), type);
+    std::string strValue(value);
+    constValue = new ConstValue(strValue, type);
 }
 
-void createConstant(const char *ident, ConstValue *value) {
-    Symbol *symbol = new Constant(std::string(ident), value);
+void createConstant(const char *ident, ConstValue *&value) {
+    Constant *symbol = new Constant(std::string(ident), value);
     symbolTable.current->addSymbol(symbol);
+    std::cout << symbol->generateCode() << std::endl;
 }
 
 void checkPointers()
