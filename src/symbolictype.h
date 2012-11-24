@@ -11,7 +11,10 @@ class SymbolicType : public Type {
         ~SymbolicType();
         
         Type* clone() const;
-        std::string generateCode() const;
+        std::string generateTypeCode() const;
+		std::string generateVarDeclCode() const;
+		std::string generateOptionalCode() const {return "";};
+		std::string printCName() const {return "";};
     
     protected:
         // overriddent print method from Type.

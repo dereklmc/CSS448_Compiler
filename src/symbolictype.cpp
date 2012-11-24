@@ -22,9 +22,14 @@ Type* SymbolicType::clone() const
     return clone;
 }
 
-std::string SymbolicType::generateCode() const
+std::string SymbolicType::generateVarDeclCode() const
 {
-    // TODO write
+	std::string output = symbol->generateCode();
+	return output;
+}
+
+std::string SymbolicType::generateTypeCode() const
+{
 	std::string output = symbol->generateCode();
     return output ;
 }

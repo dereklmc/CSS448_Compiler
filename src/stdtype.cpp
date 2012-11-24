@@ -22,7 +22,12 @@ Type* StdType::clone() const
     return clone;
 }
 
-std::string StdType::generateCode() const
+std::string StdType::generateVarDeclCode() const
+{
+	return cname;
+}	
+
+std::string StdType::generateTypeCode() const
 {
     return cname;
 }

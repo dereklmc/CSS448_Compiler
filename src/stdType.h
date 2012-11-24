@@ -12,9 +12,12 @@ class StdType : public Type
 	    StdType(std::string pname, std::string cname);
     
         std::string getName() const;
-        
+        std::string printName() {return cname;};
         Type* clone() const;
-    	std::string generateCode() const;
+    	std::string generateTypeCode() const;
+		std::string generateVarDeclCode() const;
+		std::string generateOptionalCode() const {return "";};
+		std::string printCName() const {return cname;};
 	private:
 	    std::string pname;
 		std::string cname;

@@ -28,9 +28,13 @@ class Type
         }
         
         virtual Type* clone() const =0;
-        virtual std::string generateCode() const =0;
+        virtual std::string generateTypeCode() const =0;
+		virtual std::string generateVarDeclCode() const=0;
+		virtual std::string generateOptionalCode() const=0;
+		virtual std::string printCName() const=0;
     protected:
         virtual void print(std::ostream& out) const =0;
+		std::string optionalCode;
         
 };
 

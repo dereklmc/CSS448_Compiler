@@ -11,6 +11,7 @@
 RecordType::RecordType(int parentScope) : Type()
 {
     this->scope = parentScope + 2;
+	optionalCode = "struct";
 }
 
 RecordType::~RecordType()
@@ -68,7 +69,6 @@ bool RecordType::hasField(const std::string &fieldName) const
 void RecordType::print(std::ostream &output) const
 {
     output << std::endl;
-    
     for(int i = 0; i < fields.size(); i++) {
         printScopeTabs(output);
         fields[i]->print(output);
@@ -89,8 +89,21 @@ void RecordType::printScopeTabs(std::ostream &output) const
     }
 }
 
-std::string RecordType::generateCode() const
+std::string RecordType::generateVarDeclCode() const
 {
-    std::string tempString = "RecordType code here!\n";
+	std::string tempString = "";
+	return tempString;
+}
+
+std::string RecordType::generateTypeCode() const
+{
+    std::string tempString = "{\n";
+	for (int i = 0; i < fields.size(); i++)
+	{
+		//TODO print tabs
+		tempString += "\t";
+		tempString += (fields[i]->generateCode() + ";\n");
+	}
+	tempString += "}";
     return tempString;
 }
