@@ -10,6 +10,11 @@ std::deque<Variable*> variableBuffer;
 
 Stack symbolTable;
 
+/******************************************************************************
+ * addIdent
+ * Takes a char* array, which is then converted to a string before being 
+ * added to the identBuffer for later use.
+ ******************************************************************************/
 void addIdent(const char *ident)
 {
     identBuffer.push_back(std::string(ident));
@@ -41,10 +46,18 @@ bool searchStack(const char *ident, T *&castSymbol)
     return isFound;
 }
 
+/******************************************************************************
+ * createProgramScope
+ * This method is called whenever the grammar encounters a new program 
+ * declaration. Converts the program name from a char* array to a string, 
+ * discards any program parameters (at this point in time) and creates a new
+ * scope with the program's name.
+ *****************************************************************************/
 void createProgramScope(const char *ident) {
     std::string scopeName(ident);
+	// Discard program parameters
     while (!identBuffer.empty()) {
-	identBuffer.pop_front();
+		identBuffer.pop_front();
     }	
     symbolTable.createScope(scopeName);
 }
@@ -81,6 +94,12 @@ void createParameter(const char* ident)
     }
 }
 
+/******************************************************************************
+ * createProcedure(const char*, Procedure*&)
+ * Instantiates the Procedure pointer passed in with the char* array passed in.
+ * If there were any parameters placed in the paramBuffer, they are now 
+ * popped off the buffer and added to the Procedure object.
+ *****************************************************************************/
 void createProcedure(const char *ident, Procedure *&procedurePtr)
 {
     procedurePtr = new Procedure(std::string(ident));
@@ -161,6 +180,12 @@ void createProcedureDecl(Procedure* ident)
     }
 }
 
+/******************************************************************************
+ * createTypeSymbol(const char*, Type*)
+ * If the Type ptr passed in is not NULL, then a new TypeSymbol will be
+ * instantiated with the char* array representing its name, and with the Type*
+ * passed in. This TypeSymbol will then be added to the current scope.
+ ******************************************************************************/
 void createTypeSymbol(const char *ident, Type *type)
 {
     if (type != NULL) {
@@ -170,6 +195,13 @@ void createTypeSymbol(const char *ident, Type *type)
     }
 }
 
+/******************************************************************************
+ * createPointer(Type*&, const char*)
+ * A Symbol object is instantiated with the char* array for its name. A new
+ * PointerType object is then instantiated using this Symbol object and
+ * pushed onto the ptrBuffer. This pointer is also saved to the Type*& that
+ * was passed in.
+ *****************************************************************************/
 void createPointer(Type*& createdType, const char *ident)
 {
     // Find symbol for ident
@@ -180,6 +212,12 @@ void createPointer(Type*& createdType, const char *ident)
     createdType = ptr;
 }
 
+/******************************************************************************
+ * getSymbolicType(Type*&, const char*)
+ * First searches the stack for a TypeSymbol matching the name passed in. If 
+ * that name is found, then a new SymbolicType object is saved to the Type*&
+ * that was passed in. If the name was not found, an error is displayed.
+ ******************************************************************************/
 void getSymbolicType(Type *&type, const char *name)
 {
     TypeSymbol *typeSymbol = NULL;
@@ -192,6 +230,12 @@ void getSymbolicType(Type *&type, const char *name)
     }
 }
 
+/******************************************************************************
+ * createArrayType(ArrayType *&, Type*)
+ * Instantiates the ArrayType object passed in with the Type* also passed in.
+ * While there are still Range objects in the rangeBuffer, they will be popped
+ * off and added to the ArrayType object.
+ *****************************************************************************/
 void createArrayType(ArrayType *&arrayType, Type *contentsType)
 {
     arrayType = new ArrayType(contentsType);
@@ -202,22 +246,44 @@ void createArrayType(ArrayType *&arrayType, Type *contentsType)
     }
 }
 
+/******************************************************************************
+ * createSetType(Type*&)
+ * Instantiates the passed in Type*& using the Range object in the rangeBuffer.
+ * Top of rangeBuffer is then popped off.
+ *****************************************************************************/
 void createSetType(Type *&createdType)
 {
     createdType = new SetType(rangeBuffer.front());
     rangeBuffer.pop_front();
 }
 
+/******************************************************************************
+ * creatStringRange(const char*, const char*)
+ * Creates a new Range object using the two char* arrays passed in. Then
+ * pushes this object onto the rangeBuffer.
+ *****************************************************************************/
 void createStringRange(const char* start, const char* stop) {
     Range *range = new CharRange(start[0], stop[0]);
     rangeBuffer.push_back(range);
 }
 
+/******************************************************************************
+ * createConstRange(ConstValue*, ConstValue*)
+ * Creates a new Range object using the ConstValue*s passed in. Then pushes 
+ * this Range object onto the rangeBuffer.
+ *****************************************************************************/
 void createConstRange(ConstValue *start, ConstValue *stop) {
     Range *range = new ConstRange(start, stop);
     rangeBuffer.push_back(range);
 }
 
+/******************************************************************************
+ * createVariableList(Type*&)
+ * If the Type*& passed in is not NULL, each string in the identBuffer will be
+ * popped off and used to create a new Variable object of the type passed in.
+ * These Variable objects are then pushed onto the variableBuffer. 
+ * Deletes the Type object passed in and nullifies the pointer.
+ *****************************************************************************/
 void createVariableList(Type *&type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
@@ -262,17 +328,34 @@ void createRecordType(Type *&createdType) {
     createdType = record;
 }
 
+/******************************************************************************
+ * createConstValye(ConstValue*&, const char*, ConstValueType)
+ * Instantiates the ConstValue object passed in with the const char* array
+ * and ConstValueType also passed in.
+ ******************************************************************************/
 void createConstValue(ConstValue *&constValue, const char *value, ConstValueType type) {
     std::string strValue(value);
     constValue = new ConstValue(strValue, type);
 }
 
+/******************************************************************************
+ * createConstant(const char*, ConstValue*&)
+ * Creates a new Constant object using the char* array and ConstValue passed
+ * in. Then addes this Constant object to the current scope and generates code
+ * for it.
+ *****************************************************************************/
 void createConstant(const char *ident, ConstValue *&value) {
     Constant *symbol = new Constant(std::string(ident), value);
     symbolTable.current->addSymbol(symbol);
     std::cout << symbol->generateCode() << std::endl;
 }
 
+/******************************************************************************
+ * checkPointers()
+ * While the ptrBuffer is not empty, takes the pointer from the front and 
+ * searches the symbol table for the pointee's name. Whether or not the pointee
+ * is found in the symbol table, the pointer will be popped off the ptrBuffer.
+ *****************************************************************************/
 void checkPointers()
 {
     while(!ptrBuffer.empty())
