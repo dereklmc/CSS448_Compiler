@@ -31,10 +31,10 @@ class Stack
             current = zeroeth;
             
             // Add standard idents to type.
-            Type *intType = new StdType("integer");
-            Type *boolType = new StdType("boolean");
-            Type *strType = new StdType("string");
-            Type *realType = new StdType("real");
+            Type *intType = new StdType("integer", "int");
+            Type *boolType = new StdType("boolean", "bool");
+            Type *strType = new StdType("string", "string");
+            Type *realType = new StdType("real", "double");
             Symbol *symInt = new TypeSymbol("integer", intType);
             Symbol *symBool = new TypeSymbol("boolean", boolType);
             Symbol *symStr = new TypeSymbol("string", strType);

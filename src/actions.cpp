@@ -293,6 +293,7 @@ void createVariableList(Type *&type) {
             
             Variable* var = new Variable(ident,type->clone());
             variableBuffer.push_back(var);
+			std::cout << var->generateCode() << ";" << std::endl;
         }
         delete type;
         type = NULL;
@@ -308,6 +309,7 @@ void createVariables(Type *&type) {
             
             Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
+			std::cout << var->generateCode() << ";" << std::endl;
         }
         delete type;
         type = NULL;

@@ -2,12 +2,12 @@
 #define SYMBOLICTYPE_H
 
 #include "Type.h"
-#include "symbol.h"
+#include "TypeSymbol.h"
 
 class SymbolicType : public Type {
 
     public:
-        SymbolicType(Symbol *);
+        SymbolicType(TypeSymbol *);
         ~SymbolicType();
         
         Type* clone() const;
@@ -18,7 +18,7 @@ class SymbolicType : public Type {
         void print(std::ostream&) const;
 
     private:
-        Symbol *symbol;
+        TypeSymbol *symbol;
 
 };
 

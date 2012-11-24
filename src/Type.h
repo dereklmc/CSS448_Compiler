@@ -28,10 +28,10 @@ class Type
         }
         
         virtual Type* clone() const =0;
-        
+        virtual std::string generateCode() const =0;
     protected:
         virtual void print(std::ostream& out) const =0;
-        virtual std::string generateCode() const =0;
+        
 };
 
 #endif

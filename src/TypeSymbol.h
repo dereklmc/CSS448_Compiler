@@ -14,7 +14,7 @@ class TypeSymbol : public Symbol {
         // Standard ctr, see Symbol.
         TypeSymbol(std::string, Type *&);
         ~TypeSymbol();
-        
+        std::string generateCode();
         void print(std::ostream&) const;
     
     private:

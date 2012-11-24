@@ -1,28 +1,28 @@
 #include "stdType.h"
     
-StdType::StdType(std::string name) : Type()
+StdType::StdType(std::string pname, std::string cname) : Type()
 {
-    this->name = name;
+    this->pname = pname;
+	this->cname = cname;
 }
 
 std::string StdType::getName() const
 {
-    return this->name;
+    return this->pname;
 }	    
 
 void StdType::print(std::ostream& out) const
 {
-     out << name; 
+     out << pname; 
 }
 
 Type* StdType::clone() const
 {
-    Type *clone = new StdType(name);
+    Type *clone = new StdType(pname, cname);
     return clone;
 }
 
 std::string StdType::generateCode() const
 {
-    std::string tempString = "StdType code here!\n";
-    return tempString;
+    return cname;
 }

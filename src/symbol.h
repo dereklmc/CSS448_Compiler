@@ -22,7 +22,6 @@ class Symbol
         }
         
         virtual ~Symbol() {  }
-        
         virtual bool operator==(const Symbol& rhs)
         {
             if(name==rhs.name) {
@@ -36,6 +35,11 @@ class Symbol
         {
              out << name; 
         }
+
+		std::string getName()
+		{
+			return name;
+		}
 
 	    bool hasName(std::string n)
 	    {
