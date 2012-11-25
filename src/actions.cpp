@@ -190,8 +190,9 @@ void createTypeSymbol(const char *ident, Type *type)
 {
     if (type != NULL) {
         std::string name(ident);
-        Symbol *symbol = new TypeSymbol(name, type);
+        TypeSymbol *symbol = new TypeSymbol(name, type);
         symbolTable.current->addSymbol(symbol);
+		std::cout << symbol->generateTypeDeclCode();
     }
 }
 
@@ -308,6 +309,7 @@ void createVariables(Type *&type) {
             
             Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
+			std::cout << var->generateCode() << ";" << std::endl;
         }
         delete type;
         type = NULL;

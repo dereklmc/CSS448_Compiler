@@ -36,7 +36,8 @@ class ArrayType : public Type
             }
             return clone;
         }
-    
+
+    	std::string printCName() const {return "";};
     private:
         Type *type;
         std::vector<Range*> ranges;
@@ -49,11 +50,20 @@ class ArrayType : public Type
             }
             out << " " << *type;
         }
-        std::string generateCode() const
+
+		std::string generateOptionalCode() const {return type->generateTypeCode();};
+
+        std::string generateTypeCode() const
         {
-            std::string tempString = "RecordType code here!\n";
+            std::string tempString = "[] = {}";
             return tempString;
         }
+
+		std::string generateVarDeclCode() const
+		{
+			std::string tempString = "";
+			return tempString;
+		}
 
 };
 #endif

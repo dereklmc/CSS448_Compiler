@@ -20,6 +20,7 @@ class PointerType : public Type {
         // pointee.
         Symbol* getPointee() const;
         Type* clone() const;
+		std::string printCName() const {return "";};
 
     private:
         // The ident that the pointer points to.
@@ -28,7 +29,9 @@ class PointerType : public Type {
     protected:
         // overriden print method from Symbol. Prints name and pointee's name
         void print(std::ostream&) const;
-        std::string generateCode() const;
+        std::string generateTypeCode() const;
+		std::string generateVarDeclCode() const;
+		std::string generateOptionalCode() const {return "";};
 
 };
 

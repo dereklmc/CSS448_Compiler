@@ -24,6 +24,8 @@ class RecordType : public Type {
         bool addField(Variable*&);
         // Checks if field with given name is in the current record.
         bool hasField(const std::string&) const;
+		std::string generateOptionalCode() const {return "struct";};
+		std::string printCName() const {return "";};
     protected:
         // overriddent print method from Type. Prints name and fields.
         void print(std::ostream&) const;
@@ -35,7 +37,8 @@ class RecordType : public Type {
         int scope;
         // Helper method for #print, prints tabs indicated by scope.
         void printScopeTabs(std::ostream&) const;
-        std::string generateCode() const;
+        std::string generateTypeCode() const;
+		std::string generateVarDeclCode() const;
 };
 
 #endif

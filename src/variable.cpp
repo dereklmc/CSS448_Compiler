@@ -54,6 +54,11 @@ void Variable::clone(const Variable &rhs)
     this->type = rhs.type->clone();
 }
 
+std::string Variable::generateCode() const
+{
+	return (type->generateVarDeclCode() + " " + name);
+}
+
 /*******************************************************************************
  *
  * Overloaded print method from Symbol.

@@ -1,6 +1,6 @@
 #include "symbolictype.h"
 
-SymbolicType::SymbolicType(Symbol *s)
+SymbolicType::SymbolicType(TypeSymbol *s)
 {
     symbol = s;
 }
@@ -22,8 +22,14 @@ Type* SymbolicType::clone() const
     return clone;
 }
 
-std::string SymbolicType::generateCode() const
+std::string SymbolicType::generateVarDeclCode() const
 {
-    // TODO write
-    return "TODO: GENERATE CODE FOR SYMBOLIC TYPE";
+	std::string output = symbol->generateCode();
+	return output;
+}
+
+std::string SymbolicType::generateTypeCode() const
+{
+	std::string output = symbol->generateCode();
+    return output ;
 }

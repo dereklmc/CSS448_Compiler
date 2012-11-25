@@ -25,6 +25,8 @@ class SetType : public Type
             Type *clone = new SetType(range->clone());
             return clone;
         }
+		std::string generateOptionalCode() const {return "";};
+		std::string printCName() const {return "";};
         
     private:
         Range* range;
@@ -34,11 +36,16 @@ class SetType : public Type
         {
             out << *range;
         }
-        std::string generateCode() const
+        std::string generateTypeCode() const
         {
             std::string tempString = "setType code here!\n";
             return tempString;
         }
+		std::string generateVarDeclCode() const
+		{
+			std::string tempString = "setType var code here!\n";
+            return tempString;
+		}
 };
 
 #endif

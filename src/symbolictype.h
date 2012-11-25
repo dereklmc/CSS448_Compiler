@@ -2,23 +2,26 @@
 #define SYMBOLICTYPE_H
 
 #include "Type.h"
-#include "symbol.h"
+#include "TypeSymbol.h"
 
 class SymbolicType : public Type {
 
     public:
-        SymbolicType(Symbol *);
+        SymbolicType(TypeSymbol *);
         ~SymbolicType();
         
         Type* clone() const;
-        std::string generateCode() const;
+        std::string generateTypeCode() const;
+		std::string generateVarDeclCode() const;
+		std::string generateOptionalCode() const {return "";};
+		std::string printCName() const {return "";};
     
     protected:
         // overriddent print method from Type.
         void print(std::ostream&) const;
 
     private:
-        Symbol *symbol;
+        TypeSymbol *symbol;
 
 };
 

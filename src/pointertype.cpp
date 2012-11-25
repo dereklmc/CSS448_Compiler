@@ -47,8 +47,14 @@ Type* PointerType::clone() const
     return clone;
 }
 
-std::string PointerType::generateCode() const
+std::string PointerType::generateTypeCode() const
 {
-    std::string tempString = "RecordType code here!\n";
+    std::string tempString = "*";
+    return tempString;
+}
+
+std::string PointerType::generateVarDeclCode() const
+{
+	std::string tempString = "";
     return tempString;
 }

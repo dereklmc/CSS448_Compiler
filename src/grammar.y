@@ -170,6 +170,9 @@ Type               :  yident    {
                                 }
                    |  PointerType
                    |  RecordType
+					 			{
+									$$ = dynamic_cast<Type*>($1);
+								}
                    |  SetType
                    ;
 ArrayType          :  yarray yleftbracket Subrange SubrangeList
