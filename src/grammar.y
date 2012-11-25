@@ -296,19 +296,12 @@ IOStatement        :  yread  yleftparen  DesignatorList  yrightparen
 DesignatorList     :  Designator  
                    |  DesignatorList  ycomma  Designator
                    ;
-Designator         :  yident  
-                                {
-                                   printf("%s ", $1);
-                                }
-                      DesignatorStuff
+Designator         :  yident DesignatorStuff
                    ;
 DesignatorStuff    :  /*** empty ***/
                    |  DesignatorStuff  theDesignatorStuff
                    ;
 theDesignatorStuff :  ydot yident
-                                {
-                                    printf("%s ", $2);
-                                } 
                    |  yleftbracket ExpList yrightbracket
                    |  ycaret
                    ;
@@ -317,15 +310,8 @@ ActualParameters   :  yleftparen  ExpList  yrightparen
 ExpList            :  Expression
                    |  ExpList  ycomma  Expression
                    ;
-MemoryStatement    :  ynew  yleftparen  yident
-                                {
-                                    printf("%s ", $3);
-                                }
-                      yrightparen
+MemoryStatement    :  ynew  yleftparen  yident  yrightparen
                    |  ydispose yleftparen  yident
-                                {
-                                    printf("%s ", $3);
-                                }
                       yrightparen
                    ;
 
@@ -343,14 +329,16 @@ TermExpr           :  Term
 Term               :  Factor  
                    |  Term  MultOperator  Factor
                    ;
-Factor             :  ynumber
-                   |  ytrue
-                   |  yfalse
-                   |  ynil
-                   |  ystring
-                   |  Designator
-                   |  yleftparen  Expression  yrightparen
-                   |  ynot Factor
+Factor             :  ynumber { std::cout << $1; }
+                   |  ytrue { std::cout << "true"; }
+                   |  yfalse { std::cout << "false"; }
+                   |  ynil { std::cout << "NULL"; }
+                   |  ystring { std::cout << $1; }
+                   |  Designator { std::cout << "VAR$"; }
+                   |  yleftparen { std::cout << "("; }
+                      Expression
+                      yrightparen { std::cout << ")"; }
+                   |  ynot  { std::cout << "!"; } Factor
                    |  Setvalue
                    |  FunctionCall
                    ;
@@ -454,9 +442,15 @@ UnaryOperator      :  yplus
                                     $$ = MINUS;
                                 }
                    ;
-MultOperator       :  ymultiply | ydivide | ydiv | ymod | yand
+MultOperator       :  ymultiply { std::cout << "*"; }
+                   |  ydivide { std::cout << "/"; }
+                   |  ydiv 
+                   |  ymod { std::cout << "%"; }
+                   |  yand
                    ;
-AddOperator        :  yplus | yminus | yor
+AddOperator        :  yplus { std::cout << "+"; }
+                   |  yminus { std::cout << "-"; }
+                   |  yor
                    ;
 Relation           :  yequal  | ynotequal | yless | ygreater
                    |  ylessequal | ygreaterequal | yin
