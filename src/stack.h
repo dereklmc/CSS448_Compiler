@@ -8,11 +8,6 @@
 
 #include <iostream>
 
-StdType *INTEGER_TYPE = new StdType("integer", "int");
-StdType *BOOLEAN_TYPE = new StdType("boolean", "bool");
-StdType *STRING_TYPE = new StdType("string", "string");
-StdType *REAL_TYPE = new StdType("real", "double");
-
 class Stack
 {
     friend std::ostream& operator<<(std::ostream& out, const Stack& s)

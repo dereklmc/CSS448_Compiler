@@ -1,7 +1,7 @@
 #include "TypeSymbol.h"
         
 // Standard ctr, see Symbol.
-TypeSymbol::TypeSymbol(std::string name, Type *&type) :
+TypeSymbol::TypeSymbol(std::string name, Type *type) :
         Symbol(name)
 {
     this->type = type;
