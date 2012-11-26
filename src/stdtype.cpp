@@ -1,10 +1,6 @@
 #include "stdType.h"
 #include "symbolictype.h"
 
-StdType *INTEGER_TYPE = new StdType("integer", "int");
-StdType *BOOLEAN_TYPE = new StdType("boolean", "bool");
-StdType *STRING_TYPE = new StdType("string", "string");
-StdType *REAL_TYPE = new StdType("real", "double");
 
 StdType::StdType(std::string pname, std::string cname) : Type()
 {

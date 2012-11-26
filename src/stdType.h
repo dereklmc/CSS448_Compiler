@@ -25,9 +25,4 @@ class StdType : public Type
 	    void print(std::ostream& out) const;
 };
 
-extern StdType *INTEGER_TYPE;
-extern StdType *BOOLEAN_TYPE;
-extern StdType *STRING_TYPE;
-extern StdType *REAL_TYPE;
-
 #endif

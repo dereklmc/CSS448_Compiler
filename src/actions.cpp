@@ -307,7 +307,7 @@ void createVariables(Type *&type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
-	   
+	   		std::cout << "About to created new Var";
             identBuffer.pop_front();
             
             Variable* var = new Variable(ident,type->clone());

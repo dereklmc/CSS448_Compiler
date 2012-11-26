@@ -8,6 +8,11 @@
 
 #include <iostream>
 
+StdType *INTEGER_TYPE = new StdType("integer", "int");
+StdType *BOOLEAN_TYPE = new StdType("boolean", "bool");
+StdType *STRING_TYPE = new StdType("string", "string");
+StdType *REAL_TYPE = new StdType("real", "double");
+
 class Stack
 {
     friend std::ostream& operator<<(std::ostream& out, const Stack& s)
@@ -35,10 +40,10 @@ class Stack
             //Type *boolType = new StdType("boolean", "bool");
             //Type *strType = new StdType("string", "string");
             //Type *realType = new StdType("real", "double");
-            Symbol *symInt = new TypeSymbol(std::string("integer"), (Type*) INTEGER_TYPE);
-            Symbol *symBool = new TypeSymbol("boolean", BOOLEAN_TYPE);
-            Symbol *symStr = new TypeSymbol("string", STRING_TYPE);
-            Symbol *symReal = new TypeSymbol("real", REAL_TYPE);
+            Symbol *symInt = new TypeSymbol("integer", (Type*&)(INTEGER_TYPE));
+            Symbol *symBool = new TypeSymbol("boolean", (Type*&)BOOLEAN_TYPE);
+            Symbol *symStr = new TypeSymbol("string", (Type*&)STRING_TYPE);
+            Symbol *symReal = new TypeSymbol("real", (Type*&)REAL_TYPE);
             Symbol *symTrue = new Constant("true", new ConstValue("true", BOOLEAN));
             Symbol *symFalse = new Constant("false", new ConstValue("false", BOOLEAN));
             zeroeth->addSymbol(symInt);

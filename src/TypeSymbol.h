@@ -12,7 +12,7 @@ class TypeSymbol : public Symbol {
     
     public:        
         // Standard ctr, see Symbol.
-        TypeSymbol(std::string, Type *);
+        TypeSymbol(std::string, Type *&);
         ~TypeSymbol();
         std::string generateCode();
 		std::string generateTypeDeclCode();
