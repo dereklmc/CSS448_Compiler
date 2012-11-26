@@ -7,7 +7,8 @@
 enum ConstValueType
 {
     SYMBOL,
-    NUMBER,
+    INTEGER,
+	REAL,
     BOOLEAN,
     STRING,
     NIL

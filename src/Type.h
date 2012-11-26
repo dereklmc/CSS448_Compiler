@@ -32,6 +32,7 @@ class Type
 		virtual std::string generateVarDeclCode() const=0;
 		virtual std::string generateOptionalCode() const=0;
 		virtual std::string printCName() const=0;
+		virtual bool equals(Type*) const { return false; }
     protected:
         virtual void print(std::ostream& out) const =0;
 		std::string optionalCode;

@@ -1,12 +1,15 @@
 #include "actions.h"
 
 #include <iostream>
+#include <vector>
 
 std::deque<Parameter*> paramBuffer;
 std::deque<std::string> identBuffer;
 std::deque<PointerType*> ptrBuffer;
 std::deque<Range*> rangeBuffer;
 std::deque<Variable*> variableBuffer;
+
+std::vector<std::string> errorLog;
 
 Stack symbolTable;
 
@@ -389,5 +392,53 @@ void exitScope()
     /* Mem management */
     delete scope;
     scope = NULL;
+}
+
+void areTypesEqual(Type *a, Type *b)
+{
+
+}
+
+void printErrorLog()
+{
+
+}
+
+Type* getMultiplyType(Type *left, Type *right)
+{
+	if (left == NULL || right == NULL) {
+		// TODO: log error
+		return NULL;
+	}
+	
+	bool leftIsInteger = INTEGER_TYPE->equals(left);
+	bool rightIsInteger = INTEGER_TYPE->equals(right);
+	
+	bool leftIsReal = REAL_TYPE->equals(left);
+	bool rightIsReal = REAL_TYPE->equals(right);
+	
+	if (!leftIsInteger && !leftIsReal) {
+		// TODO log error
+		std::cout << "ERROR:: wrong left hand arg type to \"*\"" << std::endl;
+		return NULL;
+	}
+
+	if (!rightIsInteger && !rightIsReal) {
+		// TODO log error
+		std::cout << "ERROR:: wrong right hand arg type to \"*\"" << std::endl;
+		return NULL;
+	}
+
+	if (leftIsInteger && rightIsInteger) {
+		return INTEGER_TYPE;
+	}
+
+	if (leftIsReal || rightIsReal) {
+		return REAL_TYPE;
+	}
+
+	// SHOULD NOT REACH THIS POINT !!!
+	std::cout << "ERROR:: fatal" << std::endl;
+	return NULL;
 }
 

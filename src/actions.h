@@ -14,6 +14,7 @@
 #include "constvalue.h"
 #include "constant.h"
 #include "symbolictype.h"
+#include "stdType.h"
 
 #include <deque>
 
@@ -125,5 +126,11 @@ void pushVarOnStack();
  * and the StackFrame object is deleted.
  *****************************************************************************/
 void exitScope();
+
+void areTypesEqual(Type*, Type*);
+
+void printErrorLog();
+
+Type* getMultiplyType(Type*,Type*);
 
 #endif
