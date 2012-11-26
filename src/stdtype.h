@@ -30,4 +30,6 @@ extern StdType *BOOLEAN_TYPE;
 extern StdType *STRING_TYPE;
 extern StdType *REAL_TYPE;
 
+void initStdTypes();
+
 #endif

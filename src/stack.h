@@ -35,7 +35,8 @@ class Stack
             //Type *boolType = new StdType("boolean", "bool");
             //Type *strType = new StdType("string", "string");
             //Type *realType = new StdType("real", "double");
-            Symbol *symInt = new TypeSymbol(std::string("integer"), (Type*) INTEGER_TYPE);
+            initStdTypes();
+            Symbol *symInt = new TypeSymbol(std::string("integer"), INTEGER_TYPE);
             Symbol *symBool = new TypeSymbol("boolean", BOOLEAN_TYPE);
             Symbol *symStr = new TypeSymbol("string", STRING_TYPE);
             Symbol *symReal = new TypeSymbol("real", REAL_TYPE);
