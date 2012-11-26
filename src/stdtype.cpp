@@ -1,4 +1,4 @@
-#include "stdType.h"
+#include "stdtype.h"
 #include "symbolictype.h"
 
 StdType *INTEGER_TYPE = new StdType("integer", "int");

@@ -14,7 +14,7 @@
 #include "constvalue.h"
 #include "constant.h"
 #include "symbolictype.h"
-#include "stdType.h"
+#include "stdtype.h"
 
 #include <deque>
 

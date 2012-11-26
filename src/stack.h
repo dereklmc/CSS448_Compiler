@@ -2,7 +2,7 @@
 #define STACK_H
 
 #include "stackframe.h"
-#include "stdType.h"
+#include "stdtype.h"
 #include "TypeSymbol.h"
 #include "constant.h"
 
