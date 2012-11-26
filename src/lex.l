@@ -151,9 +151,13 @@ writeln			{ return ywriteln; }
                                             yylval.text = strdup(yytext);
 											return yident;
 										}
+{digit}+                                {
+                                            yylval.text = strdup(yytext);
+											return yinteger;
+										}
 {digit}+(\.{digit}+)?(e[+-]?{digit}+)?	{
                                             yylval.text = strdup(yytext);
-											return ynumber;
+											return yreal;
 										}
 [[:space:]]				/** Ignore */
 <INITIAL>.								{

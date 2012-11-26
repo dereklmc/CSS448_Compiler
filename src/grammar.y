@@ -32,20 +32,17 @@ extern YYSTYPE yylval;
 %type   <constvalue> ConstFactor ConstExpression
 %type   <unaryop> UnaryOperator
 %type   <arraytype> ArrayType
+
+%type   <type> Factor Term
+
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
         yleftparen yless ylessequal yminus ymod ymultiply ynew ynil ynot 
-        ynotequal ynumber yof  yor yplus yprocedure yprogram yread yreadln  
+        ynotequal yof  yor yplus yprocedure yprogram yread yreadln  
         yrecord yrepeat yrightbracket yrightparen  ysemicolon yset 
         ythen  yto ytrue ytype  yuntil  yvar ywhile ywrite ywriteln yunknown
-%token <text> yident ystring ynumber
-
-%{
-
-// CODE BLOCK FOO
-
-%}
+%token <text> yident ystring yinteger yreal
 
 %%
 /* rules section */
@@ -129,11 +126,21 @@ VariableDecl       :  IdentList  ycolon  Type
 
 /***************************  Const/Type Stuff  ******************************/
 
-ConstExpression    :  UnaryOperator ConstFactor
+ConstExpression    : UnaryOperator yident
                                 {
-                                    $2->setOperator($1);
-                                    $$ = $2;
+									createConstValue($$, $2, SYMBOL);
+                                    $$->setOperator($1);
                                 }
+				   |  UnaryOperator yinteger
+								{
+									createConstValue($$, $2, INTEGER);
+                                    $$->setOperator($1);
+								}
+				   |  UnaryOperator yreal
+								{
+									createConstValue($$, $2, REAL);
+                                    $$->setOperator($1);
+								}
                    |  ConstFactor
                    |  ystring
                                 {
@@ -148,9 +155,13 @@ ConstFactor        :  yident
                                 {
                                     createConstValue($$, $1, SYMBOL);
                                 }
-                   |  ynumber
+                   |  yinteger
                                 {
-                                    createConstValue($$, $1, NUMBER);
+                                    createConstValue($$, $1, INTEGER);
+                                }
+                   |  yreal
+                                {
+                                    createConstValue($$, $1, REAL);
                                 }
                    |  ytrue
                                 {
@@ -330,20 +341,28 @@ TermExpr           :  Term
                    |  TermExpr  AddOperator  Term
                    ;
 Term               :  Factor  
-                   |  Term  MultOperator  Factor
+                   |  Term  ymultiply { std::cout << "*"; } Factor 
+							{
+								$$ = getMultiplyType($1,$4);
+							}
+                   |  Term  ydivide { std::cout << "/ (double)"; } Factor  
+                   |  Term  ydiv { std::cout << "/"; } Factor  
+                   |  Term  ymod { std::cout << "%"; } Factor  
+                   |  Term  yand { std::cout << "&&"; } Factor
                    ;
-Factor             :  ynumber { std::cout << $1; }
-                   |  ytrue { std::cout << "true"; }
-                   |  yfalse { std::cout << "false"; }
-                   |  ynil { std::cout << "NULL"; }
-                   |  ystring { std::cout << $1; }
-                   |  Designator { std::cout << "VAR$"; }
+Factor             :  yinteger { std::cout << $1; $$ = INTEGER_TYPE; }
+                   |  yreal { std::cout << $1; $$ = REAL_TYPE; }
+                   |  ytrue { std::cout << "true"; $$ = BOOLEAN_TYPE;  }
+                   |  yfalse { std::cout << "false"; $$ = BOOLEAN_TYPE;  }
+                   |  ynil { std::cout << "NULL"; $$ = NULL;  }
+                   |  ystring { std::cout << $1; $$ = STRING_TYPE;  }
+                   |  Designator { std::cout << "VAR$"; $$ = NULL;  }
                    |  yleftparen { std::cout << "("; }
-                      Expression
+                      Expression { $$ = NULL; }
                       yrightparen { std::cout << ")"; }
-                   |  ynot  { std::cout << "!"; } Factor
-                   |  Setvalue
-                   |  FunctionCall
+                   |  ynot  { std::cout << "!"; } Factor { $$ = $3; }
+                   |  Setvalue { $$ = NULL; }
+                   |  FunctionCall { $$ = NULL; }
                    ;
 /*  Functions with no parameters have no parens, but you don't need         */
 /*  to handle that in FunctionCall because it is handled by Designator.     */
@@ -444,12 +463,6 @@ UnaryOperator      :  yplus
                                 {
                                     $$ = MINUS;
                                 }
-                   ;
-MultOperator       :  ymultiply { std::cout << "*"; }
-                   |  ydivide { std::cout << "/"; }
-                   |  ydiv 
-                   |  ymod { std::cout << "%"; }
-                   |  yand
                    ;
 AddOperator        :  yplus { std::cout << "+"; }
                    |  yminus { std::cout << "-"; }

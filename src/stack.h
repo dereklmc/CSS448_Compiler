@@ -31,14 +31,14 @@ class Stack
             current = zeroeth;
             
             // Add standard idents to type.
-            Type *intType = new StdType("integer", "int");
-            Type *boolType = new StdType("boolean", "bool");
-            Type *strType = new StdType("string", "string");
-            Type *realType = new StdType("real", "double");
-            Symbol *symInt = new TypeSymbol("integer", intType);
-            Symbol *symBool = new TypeSymbol("boolean", boolType);
-            Symbol *symStr = new TypeSymbol("string", strType);
-            Symbol *symReal = new TypeSymbol("real", realType);
+            //Type *intType = new StdType("integer", "int");
+            //Type *boolType = new StdType("boolean", "bool");
+            //Type *strType = new StdType("string", "string");
+            //Type *realType = new StdType("real", "double");
+            Symbol *symInt = new TypeSymbol(std::string("integer"), (Type*) INTEGER_TYPE);
+            Symbol *symBool = new TypeSymbol("boolean", BOOLEAN_TYPE);
+            Symbol *symStr = new TypeSymbol("string", STRING_TYPE);
+            Symbol *symReal = new TypeSymbol("real", REAL_TYPE);
             Symbol *symTrue = new Constant("true", new ConstValue("true", BOOLEAN));
             Symbol *symFalse = new Constant("false", new ConstValue("false", BOOLEAN));
             zeroeth->addSymbol(symInt);
