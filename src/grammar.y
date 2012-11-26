@@ -33,7 +33,7 @@ extern YYSTYPE yylval;
 %type   <unaryop> UnaryOperator
 %type   <arraytype> ArrayType
 
-%type   <type> Factor Term
+%type   <type> Factor Term TermExpr SimpleExpression Expression
 
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
@@ -334,35 +334,131 @@ MemoryStatement    :  ynew  yleftparen  yident  yrightparen
 /***************************  Expression Stuff  ******************************/
 
 Expression         :  SimpleExpression
+						{ 
+							$$ = $1; 
+						}
                    |  SimpleExpression  Relation  SimpleExpression
+						{ 
+							$$ = NULL;
+						}
                    ;
 SimpleExpression   :  TermExpr
+						{ 
+							$$ = $1;
+						}
                    |  UnaryOperator  TermExpr
+						{ 
+							$$ = $2; 
+						}
                    ;
 TermExpr           :  Term  
+						{ 
+							$$ = $1; 
+						}
                    |  TermExpr  AddOperator  Term
+						{
+							$$ = getMultAddSubType($1,$3);			
+						}
                    ;
 Term               :  Factor  
-                   |  Term  ymultiply { std::cout << "*"; } Factor 
 							{
-								$$ = getMultiplyType($1,$4);
+								//std::cout << "<<";
+								//displayType($1);
+								//std::cout << ">>" << std::endl;
+								$$ = $1;
 							}
-                   |  Term  ydivide { std::cout << "/ (double)"; } Factor  
-                   |  Term  ydiv { std::cout << "/"; } Factor  
-                   |  Term  ymod { std::cout << "%"; } Factor  
-                   |  Term  yand { std::cout << "&&"; } Factor
+                   |  Term  ymultiply 
+							{ 
+								std::cout << "*"; 
+							}	
+							Factor 
+							{
+								$$ = getMultAddSubType($1,$4);
+							}
+                   |  Term  ydivide 
+							{ 
+								std::cout << "/ (double)"; 
+							} 
+							Factor 
+							{
+								$$ = getDivideType($1,$4);
+							} 
+                   |  Term  ydiv 
+							{ 
+								std::cout << "/"; 
+							} 
+							Factor  
+							{
+								$$ = getDivModType($1,$4);
+							}
+                   |  Term  ymod 
+							{ 
+								std::cout << "%"; 
+							} 
+							Factor 
+							{
+								$$ = getDivModType($1,$4);
+							} 
+                   |  Term  yand 
+							{ 
+								std::cout << "&&"; 
+								$$ = NULL; 
+							} 
+							Factor
                    ;
-Factor             :  yinteger { std::cout << $1; $$ = INTEGER_TYPE; }
-                   |  yreal { std::cout << $1; $$ = REAL_TYPE; }
-                   |  ytrue { std::cout << "true"; $$ = BOOLEAN_TYPE;  }
-                   |  yfalse { std::cout << "false"; $$ = BOOLEAN_TYPE;  }
-                   |  ynil { std::cout << "NULL"; $$ = NULL;  }
-                   |  ystring { std::cout << $1; $$ = STRING_TYPE;  }
-                   |  Designator { std::cout << "VAR$"; $$ = NULL;  }
-                   |  yleftparen { std::cout << "("; }
-                      Expression { $$ = NULL; }
-                      yrightparen { std::cout << ")"; }
-                   |  ynot  { std::cout << "!"; } Factor { $$ = $3; }
+Factor             :  yinteger 
+							{ 
+								std::cout << $1; 
+								$$ = INTEGER_TYPE; 
+							}
+                   |  yreal 
+							{ 
+								std::cout << $1; 
+								$$ = REAL_TYPE; 
+							}
+                   |  ytrue 
+							{ 
+								std::cout << "true"; 
+								$$ = BOOLEAN_TYPE;  
+							}
+                   |  yfalse 
+							{ 
+								std::cout << "false"; 
+								$$ = BOOLEAN_TYPE;  
+							}
+                   |  ynil 
+							{ 
+								std::cout << "NULL"; 
+								$$ = NULL;  
+							}
+                   |  ystring 
+							{ 
+								std::cout << $1; 
+								$$ = STRING_TYPE;  
+							}
+                   |  Designator 
+							{ 
+								std::cout << "VAR$"; 
+								$$ = NULL;  
+							}
+                   |  yleftparen 
+							{ 
+								std::cout << "("; 
+							}
+                      		Expression 
+                      		yrightparen 
+							{ 
+								std::cout << ")"; 
+								$$ = $3;
+							}
+                   |  ynot  
+							{ 
+								std::cout << "!"; 
+							} 
+							Factor 
+							{ 
+								$$ = $3; 
+							}
                    |  Setvalue { $$ = NULL; }
                    |  FunctionCall { $$ = NULL; }
                    ;

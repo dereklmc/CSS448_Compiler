@@ -131,6 +131,8 @@ void areTypesEqual(Type*, Type*);
 
 void printErrorLog();
 
-Type* getMultiplyType(Type*,Type*);
+Type* getMultAddSubType(Type*,Type*);
+Type* getDivideType(Type *left, Type *right);
+Type* getDivModType(Type *left, Type *right);
 
 #endif
