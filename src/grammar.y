@@ -98,7 +98,8 @@ TypeDefBlock       :  /*** empty ***/
 TypeDefList        :  TypeDef  ysemicolon
                    |  TypeDefList TypeDef ysemicolon
                    ;
-VariableDeclBlock  :  yvar VariableDeclList
+VariableDeclBlock  :  yvar					
+					 VariableDeclList
                                 {
                                     
                                 }
@@ -119,7 +120,7 @@ TypeDef            :  yident yequal  Type
                    ;
 VariableDecl       :  IdentList  ycolon  Type
                                 {
-                                    //checkPointers();
+                                    checkPointers();
                                     createVariables($3);
                                 }
                    ;
@@ -173,6 +174,7 @@ ConstFactor        :  yident
                                 }
                    ;
 Type               :  yident    {
+									
                                     getSymbolicType($$, $1);
                                 }
                    |  ArrayType

@@ -27,7 +27,7 @@
                 buffer.remove(typeSymbol);
     until numChanges == 0;
 5. _Nina_ Variables
-    - Generate them!
+    - Generate them! (Do more when Types are figured out)
     - One variable per line.
 6. _Nina ;->)_ Calling Procedures
     - Make sure we are still discarding input/output variables.

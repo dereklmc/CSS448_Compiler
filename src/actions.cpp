@@ -307,12 +307,12 @@ void createVariables(Type *&type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
-	   
+	   		std::cout << "About to created new Var";
             identBuffer.pop_front();
             
             Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
-			std::cout << var->generateCode() << ";" << std::endl;
+			std::cout << var->generateCode() << ";";
         }
         delete type;
         type = NULL;
@@ -396,7 +396,7 @@ void exitScope()
 
 void areTypesEqual(Type *a, Type *b)
 {
-	
+
 }
 
 void printErrorLog()
@@ -422,22 +422,23 @@ Type* getMultiplyType(Type *left, Type *right)
 		std::cout << "ERROR:: wrong left hand arg type to \"*\"" << std::endl;
 		return NULL;
 	}
-	
+
 	if (!rightIsInteger && !rightIsReal) {
 		// TODO log error
 		std::cout << "ERROR:: wrong right hand arg type to \"*\"" << std::endl;
 		return NULL;
 	}
-	
+
 	if (leftIsInteger && rightIsInteger) {
 		return INTEGER_TYPE;
 	}
-	
+
 	if (leftIsReal || rightIsReal) {
 		return REAL_TYPE;
 	}
-	
+
 	// SHOULD NOT REACH THIS POINT !!!
 	std::cout << "ERROR:: fatal" << std::endl;
 	return NULL;
 }
+
