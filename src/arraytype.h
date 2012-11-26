@@ -11,6 +11,7 @@ class ArrayType : public Type
         ArrayType(Type *type)
         {
             this->type = type;
+			optionalCode = type->generateTypeCode();
         }
         
         ~ArrayType()
@@ -40,6 +41,7 @@ class ArrayType : public Type
     	std::string printCName() const {return "";};
     private:
         Type *type;
+		std::string optionalCode;
         std::vector<Range*> ranges;
         
     protected:
@@ -51,7 +53,12 @@ class ArrayType : public Type
             out << " " << *type;
         }
 
-		std::string generateOptionalCode() const {return type->generateTypeCode();};
+		std::string generateOptionalCode() const 
+		{	
+				std::string temp = optionalCode;
+				return temp;
+
+		};
 
         std::string generateTypeCode() const
         {
@@ -61,7 +68,8 @@ class ArrayType : public Type
 
 		std::string generateVarDeclCode() const
 		{
-			std::string tempString = "";
+			std::string tempString;
+		tempString = "";
 			return tempString;
 		}
 

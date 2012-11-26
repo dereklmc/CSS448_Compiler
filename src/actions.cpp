@@ -309,7 +309,7 @@ void createVariables(Type *&type) {
             
             Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
-			std::cout << var->generateCode() << ";" << std::endl;
+			std::cout << var->generateCode() << ";";
         }
         delete type;
         type = NULL;
@@ -390,3 +390,4 @@ void exitScope()
     delete scope;
     scope = NULL;
 }
+
