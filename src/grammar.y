@@ -348,11 +348,16 @@ Designator         :  yident
                       DesignatorStuff
 							{
 								Variable *var = NULL;
-								if (searchStack<Variable>($1, var)) {
+								if (searchStack<Variable>($1, var) && var != NULL) {
 									$$ = var->type;
 								} else {
-									$$ = NULL;
-									std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
+									Constant *con = NULL;
+									if (searchStack<Constant>($1, con) && con != NULL) {
+										$$ = NULL; // TODO infer constant type.
+									} else {
+									    $$ = NULL;
+									   std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
+									}
 								}
 							}
                    ;
