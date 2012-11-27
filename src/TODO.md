@@ -43,3 +43,9 @@
         - Defaults to false
     - Figure out how to generate Constants
         - Look at the Dragon Book
+        
+11. Create a PascalArray (template class - params type of array, and type of indices)
+	- Defined in header file
+	- Has an index converter (0 based)
+	- Used for code generation
+	- Recursively generate for multi-dimensional arrays

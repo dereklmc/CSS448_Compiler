@@ -24,11 +24,7 @@ class Symbol
         virtual ~Symbol() {  }
         virtual bool operator==(const Symbol& rhs)
         {
-            if(name==rhs.name) {
-                return true;
-            } else {
-                return false;
-            }
+            return name == rhs.name;
         }
         
         virtual void print(std::ostream& out) const

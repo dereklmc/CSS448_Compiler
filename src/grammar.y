@@ -33,7 +33,7 @@ extern YYSTYPE yylval;
 %type   <unaryop> UnaryOperator
 %type   <arraytype> ArrayType
 
-%type   <type> Factor Term TermExpr SimpleExpression Expression
+%type   <type> Factor Term TermExpr SimpleExpression Expression Designator
 
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
@@ -98,7 +98,7 @@ TypeDefBlock       :  /*** empty ***/
 TypeDefList        :  TypeDef  ysemicolon
                    |  TypeDefList TypeDef ysemicolon
                    ;
-VariableDeclBlock  :  yvar					
+VariableDeclBlock  :  yvar
 					 VariableDeclList
                                 {
                                     
@@ -250,7 +250,12 @@ Statement          :  Assignment
                    |  ybegin StatementSequence yend
                    |  /*** empty ***/
                    ;
-Assignment         :  Designator yassign Expression
+Assignment         :  Designator
+                      yassign { std::cout << " = "; }
+                      Expression
+                      {
+                      		std::cout << ";";
+                      }
                    ;
 ProcedureCall      :  yident 
                                 {
@@ -262,11 +267,35 @@ ProcedureCall      :  yident
                                 }
                       ActualParameters
                    ;
-IfStatement        :  yif  Expression  ythen  Statement EndIf
-           |  yif  Expression  ythen  Statement yelse Statement  EndIf
-                   ;  
-EndIf          :  /*** empty ***/
-           ;
+IfStatement        :  IfStatementBlock
+                      EndIf
+                   |  IfStatementBlock
+                      yelse
+                            {
+                                std::cout << "} else {" << std::endl;	
+                            }
+                      Statement
+                      EndIf
+                   ;
+IfStatementBlock   :  yif 
+                            {
+                                std::cout << "if (";	
+                            }
+					  Expression 
+					        {
+                                if (!BOOLEAN_TYPE->equals($3)) {
+                                    // TODO, record error message
+                                    std::cout << "ERROR: Expression is not conditional" << std::endl;
+						        }
+						        std::cout << ") {" << std::endl;	
+					        }  
+					  ythen Statement
+                   ;
+EndIf          	   :  /*** empty ***/
+					        {
+						        std::cout << std::endl << "}" << std::endl;	
+					        }
+           		   ;
 CaseStatement      :  ycase  Expression  yof  CaseList  yend
                    ;
 CaseList           :  Case
@@ -312,7 +341,20 @@ IOStatement        :  yread  yleftparen  DesignatorList  yrightparen
 DesignatorList     :  Designator  
                    |  DesignatorList  ycomma  Designator
                    ;
-Designator         :  yident DesignatorStuff
+Designator         :  yident
+							{
+								std::cout << $1;
+							}
+                      DesignatorStuff
+							{
+								Variable *var = NULL;
+								if (searchStack<Variable>($1, var)) {
+									$$ = var->type;
+								} else {
+									$$ = NULL;
+									std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
+								}
+							}
                    ;
 DesignatorStuff    :  /*** empty ***/
                    |  DesignatorStuff  theDesignatorStuff
@@ -339,7 +381,7 @@ Expression         :  SimpleExpression
 						}
                    |  SimpleExpression  Relation  SimpleExpression
 						{ 
-							$$ = NULL;
+							$$ = BOOLEAN_TYPE;
 						}
                    ;
 SimpleExpression   :  TermExpr
@@ -362,9 +404,6 @@ TermExpr           :  Term
                    ;
 Term               :  Factor  
 							{
-								//std::cout << "<<";
-								//displayType($1);
-								//std::cout << ">>" << std::endl;
 								$$ = $1;
 							}
                    |  Term  ymultiply 
@@ -437,8 +476,7 @@ Factor             :  yinteger
 								$$ = STRING_TYPE;  
 							}
                    |  Designator 
-							{ 
-								std::cout << "VAR$"; 
+							{
 								$$ = NULL;  
 							}
                    |  yleftparen 

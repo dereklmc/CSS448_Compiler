@@ -24,7 +24,7 @@ void addIdent(const char *ident)
 }
 
 /******************************************************************************
- * searchStack
+ * TODO DOCUMENTATION searchStack
  * Takes in a char array representing the name that will be searched for in
  * the Symbol Table and a pointer to a reference that will be cast into the
  * proper Symbol type.
@@ -34,19 +34,11 @@ void addIdent(const char *ident)
  * Returns: bool isFound - true if a symbol with a matching name was found in
  *					the symbol table
  *****************************************************************************/
-template <class T>
-bool searchStack(const char *ident, T *&castSymbol)
+bool stackHasSymbol(const char *ident)
 {
     Symbol *symbol = NULL;
     std::string identStr(ident);
-    bool isFound = symbolTable.searchStack(identStr, symbol);
-    if (!isFound) {
-        castSymbol = NULL;
-        std::cout << "Ident \"" << ident << "\" does not name a symbol." << std::endl;
-    } else {
-        castSymbol = dynamic_cast<T*>(symbol); // = foundType;
-    }
-    return isFound;
+    return symbolTable.searchStack(identStr, symbol);
 }
 
 /******************************************************************************
@@ -393,9 +385,11 @@ void exitScope()
     scope = NULL;
 }
 
-void areTypesEqual(Type *a, Type *b)
+void checkTypesEqual(Type *a, Type *b)
 {
-
+	if (!a->equals(b)) {
+		std::cout << "Types are not equal, illegal assignment!" << std::endl;
+	}
 }
 
 void printErrorLog()

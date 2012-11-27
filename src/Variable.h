@@ -27,9 +27,10 @@ class Variable : public Symbol {
         // overriden print method from Symbol. Prints name and type's name.
         virtual void print(std::ostream&) const;
         
+        Type *type; // The type associated with this variable.
+        
     protected: 
         virtual void clone(const Variable&);
-        Type *type; // The type associated with this variable.
 };
 
 #endif

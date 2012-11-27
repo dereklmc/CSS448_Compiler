@@ -23,6 +23,22 @@ void checkPointers();
 
 void addIdent(const char *);
 
+bool stackHasSymbol(const char *);
+
+/******************************************************************************
+ * searchStack
+ * Takes in a char array representing the name that will be searched for in
+ * the Symbol Table and a pointer to a reference that will be cast into the
+ * proper Symbol type.
+ * Using Stack's searchStack method, it will attempt to find a Symbol matching
+ * the name that was passed in. Once found it will be dynamically cast into
+ * the proper type.
+ * Returns: bool isFound - true if a symbol with a matching name was found in
+ *					the symbol table
+ *****************************************************************************/
+//template <class T>
+//bool searchStack(const char*, T*&);
+
 /******************************************************************************
  * searchStack
  * Takes in a char array representing the name that will be searched for in
@@ -35,7 +51,19 @@ void addIdent(const char *);
  *					the symbol table
  *****************************************************************************/
 template <class T>
-bool searchStack(const char*, T*&);
+bool searchStack(const char *ident, T *&castSymbol)
+{
+    Symbol *symbol = NULL;
+    std::string identStr(ident);
+    bool isFound = symbolTable.searchStack(identStr, symbol);
+    if (!isFound) {
+        castSymbol = NULL;
+        std::cout << "Ident \"" << ident << "\" does not name a symbol." << std::endl;
+    } else {
+        castSymbol = dynamic_cast<T*>(symbol); // = foundType;
+    }
+    return isFound;
+}
 
 void createProgramScope(const char*);
 
@@ -127,7 +155,7 @@ void pushVarOnStack();
  *****************************************************************************/
 void exitScope();
 
-void areTypesEqual(Type*, Type*);
+void checkTypesEqual(Type*, Type*);
 
 void printErrorLog();
 
