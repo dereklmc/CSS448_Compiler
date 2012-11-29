@@ -24,7 +24,7 @@ void addIdent(const char *ident)
 }
 
 /******************************************************************************
- * searchStack
+ * TODO DOCUMENTATION searchStack
  * Takes in a char array representing the name that will be searched for in
  * the Symbol Table and a pointer to a reference that will be cast into the
  * proper Symbol type.
@@ -34,19 +34,11 @@ void addIdent(const char *ident)
  * Returns: bool isFound - true if a symbol with a matching name was found in
  *					the symbol table
  *****************************************************************************/
-template <class T>
-bool searchStack(const char *ident, T *&castSymbol)
+bool stackHasSymbol(const char *ident)
 {
     Symbol *symbol = NULL;
     std::string identStr(ident);
-    bool isFound = symbolTable.searchStack(identStr, symbol);
-    if (!isFound) {
-        castSymbol = NULL;
-        std::cout << "Ident \"" << ident << "\" does not name a symbol." << std::endl;
-    } else {
-        castSymbol = dynamic_cast<T*>(symbol); // = foundType;
-    }
-    return isFound;
+    return symbolTable.searchStack(identStr, symbol);
 }
 
 /******************************************************************************
@@ -309,7 +301,6 @@ void createVariables(Type *&type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
-	   		std::cout << "About to created new Var";
             identBuffer.pop_front();
             
             Variable* var = new Variable(ident,type->clone());
@@ -396,9 +387,11 @@ void exitScope()
     scope = NULL;
 }
 
-void areTypesEqual(Type *a, Type *b)
+void checkTypesEqual(Type *a, Type *b)
 {
-
+	if (!a->equals(b)) {
+		std::cout << "Types are not equal, illegal assignment!" << std::endl;
+	}
 }
 
 void printErrorLog()
@@ -410,7 +403,114 @@ void printErrorLog()
     }
 }
 
-Type* getMultiplyType(Type *left, Type *right)
+/******************************************************************************
+ * getDivModType(Type*, Type*)
+ * Handles expression comparisons involving div and mod operations. It compares
+ * the two types to see if they both meet the qualifications to perform these
+ * operations. 
+ * Valid:
+ *		- integer (mod/div) integer = integer
+ * Invalid:
+ *		- real (mod/div) real = illegal
+ *		- real (mod/div) integer = illegal
+ *		- integer (mod/div) real = illegal
+ *		- NULLs
+ * Returns the type that results from this operation.
+ ******************************************************************************/
+Type* getDivModType(Type *left, Type *right)
+{
+	if (left == NULL || right == NULL) {
+		// TODO: log error
+		return NULL;
+	}
+	
+	bool leftIsInteger = INTEGER_TYPE->equals(left);
+	bool rightIsInteger = INTEGER_TYPE->equals(right);
+	
+	bool leftIsReal = REAL_TYPE->equals(left);
+	bool rightIsReal = REAL_TYPE->equals(right);
+	
+	if (!leftIsInteger && !leftIsReal) {
+		// TODO log error
+		std::cout << "ERROR:: wrong left hand arg type to \"*\"" << std::endl;
+		return NULL;
+	}
+
+	if (!rightIsInteger && !rightIsReal) {
+		// TODO log error
+		std::cout << "ERROR:: wrong right hand arg type to \"*\"" << std::endl;
+		return NULL;
+	}
+	
+	// No reals allowed for mod and div
+	if (leftIsReal || rightIsReal)
+	{
+		// TODO log error
+		std::cout << "ERROR:: either right or left hand args for \"div\" are reals" << std::endl;
+		return NULL;
+	}
+
+	return INTEGER_TYPE;
+}
+
+/******************************************************************************
+ * getDivideType(Type*, Type*)
+ * Handles expression comparisons involving the divide operation. It compares
+ * the two types to see if they both meet the qualifications to perform the
+ * divide operation. 
+ * Valid:
+ *		- integer (divide) integer = integer
+ *		- real (divide) real = integer
+ *		- real (divide) integer = integer
+ *		- integer (divide) real = integer
+ * Invalid:	
+ *		- NULLs
+ * Returns the type that results from this operation.
+ ******************************************************************************/
+Type* getDivideType(Type *left, Type *right)
+{
+	if (left == NULL || right == NULL) {
+		// TODO: log error
+		std::cout << std::endl << "One of these is NULL" << std::endl;
+		return NULL;
+	}
+	bool leftIsInteger = INTEGER_TYPE->equals(left);
+	bool rightIsInteger = INTEGER_TYPE->equals(right);
+	bool leftIsReal = REAL_TYPE->equals(left);
+	bool rightIsReal = REAL_TYPE->equals(right);
+
+	if (!leftIsInteger && !leftIsReal) {
+		// TODO log error
+		std::cout << "ERROR:: wrong left hand arg type to \"/\"" << std::endl;
+		return NULL;
+	}
+
+	if (!rightIsInteger && !rightIsReal) {
+		// TODO log error
+		std::cout << "ERROR:: wrong right hand arg type to \"/\"" << std::endl;
+		return NULL;
+	}
+	
+	// As long as the right and left terms are an int or a real, then it will
+	// always return a real
+	return REAL_TYPE;
+}
+
+/******************************************************************************
+ * getMultAddSubType(Type*, Type*)
+ * Handles expression comparisons involving the multiply, add, and subract 
+ * operations. It compares the two types to see if they both meet the 
+ * qualifications to perform these operations. 
+ * Valid:
+ *		- integer (mult/add/sub) integer = integer
+ *		- real (mult/add/sub) real = real
+ *		- real (mult/add/sub) integer = real
+ *		- integer (mult/add/sub) real = real
+ * Invalid:	
+ *		- NULLs
+ * Returns the type that results from this operation.
+ ******************************************************************************/
+Type* getMultAddSubType(Type *left, Type *right)
 {
 	if (left == NULL || right == NULL) {
 		// TODO: log error
@@ -447,4 +547,5 @@ Type* getMultiplyType(Type *left, Type *right)
 	std::cout << "ERROR:: fatal" << std::endl;
 	return NULL;
 }
+
 
