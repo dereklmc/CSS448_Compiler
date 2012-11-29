@@ -74,7 +74,16 @@ IdentList          :  yident
 
 /**************************  Declarations section ***************************/
 
-Block              :  Declarations  ybegin  StatementSequence  yend
+Block              :  Declarations
+                      ybegin
+                            {
+                                std::cout << "void call() {" << std::endl;
+                            }
+                      StatementSequence
+                      yend
+                            {
+                                std::cout << "}" << std::endl;
+                            }
                    ;
 Declarations       :  ConstantDefBlock
                       TypeDefBlock
@@ -411,6 +420,7 @@ ProcedureDecl      :  ProcedureHeading  ysemicolon
                       Block
                             {
                                 exitScope();
+                                std::cout << "}" << std::endl;
                             } 
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident

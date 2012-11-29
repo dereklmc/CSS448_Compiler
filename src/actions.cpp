@@ -168,19 +168,21 @@ void createFunctionDecl(const char* ident, Function*& funcPtr)
  * Lastly, it gets the Procedure object's parameters (if any) and adds them
  * to the new current Procedure scope.
  *****************************************************************************/
-void createProcedureDecl(Procedure* ident)
+void createProcedureDecl(Procedure* proc)
 {
     /* TODO: put in actions.cpp */
     /* Put procedure in parent scope */
-    symbolTable.current->addSymbol(ident);
+    symbolTable.current->addSymbol(proc);
     /* Enter Procedure Scope */
-    symbolTable.createScope(ident->name);
+    symbolTable.createScope(proc->name);
     /* Put procedure params on symbol stack. */
-    std::vector<Parameter*> toPutOnStack = ident->getParameters();
+    std::vector<Parameter*> toPutOnStack = proc->getParameters();
     for (int i = 0; i < toPutOnStack.size(); i++) {
         Symbol *paramVarSymbol = toPutOnStack[i]->getVariable();
         symbolTable.current->addSymbol(paramVarSymbol);
     }
+    
+    std::cout << "class " << proc->name << " {" << std::endl << "public:";
 }
 
 /******************************************************************************
@@ -401,7 +403,11 @@ void areTypesEqual(Type *a, Type *b)
 
 void printErrorLog()
 {
+    for (int i = 0; i < errorLog.size(); i++) {
+        // Print error
 
+        // Remove error from log.
+    }
 }
 
 Type* getMultiplyType(Type *left, Type *right)
