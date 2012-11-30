@@ -394,6 +394,40 @@ void checkTypesEqual(Type *a, Type *b)
 	}
 }
 
+//Nina's WIP - no touchy!
+void  compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b)
+{
+	int alength = a.size();
+	int blength = b.size();
+	if (alength != blength)
+	{
+		//Already know that param sets not equal
+		//Record error
+		std::cout << "ERROR: Parameter sets are not equal" << std::endl;
+	}
+	else
+	{
+		//Compare each of the Parameters in both vectors
+		int currentIndex = 0;
+		while ((currentIndex < alength) && (currentIndex < blength))
+		{
+			checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type);
+			//NOTE Should we take error message out of checkTypesEqual and make it return a bool?
+			//if (not equal) {
+			//		std::cout << "ERROR: Parameter sets are not equal << std::endl; 
+			// 		TODO make this error message more specific
+			//		break;
+			//}
+			currentIndex++;
+		}
+		if ((currentIndex < alength) || (currentIndex < blength))
+		{
+			std::cout << "ERROR: Parameter sets are not equal" << std::endl;
+		}
+	}
+}
+
+
 void printErrorLog()
 {
     for (int i = 0; i < errorLog.size(); i++) {

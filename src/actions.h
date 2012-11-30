@@ -157,6 +157,8 @@ void exitScope();
 
 void checkTypesEqual(Type*, Type*);
 
+void compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b);
+
 void printErrorLog();
 
 Type* getMultAddSubType(Type*,Type*);

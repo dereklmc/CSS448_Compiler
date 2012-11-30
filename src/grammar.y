@@ -523,6 +523,29 @@ FunctionCall       :  yident
                                     printf("%s ", $1);
                                 }
                       ActualParameters
+					  			{
+									//Nina's WIP - no touchy!
+									Symbol *fSymbol = NULL;
+									bool exists = searchStack($1, fSymbol);
+									Function *functionClass;
+									if (exists) {
+										//Attempt to cast as function
+										functionClass = dynamic_cast<Function*>(fSymbol);
+										if (functionClass == NULL) {
+											std::cout << "ERROR: Symbol " << $1 
+												<< " is not a function definition" << std::endl;
+										}
+									}
+									else {
+										/* TODO - record error */
+										std::cout << "ERROR: Symbol " << $1 
+											<< " has not been declared" << std::endl;
+									}
+
+									// Check the parameters to see if their types match
+									std::vector<Parameter*> params = functionClass->getParameters();
+									// 	
+								}
                    ;
 Setvalue           :  yleftbracket ElementList  yrightbracket
                    |  yleftbracket yrightbracket
