@@ -325,7 +325,22 @@ CaseLabelList      :  ConstExpression
                                     $3 = NULL;
                                 }
                    ;
-WhileStatement     :  ywhile  Expression  ydo  Statement
+WhileStatement     :  ywhile
+								{
+									std::cout << "while (";
+								}
+					  Expression  
+								{
+									if (!BOOLEAN_TYPE->equals($3)) {
+										// TODO, record error message
+										std::cout << "ERROR: Expression is not conditional" << std::endl;
+									}	
+									std::cout << ") {" << std::endl;
+								}
+					  ydo  Statement
+								{
+									std::cout << std::endl << "}" << std::endl;
+								}
                    ;
 RepeatStatement    :  yrepeat  StatementSequence  yuntil  Expression
                    ;
@@ -640,7 +655,7 @@ UnaryOperator      :  yplus
                    ;
 AddOperator        :  yplus { std::cout << "+"; }
                    |  yminus { std::cout << "-"; }
-                   |  yor
+                   |  yor     { std::cout << " || ";}
                    ;
 Relation           :  yequal  | ynotequal | yless | ygreater
                    |  ylessequal | ygreaterequal | yin
