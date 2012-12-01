@@ -177,6 +177,11 @@ void createProcedureDecl(Procedure* proc)
     std::cout << "class " << proc->name << " {" << std::endl << "public:";
 }
 
+void createLoopScope(const char *ident)
+{
+	symbolTable.createScope(std::string(ident));
+}
+
 /******************************************************************************
  * createTypeSymbol(const char*, Type*)
  * If the Type ptr passed in is not NULL, then a new TypeSymbol will be

@@ -34,7 +34,7 @@ extern YYSTYPE yylval;
 %type   <arraytype> ArrayType
 
 %type   <type> Factor Term TermExpr SimpleExpression Expression Designator
-%type	<boolean> AddOperator
+%type	<boolean> AddOperator WhichWay
 
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
@@ -329,6 +329,7 @@ CaseLabelList      :  ConstExpression
 WhileStatement     :  ywhile
 								{
 									std::cout << "while (";
+									createLoopScope("while");
 								}
 					  Expression  
 								{
@@ -341,18 +342,75 @@ WhileStatement     :  ywhile
 					  ydo  Statement
 								{
 									std::cout << std::endl << "}" << std::endl;
+									exitScope();
 								}
                    ;
-RepeatStatement    :  yrepeat  StatementSequence  yuntil  Expression
+RepeatStatement    :  yrepeat  
+								{
+									createLoopScope("repeat");
+									std::cout << "do {" << std::endl;
+								}
+					  StatementSequence  yuntil  
+								{
+									std::cout << "} while(";
+								}
+					  Expression
+								{
+									// The ");" is printed on a new line because of the lexxer
+									std::cout << ");" << std::endl;
+									exitScope();
+								}
                    ;
-ForStatement       :  yfor  yident  
+ForStatement       :  yfor  
+					  yident  
                                 {
-                                    printf("%s ", $2);
+									createLoopScope("for");
+									std::cout << "for (";
+									printf("%s ", $2);
+									std::cout << "= ";
                                 }
-                            yassign  Expression  WhichWay  Expression
+                            yassign  Expression  
+								{	
+									std::cout << "; " << $2 << " ";
+								}							
+							WhichWay  Expression
+								{
+									Variable *var = NULL;
+									searchStack($2,var); //Error being printed in searchStack
+									//Check if yident and Expression have same types
+									//TODO UNCHECK THIS AFTER CONSTANTS ARE WORKING
+									//if(!checkTypesEqual(var->type, $5)) {
+										//TODO record error
+										//std::cout << "ERROR: Invalid assignment" << std::endl; 	
+									//}
+									//if(!checkTypesEqual(var->type, $8)) {
+										//TODO record error
+										//std::cout << "ERROR: Incompatible whichway type" << std::endl; 	
+									//}
+									std::cout << "; " << $2;
+									if ($7)
+										std::cout << "++";
+									else
+										std::cout << "--";
+									std::cout << ") {" << std::endl;
+								}
                             ydo  Statement
+								{
+									std::cout << std::endl << "}" << std::endl;
+									exitScope();
+								}
                    ;
-WhichWay           :  yto  |  ydownto
+WhichWay           :  yto  
+								{
+									// WhichWay will be true if it is "to" and false if "downto"
+									std::cout << "< ";
+									$$ = true;
+								}
+					  |  ydownto
+								{								
+									std::cout << "> ";
+									$$ = false;
+								}
                    ;
 IOStatement        :  yread  yleftparen  DesignatorList  yrightparen
                    |  yreadln  

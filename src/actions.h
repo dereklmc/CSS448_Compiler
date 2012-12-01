@@ -22,6 +22,7 @@ extern Stack symbolTable;
 void checkPointers();
 
 void addIdent(const char *);
+void createLoopScope(const char *ident);
 
 bool stackHasSymbol(const char *);
 
