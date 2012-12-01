@@ -34,6 +34,7 @@ extern YYSTYPE yylval;
 %type   <arraytype> ArrayType
 
 %type   <type> Factor Term TermExpr SimpleExpression Expression Designator
+%type	<boolean> AddOperator
 
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
@@ -383,6 +384,7 @@ Designator         :  yident
 									   std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
 									}
 								}
+								$$ = var->type;
 							}
                    ;
 DesignatorStuff    :  /*** empty ***/
@@ -428,7 +430,12 @@ TermExpr           :  Term
 						}
                    |  TermExpr  AddOperator  Term
 						{
-							$$ = getMultAddSubType($1,$3);			
+							if ($2) {
+								$$ = BOOLEAN_TYPE;
+							}
+							else {
+								$$ = getMultAddSubType($1,$3);	
+							}		
 						}
                    ;
 Term               :  Factor  
@@ -506,7 +513,7 @@ Factor             :  yinteger
 							}
                    |  Designator 
 							{
-								$$ = NULL;  
+								$$ = $1;  
 							}
                    |  yleftparen 
 							{ 
@@ -653,12 +660,17 @@ UnaryOperator      :  yplus
                                     $$ = MINUS;
                                 }
                    ;
-AddOperator        :  yplus { std::cout << "+"; }
-                   |  yminus { std::cout << "-"; }
-                   |  yor     { std::cout << " || ";}
+AddOperator        :  yplus { std::cout << "+"; $$ = false;}
+                   |  yminus { std::cout << "-"; $$ = false;}
+                   |  yor     { std::cout << " || "; $$ = true;}
                    ;
-Relation           :  yequal  | ynotequal | yless | ygreater
-                   |  ylessequal | ygreaterequal | yin
+Relation           :  yequal  { std::cout << " == "; }
+		      | ynotequal { std::cout << " != "; }
+ 		      | yless { std::cout << " < "; }
+		      | ygreater  { std::cout << " > "; }
+                      |  ylessequal { std::cout << " <= "; }
+		      | ygreaterequal { std::cout << " >= "; }
+		      | yin
                    ;
 
 %%

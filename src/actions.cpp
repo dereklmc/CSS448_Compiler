@@ -472,7 +472,7 @@ Type* getDivModType(Type *left, Type *right)
 
 	if (!rightIsInteger && !rightIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong right hand arg type to \"*\"" << std::endl;
+		std::cout << "ERROR:: wrong right hand arg type to \"mod\"" << std::endl;
 		return NULL;
 	}
 	
@@ -559,13 +559,13 @@ Type* getMultAddSubType(Type *left, Type *right)
 	
 	if (!leftIsInteger && !leftIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong left hand arg type to \"*\"" << std::endl;
+		std::cout << "ERROR:: wrong left hand arg type to \"*/+/-\"" << std::endl;
 		return NULL;
 	}
 
 	if (!rightIsInteger && !rightIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong right hand arg type to \"*\"" << std::endl;
+		std::cout << "ERROR:: wrong right hand arg type to \"*/+/-\"" << std::endl;
 		return NULL;
 	}
 
