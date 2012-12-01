@@ -384,7 +384,7 @@ Designator         :  yident
 									   std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
 									}
 								}
-								$$ = var->type;
+								
 							}
                    ;
 DesignatorStuff    :  /*** empty ***/
@@ -412,7 +412,14 @@ Expression         :  SimpleExpression
 						}
                    |  SimpleExpression  Relation  SimpleExpression
 						{ 
+							//if (checkTypesEqual($1,$3))
 							$$ = BOOLEAN_TYPE;
+							//TODO - put this back in when Constants are implemented
+							//else
+							//{
+								//std::cout << "ERROR: Invalid relation" << std::endl;
+								//$$ = NULL;
+							//}
 						}
                    ;
 SimpleExpression   :  TermExpr

@@ -387,11 +387,13 @@ void exitScope()
     scope = NULL;
 }
 
-void checkTypesEqual(Type *a, Type *b)
+bool checkTypesEqual(Type *a, Type *b)
 {
-	if (!a->equals(b)) {
-		std::cout << "Types are not equal, illegal assignment!" << std::endl;
-	}
+	//if (!a->equals(b)) {
+		//std::cout << "Types are not equal, illegal assignment!" << std::endl;
+		//areEqual = false;
+	//}
+	return a->equals(b);
 }
 
 //Nina's WIP - no touchy!
@@ -411,13 +413,13 @@ void  compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b)
 		int currentIndex = 0;
 		while ((currentIndex < alength) && (currentIndex < blength))
 		{
-			checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type);
+			//checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type);
 			//NOTE Should we take error message out of checkTypesEqual and make it return a bool?
-			//if (not equal) {
-			//		std::cout << "ERROR: Parameter sets are not equal << std::endl; 
-			// 		TODO make this error message more specific
-			//		break;
-			//}
+			if (!checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type)) {
+					std::cout << "ERROR: Parameter set types are not equal" << std::endl; 
+			 		//TODO make this error message more specific
+					break;
+			}
 			currentIndex++;
 		}
 		if ((currentIndex < alength) || (currentIndex < blength))
