@@ -110,7 +110,7 @@ void createFunctionWithParams(const char*, Function*&);
  * creates a new scope for the function. Lastly, it gets the Function's 
  * parameters and adds them to the new scope.
  *****************************************************************************/
-void createFunctionDecl(const char*, Function*&);
+void createFunctionDecl(const char*, Function*);
 
 /******************************************************************************
  * createProcedureDecl

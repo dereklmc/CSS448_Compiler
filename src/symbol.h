@@ -45,6 +45,8 @@ class Symbol
 		        return false;
 	        }
 	    }
+	    
+	    virtual std::string generateCode() const { return name; }
 };
 
 #endif

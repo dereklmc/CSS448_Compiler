@@ -559,7 +559,6 @@ ProcedureDecl      :  ProcedureHeading  ysemicolon
                       Block
                             {
                                 exitScope();
-                                std::cout << "}" << std::endl;
                             } 
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident
