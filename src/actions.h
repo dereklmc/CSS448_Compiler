@@ -22,6 +22,7 @@ extern Stack symbolTable;
 void checkPointers();
 
 void addIdent(const char *);
+void createLoopCaseScope(const char *ident);
 
 bool stackHasSymbol(const char *);
 
@@ -155,9 +156,13 @@ void pushVarOnStack();
  *****************************************************************************/
 void exitScope();
 
-void checkTypesEqual(Type*, Type*);
+bool checkTypesEqual(Type*, Type*);
+
+void compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b);
 
 void printErrorLog();
+
+std::string getTabs();
 
 Type* getMultAddSubType(Type*,Type*);
 Type* getDivideType(Type *left, Type *right);

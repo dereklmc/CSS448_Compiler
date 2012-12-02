@@ -13,6 +13,12 @@ std::vector<std::string> errorLog;
 
 Stack symbolTable;
 
+
+std::string getTabs()
+{
+	return symbolTable.getCurrentTabs();
+}
+
 /******************************************************************************
  * addIdent
  * Takes a char* array, which is then converted to a string before being 
@@ -187,6 +193,11 @@ void createProcedureDecl(Procedure* proc)
     std::cout << "}" << std::endl;
 }
 
+void createLoopCaseScope(const char *ident)
+{
+	symbolTable.createScope(std::string(ident));
+}
+
 /******************************************************************************
  * createTypeSymbol(const char*, Type*)
  * If the Type ptr passed in is not NULL, then a new TypeSymbol will be
@@ -199,7 +210,7 @@ void createTypeSymbol(const char *ident, Type *type)
         std::string name(ident);
         TypeSymbol *symbol = new TypeSymbol(name, type);
         symbolTable.current->addSymbol(symbol);
-		std::cout << symbol->generateTypeDeclCode();
+		std::cout << getTabs() << symbol->generateTypeDeclCode();
     }
 }
 
@@ -315,7 +326,7 @@ void createVariables(Type *&type) {
             
             Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
-			std::cout << var->generateCode() << ";";
+			std::cout << getTabs() << var->generateCode() << ";";
         }
         delete type;
         type = NULL;
@@ -355,7 +366,7 @@ void createConstValue(ConstValue *&constValue, const char *value, ConstValueType
 void createConstant(const char *ident, ConstValue *&value) {
     Constant *symbol = new Constant(std::string(ident), value);
     symbolTable.current->addSymbol(symbol);
-    std::cout << symbol->generateCode() << std::endl;
+    std::cout << getTabs() << symbol->generateCode() << std::endl;
 }
 
 /******************************************************************************
@@ -398,12 +409,48 @@ void exitScope()
     std::cout << "};" << std::endl;
 }
 
-void checkTypesEqual(Type *a, Type *b)
+bool checkTypesEqual(Type *a, Type *b)
 {
-	if (!a->equals(b)) {
-		std::cout << "Types are not equal, illegal assignment!" << std::endl;
+	//if (!a->equals(b)) {
+		//std::cout << "Types are not equal, illegal assignment!" << std::endl;
+		//areEqual = false;
+	//}
+	return a->equals(b);
+}
+
+//Nina's WIP - no touchy!
+void  compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b)
+{
+	int alength = a.size();
+	int blength = b.size();
+	if (alength != blength)
+	{
+		//Already know that param sets not equal
+		//Record error
+		std::cout << "ERROR: Parameter sets are not equal" << std::endl;
+	}
+	else
+	{
+		//Compare each of the Parameters in both vectors
+		int currentIndex = 0;
+		while ((currentIndex < alength) && (currentIndex < blength))
+		{
+			//checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type);
+			//NOTE Should we take error message out of checkTypesEqual and make it return a bool?
+			if (!checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type)) {
+					std::cout << "ERROR: Parameter set types are not equal" << std::endl; 
+			 		//TODO make this error message more specific
+					break;
+			}
+			currentIndex++;
+		}
+		if ((currentIndex < alength) || (currentIndex < blength))
+		{
+			std::cout << "ERROR: Parameter sets are not equal" << std::endl;
+		}
 	}
 }
+
 
 void printErrorLog()
 {
@@ -449,7 +496,7 @@ Type* getDivModType(Type *left, Type *right)
 
 	if (!rightIsInteger && !rightIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong right hand arg type to \"*\"" << std::endl;
+		std::cout << "ERROR:: wrong right hand arg type to \"mod\"" << std::endl;
 		return NULL;
 	}
 	
@@ -536,13 +583,13 @@ Type* getMultAddSubType(Type *left, Type *right)
 	
 	if (!leftIsInteger && !leftIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong left hand arg type to \"*\"" << std::endl;
+		std::cout << "ERROR:: wrong left hand arg type to \"*/+/-\"" << std::endl;
 		return NULL;
 	}
 
 	if (!rightIsInteger && !rightIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong right hand arg type to \"*\"" << std::endl;
+		std::cout << "ERROR:: wrong right hand arg type to \"*/+/-\"" << std::endl;
 		return NULL;
 	}
 

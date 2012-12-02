@@ -114,5 +114,10 @@ class Stack
                 out<<*temp;
             }
         }
+
+		std::string getCurrentTabs()
+		{
+			return current->getMyTabs();
+		}
 };
 #endif
