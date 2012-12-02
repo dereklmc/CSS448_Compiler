@@ -296,7 +296,7 @@ IfStatement        :  IfStatementBlock
                       yelse
                             {
 								exitScope();
-                                std::cout << getTabs() << "} else {" << std::endl;
+                                std::cout << getTabs() << "else {" << std::endl;
 								createLoopCaseScope("else");	
                             }
                       Statement
@@ -320,8 +320,7 @@ IfStatementBlock   :  yif
                    ;
 EndIf          	   :  /*** empty ***/
 					        {
-								exitScope();
-						        std::cout << std::endl << getTabs() << "}" << std::endl;	
+								exitScope();	
 					        }
            		   ;
 CaseStatement      :  ycase  
@@ -338,15 +337,15 @@ CaseStatement      :  ycase
 					  CaseList  
 							{
 								exitScope();
-								std::cout << std::endl << getTabs() << "}" << std::endl;
+								//std::cout << std::endl << getTabs() << "}" << std::endl;
 							}
 					  yend
                    ;
 CaseList           :  Case
 							{
 								exitScope();
-								std::cout << std::endl << getTabs() << "}" << 
-											std::endl << getTabs() << "break;" << std::endl;
+								//std::cout << std::endl << getTabs() << "}" << 
+								std::cout << std::endl << getTabs() << "break;" << std::endl;
 							}
                    |  CaseList  ysemicolon 
 							{
@@ -355,8 +354,8 @@ CaseList           :  Case
 					  Case
 							{
 								exitScope();
-								std::cout << std::endl << getTabs() << "}" <<
-										std::endl << getTabs() << "break;" << std::endl;
+								//std::cout << std::endl << getTabs() << "}" << 
+								std::cout << std::endl << getTabs() << "break;" << std::endl;
 							}
                    ;
 Case               :  CaseLabelList  ycolon  
@@ -399,7 +398,7 @@ WhileStatement     :  ywhile
 					  ydo  Statement
 								{
 									exitScope();
-									std::cout << std::endl << getTabs() << "}" << std::endl;
+									//std::cout << std::endl << getTabs() << "}" << std::endl;
 								}
                    ;
 RepeatStatement    :  yrepeat  
@@ -414,7 +413,6 @@ RepeatStatement    :  yrepeat
 								}
 					  Expression
 								{
-									// The ");" is printed on a new line because of the lexxer
 									std::cout << ");" << std::endl;
 								}
 					  EndRepeat
@@ -458,7 +456,7 @@ ForStatement       :  yfor
                             ydo  Statement
 								{
 									exitScope();
-									std::cout << std::endl << getTabs() << "}" << std::endl;
+									//std::cout << std::endl << getTabs() << "}" << std::endl;
 								}
                    ;
 WhichWay           :  yto  

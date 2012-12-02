@@ -406,7 +406,7 @@ void exitScope()
     /* Mem management */
     delete scope;
     scope = NULL;
-    std::cout << "};" << std::endl;
+    std::cout << getTabs() << "}" << std::endl;
 }
 
 bool checkTypesEqual(Type *a, Type *b)
