@@ -294,7 +294,9 @@ IfStatement        :  IfStatementBlock
                    |  IfStatementBlock
                       yelse
                             {
-                                std::cout << getTabs() << "} else {" << std::endl;	
+								exitScope();
+                                std::cout << getTabs() << "} else {" << std::endl;
+								createLoopCaseScope("else");	
                             }
                       Statement
                       EndIf
@@ -491,13 +493,19 @@ IOStatement        :  yread  yleftparen
 					  ExpList  yrightparen
 								{std::cout << ";" << std::endl;}
                    |  ywriteln  
-								{std::cout << ";" << std::endl;}
+								{
+									std::cout << "cout << \"\\n\"";
+									std::cout << ";" << std::endl;
+								}
                    |  ywriteln  yleftparen  
 								{
 									std::cout << getTabs() << "cout << ";
 								}
 					  ExpList  yrightparen
-								{std::cout << ";" << std::endl;}
+								{
+									std::cout << " << \"\\n\"";
+									std::cout << ";" << std::endl;
+								}
                    ;
 /***************************  Designator Stuff  ******************************/
 
