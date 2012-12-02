@@ -760,7 +760,7 @@ ProcedureDecl      :  ProcedureHeading  ysemicolon
                       Block
                             {
                                 exitScope();
-                                std::cout << getTabs() << "}" << std::endl;
+                                std::cout << getTabs() << "};" << std::endl;
                             } 
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident
@@ -771,6 +771,7 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                       ysemicolon  Block
                             {
                                 exitScope();
+                                std::cout << getTabs() << "};" << std::endl;
                             }
                    ;
 ProcedureHeading   :  yprocedure yident
