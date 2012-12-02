@@ -654,7 +654,7 @@ Factor             :  yinteger
 							}
                    |  ystring 
 							{ 
-								std::cout << $1; 
+								std::cout << "\"" << $1 << "\""; 
 								$$ = STRING_TYPE;  
 							}
                    |  Designator 
