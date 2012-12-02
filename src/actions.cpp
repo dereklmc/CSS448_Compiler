@@ -137,7 +137,7 @@ void createFunction(const char *ident, Function *&funcPtr)
  * creates a new scope for the function. Lastly, it gets the Function's 
  * parameters and adds them to the new scope.
  *****************************************************************************/
-void createFunctionDecl(const char* ident, Function*& funcPtr)
+void createFunctionDecl(const char* ident, Function* funcPtr)
 {
     /* Check if return type is valid */
     TypeSymbol *symbolType = NULL;
@@ -145,17 +145,9 @@ void createFunctionDecl(const char* ident, Function*& funcPtr)
     // TODO print error message if bad type was found.
     funcPtr->setType(new SymbolicType(symbolType));
     
-    /* Put function in parent scope */
-    symbolTable.current->addSymbol(funcPtr);
-    /* Enter Function Scope */
-    symbolTable.createScope(funcPtr->name);
-    /* Put procedure params on symbol stack. */
-    std::vector<Parameter*> toPutOnStack = funcPtr->getParameters();
-    for (int i = 0; i < toPutOnStack.size(); i++) {
-        Symbol *paramVarSymbol = toPutOnStack[i]->getVariable();
-        symbolTable.current->addSymbol(paramVarSymbol);
-    }
-
+    createProcedureDecl(funcPtr);
+    
+    std::cout << getTabs() << "<type>" << " returnValue;" << std::endl;
 }
 
 /******************************************************************************
@@ -172,15 +164,33 @@ void createProcedureDecl(Procedure* proc)
     symbolTable.current->addSymbol(proc);
     /* Enter Procedure Scope */
     symbolTable.createScope(proc->name);
+    std::cout << getTabs() << "class " << proc->name << " {" << std::endl;
+    std::cout << getTabs() << "public:" << std::endl ;
+
     /* Put procedure params on symbol stack. */
     std::vector<Parameter*> toPutOnStack = proc->getParameters();
     for (int i = 0; i < toPutOnStack.size(); i++) {
         Symbol *paramVarSymbol = toPutOnStack[i]->getVariable();
         symbolTable.current->addSymbol(paramVarSymbol);
+        
+        std::cout << getTabs() << paramVarSymbol->generateCode() << ";" << std::endl;
     }
     
-    std::cout << getTabs() << "class " << proc->name << " {" << std::endl <<
-					getTabs() << "public:" << std::endl;
+    std::cout << getTabs() << proc->name << "(";
+    
+    for (int i = 0; i < toPutOnStack.size(); i++) {
+        Parameter *param = toPutOnStack[i];
+        std::cout << "<type>" << " " << param->name << "," << std::flush;
+    }
+    
+    std::cout << ") {" << std::endl;
+    
+    for (int i = 0; i < toPutOnStack.size(); i++) {
+        Parameter *param = toPutOnStack[i];
+        std::cout << getTabs() << "this->" << param->name << " = " << param->name << ";" << std::endl;
+    }
+    
+    std::cout << getTabs() << "}" << std::endl;
 }
 
 void createLoopCaseScope(const char *ident)
@@ -396,6 +406,7 @@ void exitScope()
     /* Mem management */
     delete scope;
     scope = NULL;
+    std::cout << "};" << std::endl;
 }
 
 bool checkTypesEqual(Type *a, Type *b)
