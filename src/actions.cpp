@@ -13,6 +13,12 @@ std::vector<std::string> errorLog;
 
 Stack symbolTable;
 
+
+std::string getTabs()
+{
+	return symbolTable.getCurrentTabs();
+}
+
 /******************************************************************************
  * addIdent
  * Takes a char* array, which is then converted to a string before being 
@@ -174,10 +180,11 @@ void createProcedureDecl(Procedure* proc)
         symbolTable.current->addSymbol(paramVarSymbol);
     }
     
-    std::cout << "class " << proc->name << " {" << std::endl << "public:";
+    std::cout << getTabs() << "class " << proc->name << " {" << std::endl <<
+					getTabs() << "public:" << std::endl;
 }
 
-void createLoopScope(const char *ident)
+void createLoopCaseScope(const char *ident)
 {
 	symbolTable.createScope(std::string(ident));
 }
@@ -194,7 +201,7 @@ void createTypeSymbol(const char *ident, Type *type)
         std::string name(ident);
         TypeSymbol *symbol = new TypeSymbol(name, type);
         symbolTable.current->addSymbol(symbol);
-		std::cout << symbol->generateTypeDeclCode();
+		std::cout << getTabs() << symbol->generateTypeDeclCode();
     }
 }
 
@@ -310,7 +317,7 @@ void createVariables(Type *&type) {
             
             Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
-			std::cout << var->generateCode() << ";";
+			std::cout << getTabs() << var->generateCode() << ";";
         }
         delete type;
         type = NULL;
@@ -350,7 +357,7 @@ void createConstValue(ConstValue *&constValue, const char *value, ConstValueType
 void createConstant(const char *ident, ConstValue *&value) {
     Constant *symbol = new Constant(std::string(ident), value);
     symbolTable.current->addSymbol(symbol);
-    std::cout << symbol->generateCode() << std::endl;
+    std::cout << getTabs() << symbol->generateCode() << std::endl;
 }
 
 /******************************************************************************

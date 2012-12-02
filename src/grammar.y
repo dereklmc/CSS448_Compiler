@@ -78,12 +78,12 @@ IdentList          :  yident
 Block              :  Declarations
                       ybegin
                             {
-                                std::cout << "void call() {" << std::endl;
+                                std::cout << getTabs() << "void call() {" << std::endl;
                             }
                       StatementSequence
                       yend
                             {
-                                std::cout << "}" << std::endl;
+                                std::cout << getTabs() << "}" << std::endl;
                             }
                    ;
 Declarations       :  ConstantDefBlock
@@ -120,18 +120,24 @@ VariableDeclList   :  VariableDecl ysemicolon
                    ;  
 ConstantDef        :  yident yequal ConstExpression
                                 {
+									std::cout << getTabs();
                                     createConstant($1, $3);
+									std::cout << std::endl;
                                 }
                    ;
 TypeDef            :  yident yequal  Type
                                 {
+									std::cout << getTabs();
                                     createTypeSymbol($1, $3);
+									std::cout << std::endl;
                                 }
                    ;
 VariableDecl       :  IdentList  ycolon  Type
                                 {
                                     checkPointers();
+									std::cout << getTabs();
                                     createVariables($3);
+									std::cout << std::endl;
                                 }
                    ;
 
@@ -236,6 +242,7 @@ FieldListSequence  :  FieldList
                    ;
 FieldList          :  IdentList  ycolon  Type
                                 {
+									std::cout << getTabs();
                                     createVariableList($3);
                                 }
                    ;
@@ -269,27 +276,34 @@ Assignment         :  Designator
                    ;
 ProcedureCall      :  yident 
                                 {
+									std::cout << getTabs();
                                     printf("%s ", $1);
                                 }
                    |  yident 
                                 {
+									std::cout << getTabs();
                                     printf("%s ", $1);
                                 }
                       ActualParameters
+								{
+									std::cout << std::endl;
+								}
                    ;
 IfStatement        :  IfStatementBlock
                       EndIf
                    |  IfStatementBlock
                       yelse
                             {
-                                std::cout << "} else {" << std::endl;	
+                                std::cout << getTabs() << "} else {" << std::endl;	
                             }
                       Statement
                       EndIf
                    ;
 IfStatementBlock   :  yif 
                             {
-                                std::cout << "if (";	
+								
+                                std::cout << getTabs() << "if (";	
+								createLoopCaseScope("if");
                             }
 					  Expression 
 					        {
@@ -303,15 +317,55 @@ IfStatementBlock   :  yif
                    ;
 EndIf          	   :  /*** empty ***/
 					        {
-						        std::cout << std::endl << "}" << std::endl;	
+								exitScope();
+						        std::cout << std::endl << getTabs() << "}" << std::endl;	
 					        }
            		   ;
-CaseStatement      :  ycase  Expression  yof  CaseList  yend
+CaseStatement      :  ycase  
+					   		{
+								std::cout << getTabs() << "switch(";
+								createLoopCaseScope("case");
+							}
+					  Expression  
+							{
+								std::cout << ") {" << std::endl;
+							}
+					  yof  
+					  		
+					  CaseList  
+							{
+								exitScope();
+								std::cout << std::endl << getTabs() << "}" << std::endl;
+							}
+					  yend
                    ;
 CaseList           :  Case
-                   |  CaseList  ysemicolon  Case
+							{
+								exitScope();
+								std::cout << std::endl << getTabs() << "}" << 
+											std::endl << getTabs() << "break;" << std::endl;
+							}
+                   |  CaseList  ysemicolon 
+							{
+								std::cout << std::endl;
+							}
+					  Case
+							{
+								exitScope();
+								std::cout << std::endl << getTabs() << "}" <<
+										std::endl << getTabs() << "break;" << std::endl;
+							}
                    ;
-Case               :  CaseLabelList  ycolon  Statement
+Case               :  CaseLabelList  ycolon  
+							{
+								//Will want to print out caselabellist after "case"
+								std::cout << getTabs() << "case placeholdercase" << ": " << std::endl << getTabs() << "{" << std::endl;						
+								createLoopCaseScope("Inner case");
+							}
+					  Statement
+							{
+								std::cout << std::endl;
+							}
                    ;
 CaseLabelList      :  ConstExpression
                                 {
@@ -328,8 +382,8 @@ CaseLabelList      :  ConstExpression
                    ;
 WhileStatement     :  ywhile
 								{
-									std::cout << "while (";
-									createLoopScope("while");
+									std::cout << getTabs() << "while (";
+									createLoopCaseScope("while");
 								}
 					  Expression  
 								{
@@ -341,31 +395,35 @@ WhileStatement     :  ywhile
 								}
 					  ydo  Statement
 								{
-									std::cout << std::endl << "}" << std::endl;
 									exitScope();
+									std::cout << std::endl << getTabs() << "}" << std::endl;
 								}
                    ;
 RepeatStatement    :  yrepeat  
 								{
-									createLoopScope("repeat");
-									std::cout << "do {" << std::endl;
+									std::cout << getTabs() << "do {" << std::endl;
+									createLoopCaseScope("repeat");
 								}
 					  StatementSequence  yuntil  
 								{
-									std::cout << "} while(";
+									exitScope();
+									std::cout << getTabs() << "} while(";
 								}
 					  Expression
 								{
 									// The ");" is printed on a new line because of the lexxer
 									std::cout << ");" << std::endl;
-									exitScope();
 								}
+					  EndRepeat
                    ;
+
+EndRepeat		   :	/* empty */
+				   ;
 ForStatement       :  yfor  
 					  yident  
                                 {
-									createLoopScope("for");
-									std::cout << "for (";
+									std::cout << getTabs() << "for ("; 
+									createLoopCaseScope("for");
 									printf("%s ", $2);
 									std::cout << "= ";
                                 }
@@ -396,8 +454,8 @@ ForStatement       :  yfor
 								}
                             ydo  Statement
 								{
-									std::cout << std::endl << "}" << std::endl;
 									exitScope();
+									std::cout << std::endl << getTabs() << "}" << std::endl;
 								}
                    ;
 WhichWay           :  yto  
@@ -412,12 +470,34 @@ WhichWay           :  yto
 									$$ = false;
 								}
                    ;
-IOStatement        :  yread  yleftparen  DesignatorList  yrightparen
+IOStatement        :  yread  yleftparen  
+								{
+									std::cout << getTabs() << "cin >> ";
+								}
+					  DesignatorList  yrightparen
+								{std::cout << ";" << std::endl;}
                    |  yreadln  
-                   |  yreadln  yleftparen DesignatorList  yrightparen
-                   |  ywrite  yleftparen  ExpList  yrightparen
+								{ std::cout << ";" << std::endl; }
+                   |  yreadln  yleftparen 
+								{
+									std::cout << getTabs() << "cin >> ";
+								}
+					  DesignatorList  yrightparen
+								{std::cout << ";" << std::endl;}
+                   |  ywrite  yleftparen  
+								{
+									std::cout << getTabs() << "cout << ";
+								}
+					  ExpList  yrightparen
+								{std::cout << ";" << std::endl;}
                    |  ywriteln  
-                   |  ywriteln  yleftparen  ExpList  yrightparen
+								{std::cout << ";" << std::endl;}
+                   |  ywriteln  yleftparen  
+								{
+									std::cout << getTabs() << "cout << ";
+								}
+					  ExpList  yrightparen
+								{std::cout << ";" << std::endl;}
                    ;
 /***************************  Designator Stuff  ******************************/
 
@@ -466,7 +546,7 @@ MemoryStatement    :  ynew  yleftparen  yident  yrightparen
 
 Expression         :  SimpleExpression
 						{ 
-							$$ = $1; 
+							$$ = $1; 				
 						}
                    |  SimpleExpression  Relation  SimpleExpression
 						{ 
@@ -482,6 +562,7 @@ Expression         :  SimpleExpression
                    ;
 SimpleExpression   :  TermExpr
 						{ 
+							
 							$$ = $1;
 						}
                    |  UnaryOperator  TermExpr
@@ -607,6 +688,7 @@ Factor             :  yinteger
 /*  separated with commas.                                                  */
 FunctionCall       :  yident 
                                 {
+									std::cout << getTabs();
                                     printf("%s ", $1);
                                 }
                       ActualParameters
@@ -664,16 +746,18 @@ SubprogDeclList    :  /*** empty ***/
                    ;
 ProcedureDecl      :  ProcedureHeading  ysemicolon
                             {
+								std::cout << getTabs();
                                 createProcedureDecl($1);
                             }
                       Block
                             {
                                 exitScope();
-                                std::cout << "}" << std::endl;
+                                std::cout << getTabs() << "}" << std::endl;
                             } 
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident
                             {
+								std::cout << getTabs();
                                 createFunctionDecl($3, $1);
                             }
                       ysemicolon  Block
@@ -683,19 +767,23 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                    ;
 ProcedureHeading   :  yprocedure yident
                                 {
+									std::cout << getTabs();
                                     createProcedure($2, $$);
                                 }
                    |  yprocedure yident FormalParameters
                                 {
+									std::cout << getTabs();
                                     createProcedure($2, $$);
                                 }
                    ;
 FunctionHeading    :  yfunction  yident
                                 {
+									std::cout << getTabs();
                                     createFunction($2, $$);
                                 }
                    |  yfunction  yident FormalParameters
                                 {
+									std::cout << getTabs();
                                     createFunction($2, $$);
                                 }
                    ;
@@ -706,10 +794,12 @@ FormalParamList    :  OneFormalParam
                    ;
 OneFormalParam     :  yvar IdentList ycolon yident
                                 {
+									std::cout << getTabs();
                                     createParameter($4);
                                 }
                    |  IdentList ycolon yident
                                 {
+									std::cout << getTabs();
                                     createParameter($3);
                                 }
                    ;

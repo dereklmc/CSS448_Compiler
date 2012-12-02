@@ -29,7 +29,8 @@ class StackFrame
             }
             out << std::endl;
         }
-        
+
+
         void printScopeTabs(std::ostream &output) const
         {    
             for(int i = 0; i < scope; i++) {
@@ -79,5 +80,15 @@ class StackFrame
 	    	}
 	    	return false;
         }
+
+		std::string getMyTabs()
+		{
+			std::string retVal = "";
+			for(int i = 0; i < scope; i++) {
+                retVal += "    ";
+            }
+			return retVal;
+		}
+        
 };
 #endif

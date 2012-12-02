@@ -112,17 +112,17 @@ writeln			{ return ywriteln; }
 <INITIAL>[\(][\*]	    { printf("/*"); BEGIN(COMMENT); }
 <COMMENT>[^\*\)]*	    { ECHO; }
 <COMMENT>[\*]/[\)]	    {
-				            printf("*/");
+				            printf("*/ \n");
 				            yyinput();
 				            BEGIN(0);
         			    }
 <COMMENT>[\*]/[^\)]	    { ECHO; }
-<COMMENT><<EOF>>	    { printf("*/"); BEGIN(0); }
+<COMMENT><<EOF>>	    { printf("*/ \n"); BEGIN(0); }
 
 <INITIAL>[{]            { printf("/*"); BEGIN(COMMENT2);}
 <COMMENT2>[^}]*         { ECHO; }
-<COMMENT2>[}]           { printf("*/"); BEGIN(0); }
-<COMMENT2><<EOF>>       { printf("*/"); BEGIN(0); }
+<COMMENT2>[}]           { printf("*/ \n"); BEGIN(0); }
+<COMMENT2><<EOF>>       { printf("*/ \n"); BEGIN(0); }
 	/** Operands **/
 ":="			{ return yassign; }
 \^			    { return ycaret; }
@@ -146,7 +146,7 @@ writeln			{ return ywriteln; }
 <INITIAL>")"    { return yrightparen; }
 ";"			    { return ysemicolon; }
 	/** Misc */
-\n					{ ECHO; }
+\n					{ /* ECHO; */ }
 {letter}({letter}|[0-9])* 				{
                                             yylval.text = strdup(yytext);
 											return yident;
