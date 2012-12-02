@@ -13,7 +13,6 @@ std::vector<std::string> errorLog;
 
 Stack symbolTable;
 
-
 std::string getTabs()
 {
 	return symbolTable.getCurrentTabs();
