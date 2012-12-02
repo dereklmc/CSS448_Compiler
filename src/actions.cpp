@@ -148,7 +148,7 @@ void createFunctionDecl(const char* ident, Function* funcPtr)
     
     createProcedureDecl(funcPtr);
     
-    std::cout << "<type>" << " returnValue;" << std::endl;
+    std::cout << getTabs() << "<type>" << " returnValue;" << std::endl;
 }
 
 /******************************************************************************
@@ -165,7 +165,8 @@ void createProcedureDecl(Procedure* proc)
     symbolTable.current->addSymbol(proc);
     /* Enter Procedure Scope */
     symbolTable.createScope(proc->name);
-    std::cout << "class " << proc->name << " {" << std::endl << "public:" << std::endl ;
+    std::cout << getTabs() << "class " << proc->name << " {" << std::endl;
+    std::cout << getTabs() << "public:" << std::endl ;
 
     /* Put procedure params on symbol stack. */
     std::vector<Parameter*> toPutOnStack = proc->getParameters();
@@ -173,10 +174,10 @@ void createProcedureDecl(Procedure* proc)
         Symbol *paramVarSymbol = toPutOnStack[i]->getVariable();
         symbolTable.current->addSymbol(paramVarSymbol);
         
-        std::cout << paramVarSymbol->generateCode() << ";" << std::endl;
+        std::cout << getTabs() << paramVarSymbol->generateCode() << ";" << std::endl;
     }
     
-    std::cout << proc->name << "(";
+    std::cout << getTabs() << proc->name << "(";
     
     for (int i = 0; i < toPutOnStack.size(); i++) {
         Parameter *param = toPutOnStack[i];
@@ -187,10 +188,10 @@ void createProcedureDecl(Procedure* proc)
     
     for (int i = 0; i < toPutOnStack.size(); i++) {
         Parameter *param = toPutOnStack[i];
-        std::cout << "this->" << param->name << " = " << param->name << ";" << std::endl;
+        std::cout << getTabs() << "this->" << param->name << " = " << param->name << ";" << std::endl;
     }
     
-    std::cout << "}" << std::endl;
+    std::cout << getTabs() << "}" << std::endl;
 }
 
 void createLoopCaseScope(const char *ident)
