@@ -13,7 +13,6 @@ std::vector<std::string> errorLog;
 
 Stack symbolTable;
 
-
 std::string getTabs()
 {
 	return symbolTable.getCurrentTabs();
@@ -407,7 +406,7 @@ void exitScope()
     /* Mem management */
     delete scope;
     scope = NULL;
-    std::cout << "};" << std::endl;
+    std::cout << getTabs() << "}" << std::endl;
 }
 
 bool checkTypesEqual(Type *a, Type *b)

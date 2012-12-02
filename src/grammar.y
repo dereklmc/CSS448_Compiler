@@ -18,7 +18,8 @@
 #include <vector>
 
 using namespace std;
-
+bool handlingInput = false;
+bool handlingOutput = false;
 extern YYSTYPE yylval;
 
 %}
@@ -295,7 +296,7 @@ IfStatement        :  IfStatementBlock
                       yelse
                             {
 								exitScope();
-                                std::cout << getTabs() << "} else {" << std::endl;
+                                std::cout << getTabs() << "else {" << std::endl;
 								createLoopCaseScope("else");	
                             }
                       Statement
@@ -319,8 +320,7 @@ IfStatementBlock   :  yif
                    ;
 EndIf          	   :  /*** empty ***/
 					        {
-								exitScope();
-						        std::cout << std::endl << getTabs() << "}" << std::endl;	
+								exitScope();	
 					        }
            		   ;
 CaseStatement      :  ycase  
@@ -337,15 +337,15 @@ CaseStatement      :  ycase
 					  CaseList  
 							{
 								exitScope();
-								std::cout << std::endl << getTabs() << "}" << std::endl;
+								//std::cout << std::endl << getTabs() << "}" << std::endl;
 							}
 					  yend
                    ;
 CaseList           :  Case
 							{
 								exitScope();
-								std::cout << std::endl << getTabs() << "}" << 
-											std::endl << getTabs() << "break;" << std::endl;
+								//std::cout << std::endl << getTabs() << "}" << 
+								std::cout << std::endl << getTabs() << "break;" << std::endl;
 							}
                    |  CaseList  ysemicolon 
 							{
@@ -354,8 +354,8 @@ CaseList           :  Case
 					  Case
 							{
 								exitScope();
-								std::cout << std::endl << getTabs() << "}" <<
-										std::endl << getTabs() << "break;" << std::endl;
+								//std::cout << std::endl << getTabs() << "}" << 
+								std::cout << std::endl << getTabs() << "break;" << std::endl;
 							}
                    ;
 Case               :  CaseLabelList  ycolon  
@@ -398,7 +398,7 @@ WhileStatement     :  ywhile
 					  ydo  Statement
 								{
 									exitScope();
-									std::cout << std::endl << getTabs() << "}" << std::endl;
+									//std::cout << std::endl << getTabs() << "}" << std::endl;
 								}
                    ;
 RepeatStatement    :  yrepeat  
@@ -413,7 +413,6 @@ RepeatStatement    :  yrepeat
 								}
 					  Expression
 								{
-									// The ");" is printed on a new line because of the lexxer
 									std::cout << ");" << std::endl;
 								}
 					  EndRepeat
@@ -457,7 +456,7 @@ ForStatement       :  yfor
                             ydo  Statement
 								{
 									exitScope();
-									std::cout << std::endl << getTabs() << "}" << std::endl;
+									//std::cout << std::endl << getTabs() << "}" << std::endl;
 								}
                    ;
 WhichWay           :  yto  
@@ -474,24 +473,39 @@ WhichWay           :  yto
                    ;
 IOStatement        :  yread  yleftparen  
 								{
-									std::cout << getTabs() << "cin >> ";
+									std::cout << getTabs() << "cin";
+									handlingOutput = true;
 								}
 					  DesignatorList  yrightparen
-								{std::cout << ";" << std::endl;}
+								{
+									std::cout << ";" << std::endl;
+									handlingOutput = false;
+								}
                    |  yreadln  
-								{ std::cout << ";" << std::endl; }
+								{
+									 std::cout << getTabs() << "cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')";
+									 std::cout << ";" << std::endl; 
+								}
                    |  yreadln  yleftparen 
 								{
-									std::cout << getTabs() << "cin >> ";
+									std::cout << getTabs() << "cin";
+									handlingOutput = true;
 								}
 					  DesignatorList  yrightparen
-								{std::cout << ";" << std::endl;}
+								{
+									handlingOutput = false;
+									std::cout << ";" << std::endl;
+								}
                    |  ywrite  yleftparen  
 								{
-									std::cout << getTabs() << "cout << ";
+									std::cout << getTabs() << "cout";
+									handlingInput = true;
 								}
 					  ExpList  yrightparen
-								{std::cout << ";" << std::endl;}
+								{
+									std::cout << ";" << std::endl;
+									handlingInput = false;
+								}
                    |  ywriteln  
 								{
 									std::cout << "cout << \"\\n\"";
@@ -499,12 +513,14 @@ IOStatement        :  yread  yleftparen
 								}
                    |  ywriteln  yleftparen  
 								{
-									std::cout << getTabs() << "cout << ";
+									std::cout << getTabs() << "cout";
+									handlingInput = true;
 								}
 					  ExpList  yrightparen
 								{
 									std::cout << " << \"\\n\"";
 									std::cout << ";" << std::endl;
+									handlingInput = false;
 								}
                    ;
 /***************************  Designator Stuff  ******************************/
@@ -514,6 +530,10 @@ DesignatorList     :  Designator
                    ;
 Designator         :  yident
 							{
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << $1;
 							}
                       DesignatorStuff
@@ -637,40 +657,72 @@ Term               :  Factor
                    ;
 Factor             :  yinteger 
 							{ 
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << $1; 
 								$$ = INTEGER_TYPE; 
 							}
                    |  yreal 
 							{ 
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << $1; 
 								$$ = REAL_TYPE; 
 							}
                    |  ytrue 
 							{ 
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << "true"; 
 								$$ = BOOLEAN_TYPE;  
 							}
                    |  yfalse 
 							{ 
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << "false"; 
 								$$ = BOOLEAN_TYPE;  
 							}
                    |  ynil 
 							{ 
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << "NULL"; 
 								$$ = NULL;  
 							}
                    |  ystring 
 							{ 
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << "\"" << $1 << "\""; 
 								$$ = STRING_TYPE;  
 							}
                    |  Designator 
 							{
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								$$ = $1;  
 							}
                    |  yleftparen 
 							{ 
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << "("; 
 							}
                       		Expression 
@@ -681,6 +733,10 @@ Factor             :  yinteger
 							}
                    |  ynot  
 							{ 
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
 								std::cout << "!"; 
 							} 
 							Factor 
