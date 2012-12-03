@@ -483,7 +483,7 @@ IOStatement        :  yread  yleftparen
 								}
                    |  yreadln  
 								{
-									 std::cout << getTabs() << "cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')";
+									 std::cout << getTabs() << "while (getchar() != '\n')";
 									 std::cout << ";" << std::endl; 
 								}
                    |  yreadln  yleftparen 
