@@ -2,7 +2,7 @@
 #define RECORDTYPE_H
 
 #include "Type.h"
-#include "Variable.h"
+#include "variable.h"
 
 #include <iostream>
 #include <vector>

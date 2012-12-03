@@ -35,7 +35,7 @@ symbolictype.o: symbolictype.cpp symbolictype.h symbol.h Type.h
 constvalue.o: constvalue.cpp constvalue.h
 	g++ -g -c $<
 
-parameter.o: parameter.cpp parameter.h Variable.h Type.h
+parameter.o: parameter.cpp parameter.h variable.h Type.h
 	g++ -g -c $<
 
 pointertype.o: pointertype.cpp Type.h

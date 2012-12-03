@@ -1,4 +1,4 @@
-#include "Variable.h"
+#include "variable.h"
 
 Variable::Variable()
 {

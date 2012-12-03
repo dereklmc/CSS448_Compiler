@@ -1,7 +1,7 @@
 #ifndef PARAMETER_H
 #define PARAMETER_H
 
-#include "Variable.h"
+#include "variable.h"
 
 /**
  * Represents an identifier for a parameter of a procedure or function.
