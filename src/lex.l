@@ -102,7 +102,7 @@ writeln			{ return ywriteln; }
 					BEGIN(0);
 					return ychar;
 				}
-<STRING2>[^'][^'][^']*[']	{ yymore(); }
+<STRING2>[^'][^'][^']*		{ yymore(); }
 <STRING2>[']			{
 					yyless(yyleng-1);
                             		yylval.text = strdup(yytext);

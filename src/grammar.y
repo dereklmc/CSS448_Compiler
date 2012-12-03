@@ -480,7 +480,7 @@ IOStatement        :  yread  yleftparen
 									std::cout << getTabs() << "cin";
 									handlingOutput = true;
 								}
-					  DesignatorList  yrightparen
+		      DesignatorList  yrightparen
 								{
 									std::cout << ";" << std::endl;
 									handlingOutput = false;
@@ -495,10 +495,11 @@ IOStatement        :  yread  yleftparen
 									std::cout << getTabs() << "cin";
 									handlingOutput = true;
 								}
-					  DesignatorList  yrightparen
+		      DesignatorList  yrightparen
 								{
 									handlingOutput = false;
 									std::cout << ";" << std::endl;
+									std::cout << "cout << \"\\n\"" << std::endl;
 								}
                    |  ywrite  yleftparen  
 								{
