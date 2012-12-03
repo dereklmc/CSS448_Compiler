@@ -18,6 +18,7 @@ class Parameter : public Variable
         Variable* getVariable() const;
         
         bool operator==(const Parameter&) const;
+        virtual std::string generateCode() const;
 
     private:
         Variable var;

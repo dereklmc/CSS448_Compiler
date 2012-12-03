@@ -56,7 +56,7 @@ void Variable::clone(const Variable &rhs)
 
 std::string Variable::generateCode() const
 {
-	return (type->generateVarDeclCode() + " " + name);
+    return (type->generateVarDeclCode() + " " + name);
 }
 
 /*******************************************************************************

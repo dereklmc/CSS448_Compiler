@@ -23,6 +23,11 @@ bool Parameter::operator==(const Parameter &other) const
     return other.name == name;
 }
 
+std::string Parameter::generateCode() const
+{
+    return (type->generateVarDeclCode() + " " + (byReference ? "&" : "") + " " + name);
+}
+
 /*******************************************************************************
  *
  * Overloaded print from Variable.

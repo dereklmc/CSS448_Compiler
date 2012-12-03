@@ -20,7 +20,7 @@ class Variable : public Symbol {
         // Defined to release Variable's reference to Type.
         // Since type is also in the symbol table, the ST will deallocate type.
         virtual ~Variable();
-		std::string generateCode() const;
+        virtual std::string generateCode() const;
         
         Variable& operator=(const Variable&);
         

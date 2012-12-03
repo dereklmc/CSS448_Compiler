@@ -810,7 +810,7 @@ SubprogDeclList    :  /*** empty ***/
                    ;
 ProcedureDecl      :  ProcedureHeading  ysemicolon
                             {
-								std::cout << getTabs();
+                                std::cout << getTabs();
                                 createProcedureDecl($1);
                             }
                       Block

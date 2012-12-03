@@ -147,7 +147,7 @@ void createFunctionDecl(const char* ident, Function* funcPtr)
     
     createProcedureDecl(funcPtr);
     
-    std::cout << getTabs() << "<type>" << " returnValue;" << std::endl;
+    std::cout << getTabs() << symbolType->generateCode() << " returnValue;" << std::endl;
 }
 
 /******************************************************************************
@@ -178,16 +178,19 @@ void createProcedureDecl(Procedure* proc)
     
     std::cout << getTabs() << proc->name << "(";
     
-    for (int i = 0; i < toPutOnStack.size(); i++) {
+    if (toPutOnStack.size() > 0) {
+        std::cout << toPutOnStack[0]->generateCode() << std::flush;
+    }
+    for (int i = 1; i < toPutOnStack.size(); i++) {
         Parameter *param = toPutOnStack[i];
-        std::cout << "<type>" << " " << param->name << "," << std::flush;
+        std::cout << ", " << toPutOnStack[i]->generateCode() << std::flush;
     }
     
     std::cout << ") {" << std::endl;
     
     for (int i = 0; i < toPutOnStack.size(); i++) {
         Parameter *param = toPutOnStack[i];
-        std::cout << getTabs() << "this->" << param->name << " = " << param->name << ";" << std::endl;
+        std::cout << getTabs() << "\tthis->" << param->name << " = " << param->name << ";" << std::endl;
     }
     
     std::cout << getTabs() << "}" << std::endl;
