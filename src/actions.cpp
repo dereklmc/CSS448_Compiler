@@ -147,7 +147,7 @@ void createFunctionDecl(const char* ident, Function* funcPtr)
     
     createProcedureDecl(funcPtr);
     
-    std::cout << getTabs() << symbolType->generateCode() << " returnValue;" << std::endl;
+    std::cout << getTabs() << symbolType->generateCode() << " _returnValue;" << std::endl;
 }
 
 /******************************************************************************
