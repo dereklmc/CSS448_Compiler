@@ -44,7 +44,7 @@ extern YYSTYPE yylval;
         ynotequal yof  yor yplus yprocedure yprogram yread yreadln  
         yrecord yrepeat yrightbracket yrightparen  ysemicolon yset 
         ythen  yto ytrue ytype  yuntil  yvar ywhile ywrite ywriteln yunknown
-%token <text> yident ystring yinteger yreal
+%token <text> yident ystring yinteger yreal ychar
 
 %%
 /* rules section */
@@ -189,6 +189,10 @@ ConstFactor        :  yident
                                 {
                                     createConstValue($$, "false", BOOLEAN);
                                 }
+		   |  ychar
+				{
+				    createConstValue($$, $1, CHAR);
+				}
                    ;
 Type               :  yident    {
 									
@@ -708,6 +712,15 @@ Factor             :  yinteger
 									std::cout << " >> ";
 								std::cout << "\"" << $1 << "\""; 
 								$$ = STRING_TYPE;  
+							}
+		   |  ychar				
+							{
+								if (handlingInput)
+									std::cout << " << ";
+								else if (handlingOutput)
+									std::cout << " >> ";
+								std::cout << "\'" << $1 << "\'"; 
+								$$ = CHAR_TYPE;  
 							}
                    |  Designator 
 							{

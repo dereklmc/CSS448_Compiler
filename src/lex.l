@@ -37,6 +37,7 @@ digit 			[0-9]
 %s COMMENT
 %s COMMENT2
 
+
 %%
 	/** Identifiers **/
 and				{ return yand; }
@@ -94,19 +95,28 @@ writeln			{ return ywriteln; }
 					    }
 
 <INITIAL>[\']			{ BEGIN(STRING2); }
-<STRING2>[^']*			{ yymore(); }
+<STRING2>[^'][\']		{
+					yyless(yyleng-1);
+                            		yylval.text = strdup(yytext);
+					yyinput();
+					BEGIN(0);
+					return ychar;
+				}
+<STRING2>[^'][^'][^']*[']	{ yymore(); }
 <STRING2>[']			{
-							yyless(yyleng-1);
-                            yylval.text = strdup(yytext);
-							yyinput();
-							BEGIN(0);
-							return ystring;
-						}
+					yyless(yyleng-1);
+                            		yylval.text = strdup(yytext);
+					yyinput();
+					BEGIN(0);
+					return ystring;
+				}
 <STRING2><<EOF>>		{
-                            yylval.text = strdup(yytext);
-							BEGIN(0);
-							return ystring;
-						}
+                            		yylval.text = strdup(yytext);
+					BEGIN(0);
+					return ystring;
+				}
+
+
 
 	/** Comments **/
 <INITIAL>[\(][\*]	    { printf("/*"); BEGIN(COMMENT); }

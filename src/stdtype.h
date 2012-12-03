@@ -29,6 +29,7 @@ extern StdType *INTEGER_TYPE;
 extern StdType *BOOLEAN_TYPE;
 extern StdType *STRING_TYPE;
 extern StdType *REAL_TYPE;
+extern StdType *CHAR_TYPE;
 
 void initStdTypes();
 

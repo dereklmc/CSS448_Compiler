@@ -8,9 +8,10 @@ enum ConstValueType
 {
     SYMBOL,
     INTEGER,
-	REAL,
+    REAL,
     BOOLEAN,
     STRING,
+    CHAR,
     NIL
 };
 
