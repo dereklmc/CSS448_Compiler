@@ -38,5 +38,5 @@ std::string TypeSymbol::generateCode()
  */
 std::string TypeSymbol::generateTypeDeclCode()
 {
-	return ("typedef " + type->generateOptionalCode()+ " " + name + type->generateTypeCode() + ";");
+	return ("typedef " + type->generateOptionalCode()+ " " + name + type->generateTypeCode());
 };

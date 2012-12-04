@@ -213,7 +213,7 @@ void createTypeSymbol(const char *ident, Type *type)
         std::string name(ident);
         TypeSymbol *symbol = new TypeSymbol(name, type);
         symbolTable.current->addSymbol(symbol);
-		std::cout << getTabs() << symbol->generateTypeDeclCode();
+		std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
     }
 }
 
@@ -329,7 +329,7 @@ void createVariables(Type *&type) {
             
             Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
-			std::cout << getTabs() << var->generateCode() << ";";
+			std::cout << getTabs() << var->generateCode() << ";"<<std::endl;
         }
         delete type;
         type = NULL;

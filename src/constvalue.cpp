@@ -16,3 +16,26 @@ std::string ConstValue::generateCode() const
 {
     return value;
 }
+
+ConstValueType ConstValue::getType() const
+{
+    return type;
+    /*
+    switch(type)
+    {
+        case BOOLEAN:
+            return "BOOLEAN";
+        case SYMBOL:
+            return "SYMBOL";
+        case INTEGER:
+            return "INTEGER";
+        case REAL:
+            return "REAL";
+        case STRING:
+            return "STRING";
+        case CHAR:
+            return "CHAR";
+        case NIL:
+            return "NIL";
+    }*/
+}
