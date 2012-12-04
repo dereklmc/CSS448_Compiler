@@ -59,31 +59,45 @@ void typeCheckCaseLabel(Type* t)
 			if ((type == INTEGER) && (!checkTypesEqual(INTEGER_TYPE, t))){
 				// TODO record error
 				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
-					"\"(int) does not match case condition type"; 
+					"\"(int) does not match case condition type" << std::endl; 
 			}
 			// If case label's type is a real
 			else if ((type == REAL) && (!checkTypesEqual(REAL_TYPE, t))){
 				// TODO record error
 				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
-					"\"(real) does not match case condition type"; 
+					"\"(real) does not match case condition type" << std::endl; 
 			}
 			// Boolean
 			else if ((type == BOOLEAN) && (!checkTypesEqual(BOOLEAN_TYPE, t))){
 				// TODO record error
 				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
-					"\"(bool) does not match case condition type"; 
+					"\"(bool) does not match case condition type" << std::endl; 
 			}
 			// String
 			else if ((type == STRING) && (!checkTypesEqual(STRING_TYPE, t))){
 				// TODO record error
 				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
-					"\"(string) does not match case condition type"; 
+					"\"(string) does not match case condition type" << std::endl; 
 			}
 			// Char
 			else if ((type == CHAR) && (!checkTypesEqual(CHAR_TYPE, t))){
 				// TODO record error
 				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
-					"\"(char) does not match case condition type"; 
+					"\"(char) does not match case condition type" << std::endl; 
+			}
+			else if (type == SYMBOL) {
+				std::string symbolNameStr = val->generateCode();
+				const char* sName = symbolNameStr.c_str();
+				Variable* v = NULL;
+				if (searchStack(sName, v)) {	// No need to worry that it can't find symbol (?)
+					if (!checkTypesEqual(v->type, t)) {
+						std::cout << "***ERROR: Case label \"" << val->generateCode() <<
+						"\"(Symbol)'s type does not match case condition type" << std::endl; 				
+					}
+				}
+				else
+					{}
+					// symbol does not exist
 			}
 			caseLabelTypeCheckBuffer.pop_front();
 	}

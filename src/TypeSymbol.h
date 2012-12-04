@@ -17,7 +17,8 @@ class TypeSymbol : public Symbol {
         std::string generateCode();
 		std::string generateTypeDeclCode();
         void print(std::ostream&) const;
-    
+		Type* getMyType() const;    
+
     private:
         Type *type;
 };

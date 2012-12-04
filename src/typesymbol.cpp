@@ -13,6 +13,11 @@ TypeSymbol::~TypeSymbol()
     type = NULL;
 }
 
+Type* TypeSymbol::getMyType() const
+{
+	return type;
+}
+
 void TypeSymbol::print(std::ostream& out) const
 {
      Symbol::print(out);
