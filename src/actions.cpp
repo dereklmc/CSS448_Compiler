@@ -16,6 +16,16 @@ std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 
 Stack symbolTable;
 
+
+void checkConditionalExpressionType(Type* t) {
+	if (!BOOLEAN_TYPE->equals(t)) {
+	    std::stringstream ss;
+	    ss << "ERROR: Expression is not conditional";
+	    addError(ss.str());
+	    //std::cout << "ERROR: Expression is not conditional" << std::endl;
+	}
+}
+
 void setCaseType(Type* t)
 {
 	caseType = t;

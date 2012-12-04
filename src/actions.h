@@ -30,6 +30,8 @@ void typeCheckCaseLabel();
 void addIdent(const char *);
 void createLoopCaseScope(const char *ident);
 
+void checkConditionalExpressionType(Type*);
+
 bool stackHasSymbol(const char *);
 
 /******************************************************************************
