@@ -19,10 +19,14 @@
 #include <deque>
 
 extern Stack symbolTable;
+extern int lineNumber;
+
+void addError(std::string);
+void setCaseType(Type* t);
 void checkPointers();
 void printCaseLabel();
 void addCaseLabel(ConstValue* c);
-void typeCheckCaseLabel(Type* t);
+void typeCheckCaseLabel();
 void addIdent(const char *);
 void createLoopCaseScope(const char *ident);
 
@@ -61,7 +65,11 @@ bool searchStack(const char *ident, T *&castSymbol)
     bool isFound = symbolTable.searchStack(identStr, symbol);
     if (!isFound) {
         castSymbol = NULL;
-        std::cout << "Ident \"" << ident << "\" does not name a symbol." << std::endl;
+	std::stringstream ss;
+	ss << "***ERROR(line: " << lineNumber << "): Ident \"" << ident << "\" does not name a symbol.";
+	std::string errorMessage = ss.str();
+	addError(errorMessage);
+        //std::cout << "***ERROR(line: " << lineNumber << ")Ident \"" << ident << "\" does not name a symbol." << std::endl;
     } else {
         castSymbol = dynamic_cast<T*>(symbol); // = foundType;
     }

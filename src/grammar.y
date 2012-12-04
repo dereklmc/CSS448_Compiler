@@ -60,6 +60,7 @@ ProgramModule      :  yprogram yident ProgramParameters ysemicolon
                       Block ydot
                                 {
                                     exitScope();
+				    printErrorLog();
                                 }
                    ;
 ProgramParameters  :  yleftparen  IdentList  yrightparen
@@ -335,12 +336,13 @@ CaseStatement      :  ycase
 					  Expression  
 							{
 								std::cout << ") {" << std::endl;
+								setCaseType($3);
 							}
 					  yof  
 					  		
 					  CaseList  
-							{
-								typeCheckCaseLabel($3);
+							{	
+								setCaseType(NULL);
 								exitScope();
 								//std::cout << std::endl << getTabs() << "}" << std::endl;
 							}
@@ -366,6 +368,7 @@ CaseList           :  Case
 Case               :  CaseLabelList  ycolon  
 							{
 								printCaseLabel();
+								typeCheckCaseLabel();
 								createLoopCaseScope("Inner case");
 							}
 					  Statement
