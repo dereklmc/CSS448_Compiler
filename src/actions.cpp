@@ -10,12 +10,83 @@ std::deque<Range*> rangeBuffer;
 std::deque<Variable*> variableBuffer;
 
 std::vector<std::string> errorLog;
+std::deque<ConstValue*> caseLabelBuffer;
+std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 
 Stack symbolTable;
+
+void addCaseLabel(ConstValue* c)
+{
+	caseLabelBuffer.push_back(c);
+}
 
 std::string getTabs()
 {
 	return symbolTable.getCurrentTabs();
+}
+
+void printCaseLabel()
+{
+	std::cout << getTabs() << "case ";
+	std::deque<ConstValue*> tempQueue;
+	while (!caseLabelBuffer.empty()) {
+        ConstValue* val = caseLabelBuffer.front();
+		caseLabelTypeCheckBuffer.push_back(val);	// Push this value on a separate buffer for
+													// type checking later
+		int type = val->getType();
+		if (type == STRING)
+			std::cout << "\"" << val->generateCode() << "\"";
+		else if (type == CHAR)
+			std::cout << "\'" << val->generateCode() << "\'";
+		else
+			std::cout << val->generateCode();
+        caseLabelBuffer.pop_front();
+		if (!caseLabelBuffer.empty())
+			std::cout << ", ";
+    }
+
+	std::cout << ": " << std::endl << getTabs() << "{" << std::endl;
+}
+
+// TODO handle Symbols for case, and nils
+void typeCheckCaseLabel(Type* t)
+{
+	while (!caseLabelTypeCheckBuffer.empty()) {
+			ConstValue* val = caseLabelTypeCheckBuffer.front();
+			int type = val->getType();
+			// If the case label's type is an int, compare int type to the type
+			// of the expression in switch(expression)
+			if ((type == INTEGER) && (!checkTypesEqual(INTEGER_TYPE, t))){
+				// TODO record error
+				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
+					"\"(int) does not match case condition type"; 
+			}
+			// If case label's type is a real
+			else if ((type == REAL) && (!checkTypesEqual(REAL_TYPE, t))){
+				// TODO record error
+				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
+					"\"(real) does not match case condition type"; 
+			}
+			// Boolean
+			else if ((type == BOOLEAN) && (!checkTypesEqual(BOOLEAN_TYPE, t))){
+				// TODO record error
+				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
+					"\"(bool) does not match case condition type"; 
+			}
+			// String
+			else if ((type == STRING) && (!checkTypesEqual(STRING_TYPE, t))){
+				// TODO record error
+				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
+					"\"(string) does not match case condition type"; 
+			}
+			// Char
+			else if ((type == CHAR) && (!checkTypesEqual(CHAR_TYPE, t))){
+				// TODO record error
+				std::cout << "***ERROR: Case label \"" << val->generateCode() <<
+					"\"(char) does not match case condition type"; 
+			}
+			caseLabelTypeCheckBuffer.pop_front();
+	}
 }
 
 /******************************************************************************

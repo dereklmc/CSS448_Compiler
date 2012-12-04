@@ -14,7 +14,7 @@
 	- Has an index converter (0 based)
 	- Used for code generation
 	- Recursively generate for multi-dimensional arrays
-6. _Nina_ For/while loops, repeat statements
+6. _Nina_ <s>For/while loops, repeat statements </s>
 7. Case Statements
 9. _Derek_ Constants
 	- Properly scope constant

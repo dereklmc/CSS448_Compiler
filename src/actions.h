@@ -20,7 +20,9 @@
 
 extern Stack symbolTable;
 void checkPointers();
-
+void printCaseLabel();
+void addCaseLabel(ConstValue* c);
+void typeCheckCaseLabel(Type* t);
 void addIdent(const char *);
 void createLoopCaseScope(const char *ident);
 

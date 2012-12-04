@@ -340,6 +340,7 @@ CaseStatement      :  ycase
 					  		
 					  CaseList  
 							{
+								typeCheckCaseLabel($3);
 								exitScope();
 								//std::cout << std::endl << getTabs() << "}" << std::endl;
 							}
@@ -364,8 +365,7 @@ CaseList           :  Case
                    ;
 Case               :  CaseLabelList  ycolon  
 							{
-								//Will want to print out caselabellist after "case"
-								std::cout << getTabs() << "case placeholdercase" << ": " << std::endl << getTabs() << "{" << std::endl;						
+								printCaseLabel();
 								createLoopCaseScope("Inner case");
 							}
 					  Statement
@@ -376,14 +376,16 @@ Case               :  CaseLabelList  ycolon
 CaseLabelList      :  ConstExpression
                                 {
                                     /* TODO */
-                                    delete $1;
-                                    $1 = NULL;
+                                    //delete $1;
+                                    //$1 = NULL;
+									addCaseLabel($1);
                                 }
                    |  CaseLabelList  ycomma  ConstExpression
                                 {
                                     /* TODO */
-                                    delete $3;
-                                    $3 = NULL;
+                                    //delete $3;
+                                    //$3 = NULL;
+									addCaseLabel($3);
                                 }
                    ;
 WhileStatement     :  ywhile
