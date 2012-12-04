@@ -499,7 +499,7 @@ IOStatement        :  yread  yleftparen
 								{
 									handlingOutput = false;
 									std::cout << ";" << std::endl;
-									std::cout << "cout << \"\\n\"" << std::endl;
+									std::cout << "cout << \"\\n\";" << std::endl;
 								}
                    |  ywrite  yleftparen  
 								{
