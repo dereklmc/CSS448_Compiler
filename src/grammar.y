@@ -29,7 +29,7 @@ extern YYSTYPE yylval;
 %start  CompilationUnit
 %type   <procedure> ProcedureHeading
 %type   <function>  FunctionHeading
-%type   <type> Type SetType RecordType PointerType
+%type   <type> Type SetType RecordType PointerType AnonType
 %type   <constvalue> ConstFactor ConstExpression
 %type   <unaryop> UnaryOperator
 %type   <arraytype> ArrayType
@@ -60,7 +60,7 @@ ProgramModule      :  yprogram yident ProgramParameters ysemicolon
                       Block ydot
                                 {
                                     exitScope();
-				    printErrorLog();
+                                    printErrorLog();
                                 }
                    ;
 ProgramParameters  :  yleftparen  IdentList  yrightparen
@@ -127,14 +127,15 @@ ConstantDef        :  yident yequal ConstExpression
 									std::cout << std::endl;
                                 }
                    ;
-TypeDef            :  yident yequal  Type
+TypeDef            :  yident yequal Type
                                 {
-									std::cout << getTabs();
+                                    std::cout << getTabs();
                                     createTypeSymbol($1, $3);
-									std::cout << std::endl;
+                                    std::cout << std::endl;
                                 }
+                   |  yident yequal PointerType
                    ;
-VariableDecl       :  IdentList  ycolon  Type
+VariableDecl       :  IdentList  ycolon  AnonType
                                 {
                                     checkPointers();
 									std::cout << getTabs();
@@ -195,23 +196,24 @@ ConstFactor        :  yident
 				    createConstValue($$, $1, CHAR);
 				}
                    ;
+AnonType           :  Type
+                   |  PointerType
 Type               :  yident    {
-									
                                     getSymbolicType($$, $1);
                                 }
                    |  ArrayType
                                 {
                                     $$ = dynamic_cast<Type*>($1);
                                 }
-                   |  PointerType
+/*                 |  PointerType  */
                    |  RecordType
-					 			{
-									$$ = dynamic_cast<Type*>($1);
-								}
+                                {
+                                    $$ = dynamic_cast<Type*>($1);
+                                }
                    |  SetType
                    ;
 ArrayType          :  yarray yleftbracket Subrange SubrangeList
-                      yrightbracket yof Type
+                      yrightbracket yof AnonType
                                 {
                                     createArrayType($$, $7);
                                 }
@@ -246,7 +248,7 @@ PointerType        :  ycaret  yident
 FieldListSequence  :  FieldList  
                    |  FieldListSequence  ysemicolon  FieldList
                    ;
-FieldList          :  IdentList  ycolon  Type
+FieldList          :  IdentList  ycolon  AnonType
                                 {
 									std::cout << getTabs();
                                     createVariableList($3);
