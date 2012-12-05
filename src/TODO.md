@@ -9,10 +9,10 @@
 	- Non-standard Procedure Types
 3. Handle calling Functions
 	- Return type checking
-4. <s>_Derek_ Generate Code for subroutines<s>
-5. <s>_Nina_ For/while loops, repeat statements</s> 
+4. ~~_Derek_ Generate Code for subroutines~~
+5. ~~_Nina_ For/while loops, repeat statements~~
 	- Still need to uncomment type checking when Constants are figured out
-6. <s>_Nina_ Case Statements</s>
+6. ~~_Nina_ Case Statements~~
 7. _Derek_ Constants
 	- Properly scope constant
 	- Infer type?
@@ -31,3 +31,4 @@
 	- line #s
 11. Print errors
 12. Comments
+13. _Derek_ Change Function#call to return itself, by reference.
