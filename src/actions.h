@@ -21,6 +21,8 @@
 extern Stack symbolTable;
 extern int lineNumber;
 
+void processFunctionCall(const char* ident);
+void addParameterType(Type* t);
 void addError(std::string);
 void setCaseType(Type* t);
 void checkPointers();
@@ -170,7 +172,7 @@ void exitScope();
 
 bool checkTypesEqual(Type*, Type*);
 
-void compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b);
+void compareParamTypes(std::vector<Type*> a);
 
 void printErrorLog();
 
