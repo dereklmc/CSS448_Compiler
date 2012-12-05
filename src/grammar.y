@@ -20,7 +20,9 @@
 using namespace std;
 bool handlingInput = false;
 bool handlingOutput = false;
+bool handlingProcFuncCalls = false;
 extern YYSTYPE yylval;
+extern int lineNumber;
 
 %}
 
@@ -290,7 +292,7 @@ Assignment         :  Designator
                       yassign { std::cout << " = "; }
                       Expression
                       {
-                              std::cout << ";";
+                      		std::cout << ";" << std::endl;
                       }
                    ;
 ProcedureCall      :  yident
@@ -327,10 +329,7 @@ IfStatementBlock   :  yif
                             }
                       Expression
                             {
-                                if (!BOOLEAN_TYPE->equals($3)) {
-                                    // TODO, record error message
-                                    std::cout << "ERROR: Expression is not conditional" << std::endl;
-                                }
+                                checkConditionalExpressionType($3);
                                 std::cout << ") {" << std::endl;
                             }
                       ythen Statement
@@ -411,7 +410,9 @@ WhileStatement     :  ywhile
                                 {
                                     if (!BOOLEAN_TYPE->equals($3)) {
                                         // TODO, record error message
-                                        std::cout << "ERROR: Expression is not conditional" << std::endl;
+                                        std::stringstream ss;
+                                        ss << "***ERROR(" << lineNumber << "): Expression is not conditional";
+                                        //std::cout << "ERROR: Expression is not conditional" << std::endl;
                                     }
                                     std::cout << ") {" << std::endl;
                                 }
@@ -437,7 +438,6 @@ RepeatStatement    :  yrepeat
                                 }
                       EndRepeat
                    ;
-
 EndRepeat           :    /* empty */
                    ;
 ForStatement       :  yfor
@@ -568,7 +568,10 @@ Designator         :  yident
                                         $$ = NULL; // TODO infer constant type.
                                     } else {
                                         $$ = NULL;
-                                       std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
+                                        std::stringstream ss;
+                                        ss << "***ERROR(" << lineNumber << "): Identifier \"" << $1 << "\" not declared!";
+                                        addError(ss.str());
+                                        //std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
                                     }
                                 }
                             }
@@ -583,10 +586,32 @@ theDesignatorStuff :  ydot yident
 ActualParameters   :  yleftparen  ExpList  yrightparen
                    ;
 ExpList            :  Expression
+								{
+									if (handlingProcFuncCalls)
+										addParameterType($1);
+								}
                    |  ExpList  ycomma  Expression
+								{
+									if (handlingProcFuncCalls)
+										addParameterType($3);
+								}
                    ;
-MemoryStatement    :  ynew  yleftparen  yident  yrightparen
+MemoryStatement    :  ynew  yleftparen  yident
+										{
+											Variable* sym = NULL;
+											bool found = searchStack($3, sym); //Check if variable exists, prints out error within searchStack
+											Type* symType = sym->type;
+											std::cout << getTabs() << $3 << " = new " <<
+												*symType << ";" << std::endl;
+										}
+					  yrightparen
                    |  ydispose yleftparen  yident
+										{
+											Variable* sym = NULL;
+											bool found = searchStack($3, sym); //Check if variable exists, prints out error within searchStack
+											std::cout << getTabs() << "delete " << 
+												$3 << ";" << std::endl;
+										}
                       yrightparen
                    ;
 
@@ -782,30 +807,14 @@ FunctionCall       :  yident
                                 {
                                     std::cout << getTabs();
                                     printf("%s ", $1);
+									std::cout << "func(";
+									handlingProcFuncCalls = true;
                                 }
                       ActualParameters
-                                  {
-                                    //Nina's WIP - no touchy!
-                                    Symbol *fSymbol = NULL;
-                                    bool exists = searchStack($1, fSymbol);
-                                    Function *functionClass;
-                                    if (exists) {
-                                        //Attempt to cast as function
-                                        functionClass = dynamic_cast<Function*>(fSymbol);
-                                        if (functionClass == NULL) {
-                                            std::cout << "ERROR: Symbol " << $1
-                                                << " is not a function definition" << std::endl;
-                                        }
-                                    }
-                                    else {
-                                        /* TODO - record error */
-                                        std::cout << "ERROR: Symbol " << $1
-                                            << " has not been declared" << std::endl;
-                                    }
-
-                                    // Check the parameters to see if their types match
-                                    std::vector<Parameter*> params = functionClass->getParameters();
-                                    //
+                                {
+                                    handlingProcFuncCalls = false;
+                                    //processFunctionCall($1);
+                                    std::cout << ").call()._returnValue";
                                 }
                    ;
 Setvalue           :  yleftbracket ElementList  yrightbracket

@@ -9,12 +9,62 @@ std::deque<PointerType*> ptrBuffer;
 std::deque<Range*> rangeBuffer;
 std::deque<Variable*> variableBuffer;
 
+std::vector<Type*> parameterTypeCheckBuffer;
+
 std::deque<std::string> errorLog;
 Type* caseType;
 std::deque<ConstValue*> caseLabelBuffer;
 std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 
 Stack symbolTable;
+
+void processFunctionCall(const char* ident) {
+	std::stringstream ss;
+	Symbol *fSymbol = NULL;
+	bool exists = searchStack(ident, fSymbol);
+	Function *functionClass;
+	if (exists) {
+		//Attempt to cast as function
+		functionClass = dynamic_cast<Function*>(fSymbol);
+		if (functionClass == NULL) {
+			ss << "***ERROR(" << lineNumber << "): Symbol " 
+				<< ident << " is not a function definition";
+			addError(ss.str());
+		}
+	}
+	else {
+		/* TODO - record error */
+		ss << "***ERROR(" << lineNumber << "): Symbol " << ident 
+			<< " has not been declared";
+		addError(ss.str());
+	}
+
+	// Check the parameters to see if their types match
+	std::vector<Parameter*> params = functionClass->getParameters();
+			
+	std::vector<Type*> typeVector;
+	int temp = params.size();
+	for (int i = 0; i < temp; i++) {
+		typeVector.push_back(params[i]->type);
+	}
+
+	compareParamTypes(typeVector);
+
+}
+
+void addParameterType(Type* t)
+{
+	parameterTypeCheckBuffer.push_back(t);
+}
+
+void checkConditionalExpressionType(Type* t) {
+	if (!BOOLEAN_TYPE->equals(t)) {
+	    std::stringstream ss;
+	    ss << "ERROR: Expression is not conditional";
+	    addError(ss.str());
+	    //std::cout << "ERROR: Expression is not conditional" << std::endl;
+	}
+}
 
 void setCaseType(Type* t)
 {
@@ -549,45 +599,37 @@ bool checkTypesEqual(Type *a, Type *b)
 	return a->equals(b);
 }
 
-//Nina's WIP - no touchy!
-void  compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b)
+void  compareParamTypes(std::vector<Type*> a)
 {
 	std::stringstream ss;
 	
 	int alength = a.size();
-	int blength = b.size();
-	if (alength != blength)
-	{
+	int blength = parameterTypeCheckBuffer.size();
+	if (alength != blength) {
 		//Already know that param sets not equal
-		//Record error
 		ss << "***ERROR(line: " << lineNumber << "): Parameter sets are not equal";
 		addError(ss.str());
-		//std::cout << "***ERROR(line: " << lineNumber << "): Parameter sets are not equal" << std::endl;
 	}
-	else
-	{
-		//Compare each of the Parameters in both vectors
+	else {
+		//Compare each of the Types in both vectors
 		int currentIndex = 0;
-		while ((currentIndex < alength) && (currentIndex < blength))
-		{
+		while ((currentIndex < alength) && (currentIndex < blength)) {
 			//checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type);
 			//NOTE Should we take error message out of checkTypesEqual and make it return a bool?
-			if (!checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type)) {
+			if (!checkTypesEqual(a[currentIndex], parameterTypeCheckBuffer[currentIndex])) {
 				ss << "***ERROR(line: " << lineNumber << "): Parameter set types are not equal";
 				addError(ss.str());
-				//std::cout << "***ERROR(line: " << lineNumber << "): Parameter set types are not equal" << std::endl; 
-			 	//TODO make this error message more specific
 				break;
 			}
 			currentIndex++;
 		}
-		if ((currentIndex < alength) || (currentIndex < blength))
-		{
+		if ((currentIndex < alength) || (currentIndex < blength)) {
 			ss <<  "***ERROR(line: " << lineNumber << "): Parameter sets are not equal";
 			addError(ss.str());
-			//std::cout << "***ERROR(line: " << lineNumber << "): Parameter sets are not equal" << std::endl;
 		}
 	}
+
+	parameterTypeCheckBuffer.clear(); // Clear the buffer for the next comparison
 }
 
 void addError(std::string s)

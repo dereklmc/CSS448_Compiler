@@ -22,6 +22,8 @@
 extern Stack symbolTable;
 extern int lineNumber;
 
+void processFunctionCall(const char* ident);
+void addParameterType(Type* t);
 void addError(std::string);
 void setCaseType(Type* t);
 void checkPointers();
@@ -30,6 +32,8 @@ void addCaseLabel(ConstValue* c);
 void typeCheckCaseLabel();
 void addIdent(const char *);
 void createLoopCaseScope(const char *ident);
+
+void checkConditionalExpressionType(Type*);
 
 bool stackHasSymbol(const char *);
 
@@ -169,7 +173,7 @@ void exitScope();
 
 bool checkTypesEqual(Type*, Type*);
 
-void compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b);
+void compareParamTypes(std::vector<Type*> a);
 
 void printErrorLog();
 
