@@ -334,7 +334,7 @@ void createTypeSymbol(const char *ident, Type *type)
         std::string name(ident);
         TypeSymbol *symbol = new TypeSymbol(name, type);
         symbolTable.current->addSymbol(symbol);
-		std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
+        std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
     }
 }
 
@@ -345,14 +345,13 @@ void createTypeSymbol(const char *ident, Type *type)
  * pushed onto the ptrBuffer. This pointer is also saved to the Type*& that
  * was passed in.
  *****************************************************************************/
-void createPointer(Type*& createdType, const char *ident)
+void createPointer(PointerType*& createdType, const char *ident)
 {
     // Find symbol for ident
     Symbol *s = new Symbol(ident);
     
-    PointerType *ptr = new PointerType(s);
-    ptrBuffer.push_back(ptr);
-    createdType = ptr;
+    createdType = new PointerType(s);
+    ptrBuffer.push_back(createdType);
 }
 
 /******************************************************************************

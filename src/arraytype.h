@@ -5,6 +5,8 @@
 #include "range.h"
 #include <sstream>
 
+#include <iostream>
+
 class ArrayType : public Type
 {
 
@@ -12,7 +14,7 @@ class ArrayType : public Type
         ArrayType(Type *type)
         {
             this->type = type;
-			optionalCode = type->generateTypeCode();
+            optionalCode = type->generateTypeCode();
         }
         
         ~ArrayType()

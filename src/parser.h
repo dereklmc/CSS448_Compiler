@@ -16,6 +16,7 @@ typedef union {
     ConstValue *constvalue;
     UnaryOperator unaryop;
     ArrayType *arraytype;
+    PointerType *pointertype;
     bool boolean;
 } YYSTYPE;
 

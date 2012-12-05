@@ -29,20 +29,21 @@ extern YYSTYPE yylval;
 %start  CompilationUnit
 %type   <procedure> ProcedureHeading
 %type   <function>  FunctionHeading
-%type   <type> Type SetType RecordType PointerType AnonType
+%type   <type> Type SetType RecordType AnonType
+%type   <pointertype> PointerType
 %type   <constvalue> ConstFactor ConstExpression
 %type   <unaryop> UnaryOperator
 %type   <arraytype> ArrayType
 
 %type   <type> Factor Term TermExpr SimpleExpression Expression Designator
-%type    <boolean> AddOperator WhichWay
+%type   <boolean> AddOperator WhichWay
 
-%token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose 
+%token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose
         ydiv ydivide ydo  ydot ydotdot ydownto yelse yend yequal yfalse
         yfor yfunction ygreater ygreaterequal         yif yin yleftbracket
-        yleftparen yless ylessequal yminus ymod ymultiply ynew ynil ynot 
-        ynotequal yof  yor yplus yprocedure yprogram yread yreadln  
-        yrecord yrepeat yrightbracket yrightparen  ysemicolon yset 
+        yleftparen yless ylessequal yminus ymod ymultiply ynew ynil ynot
+        ynotequal yof  yor yplus yprocedure yprogram yread yreadln
+        yrecord yrepeat yrightbracket yrightparen  ysemicolon yset
         ythen  yto ytrue ytype  yuntil  yvar ywhile ywrite ywriteln yunknown
 %token <text> yident ystring yinteger yreal ychar
 
@@ -65,7 +66,7 @@ ProgramModule      :  yprogram yident ProgramParameters ysemicolon
                    ;
 ProgramParameters  :  yleftparen  IdentList  yrightparen
                    ;
-IdentList          :  yident 
+IdentList          :  yident
                                 {
                                     addIdent($1);
                                 }
@@ -79,14 +80,14 @@ IdentList          :  yident
 
 Block              :  Declarations
                       ybegin
-                            {
-                                std::cout << getTabs() << "void call() {" << std::endl;
-                            }
+                                {
+                                    std::cout << getTabs() << "void call() {" << std::endl;
+                                }
                       StatementSequence
                       yend
-                            {
-                                std::cout << getTabs() << "}" << std::endl;
-                            }
+                                {
+                                    std::cout << getTabs() << "}" << std::endl;
+                                }
                    ;
 Declarations       :  ConstantDefBlock
                       TypeDefBlock
@@ -113,13 +114,13 @@ TypeDefList        :  TypeDef  ysemicolon
 VariableDeclBlock  :  yvar
                      VariableDeclList
                                 {
-                                    
+                                    // TODO ???
                                 }
            |  /*** empty ***/
                    ;
-VariableDeclList   :  VariableDecl ysemicolon        
+VariableDeclList   :  VariableDecl ysemicolon
            |  VariableDeclList VariableDecl ysemicolon
-                   ;  
+                   ;
 ConstantDef        :  yident yequal ConstExpression
                                 {
                                     std::cout << getTabs();
@@ -197,7 +198,17 @@ ConstFactor        :  yident
                 }
                    ;
 AnonType           :  Type
-                   |  PointerType
+                   |  ycaret yident
+                                {
+                                    Symbol *s = NULL;
+                                    bool result = symbolTable.searchStack(std::string($2),s);
+                                    if (result) {
+                                        $$ = new PointerType(s);
+                                    } else {
+                                        std::cout << "ERROR: \"" << $2 << "\" is undefined!" << std::endl;
+                                    }
+                                }
+                   ;
 Type               :  yident    {
                                     getSymbolicType($$, $1);
                                 }
@@ -219,7 +230,7 @@ ArrayType          :  yarray yleftbracket Subrange SubrangeList
                                 }
                    ;
 SubrangeList       :  /*** empty ***/
-                   |  SubrangeList ycomma Subrange 
+                   |  SubrangeList ycomma Subrange
                    ;
 Subrange           :  ConstFactor ydotdot ConstFactor
                                 {
@@ -245,7 +256,7 @@ PointerType        :  ycaret  yident
                                     createPointer($$, $2);
                                 }
                    ;
-FieldListSequence  :  FieldList  
+FieldListSequence  :  FieldList
                    |  FieldListSequence  ysemicolon  FieldList
                    ;
 FieldList          :  IdentList  ycolon  AnonType
@@ -257,7 +268,7 @@ FieldList          :  IdentList  ycolon  AnonType
 
 /***************************  Statements  ************************************/
 
-StatementSequence  :  Statement  
+StatementSequence  :  Statement
                    |  StatementSequence  ysemicolon  Statement
                    ;
 Statement          :  Assignment
@@ -282,12 +293,12 @@ Assignment         :  Designator
                               std::cout << ";";
                       }
                    ;
-ProcedureCall      :  yident 
+ProcedureCall      :  yident
                                 {
                                     std::cout << getTabs();
                                     printf("%s ", $1);
                                 }
-                   |  yident 
+                   |  yident
                                 {
                                     std::cout << getTabs();
                                     printf("%s ", $1);
@@ -304,46 +315,44 @@ IfStatement        :  IfStatementBlock
                             {
                                 exitScope();
                                 std::cout << getTabs() << "else {" << std::endl;
-                                createLoopCaseScope("else");    
+                                createLoopCaseScope("else");
                             }
                       Statement
                       EndIf
                    ;
-IfStatementBlock   :  yif 
+IfStatementBlock   :  yif
                             {
-                                
-                                std::cout << getTabs() << "if (";    
+                                std::cout << getTabs() << "if (";
                                 createLoopCaseScope("if");
                             }
-                      Expression 
+                      Expression
                             {
                                 if (!BOOLEAN_TYPE->equals($3)) {
                                     // TODO, record error message
                                     std::cout << "ERROR: Expression is not conditional" << std::endl;
                                 }
-                                std::cout << ") {" << std::endl;    
-                            }  
+                                std::cout << ") {" << std::endl;
+                            }
                       ythen Statement
                    ;
 EndIf                 :  /*** empty ***/
                             {
-                                exitScope();    
+                                exitScope();
                             }
                       ;
-CaseStatement      :  ycase  
+CaseStatement      :  ycase
                                {
                                 std::cout << getTabs() << "switch(";
                                 createLoopCaseScope("case");
                             }
-                      Expression  
+                      Expression
                             {
                                 std::cout << ") {" << std::endl;
                                 setCaseType($3);
                             }
-                      yof  
-                              
-                      CaseList  
-                            {    
+                      yof
+                      CaseList
+                            {
                                 setCaseType(NULL);
                                 exitScope();
                                 //std::cout << std::endl << getTabs() << "}" << std::endl;
@@ -353,21 +362,21 @@ CaseStatement      :  ycase
 CaseList           :  Case
                             {
                                 exitScope();
-                                //std::cout << std::endl << getTabs() << "}" << 
+                                //std::cout << std::endl << getTabs() << "}" <<
                                 std::cout << std::endl << getTabs() << "break;" << std::endl;
                             }
-                   |  CaseList  ysemicolon 
+                   |  CaseList  ysemicolon
                             {
                                 std::cout << std::endl;
                             }
                       Case
                             {
                                 exitScope();
-                                //std::cout << std::endl << getTabs() << "}" << 
+                                //std::cout << std::endl << getTabs() << "}" <<
                                 std::cout << std::endl << getTabs() << "break;" << std::endl;
                             }
                    ;
-Case               :  CaseLabelList  ycolon  
+Case               :  CaseLabelList  ycolon
                             {
                                 printCaseLabel();
                                 typeCheckCaseLabel();
@@ -398,12 +407,12 @@ WhileStatement     :  ywhile
                                     std::cout << getTabs() << "while (";
                                     createLoopCaseScope("while");
                                 }
-                      Expression  
+                      Expression
                                 {
                                     if (!BOOLEAN_TYPE->equals($3)) {
                                         // TODO, record error message
                                         std::cout << "ERROR: Expression is not conditional" << std::endl;
-                                    }    
+                                    }
                                     std::cout << ") {" << std::endl;
                                 }
                       ydo  Statement
@@ -412,12 +421,12 @@ WhileStatement     :  ywhile
                                     //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
                    ;
-RepeatStatement    :  yrepeat  
+RepeatStatement    :  yrepeat
                                 {
                                     std::cout << getTabs() << "do {" << std::endl;
                                     createLoopCaseScope("repeat");
                                 }
-                      StatementSequence  yuntil  
+                      StatementSequence  yuntil
                                 {
                                     exitScope();
                                     std::cout << getTabs() << "} while(";
@@ -431,18 +440,18 @@ RepeatStatement    :  yrepeat
 
 EndRepeat           :    /* empty */
                    ;
-ForStatement       :  yfor  
-                      yident  
+ForStatement       :  yfor
+                      yident
                                 {
-                                    std::cout << getTabs() << "for ("; 
+                                    std::cout << getTabs() << "for (";
                                     createLoopCaseScope("for");
                                     printf("%s ", $2);
                                     std::cout << "= ";
                                 }
-                            yassign  Expression  
-                                {    
+                            yassign  Expression
+                                {
                                     std::cout << "; " << $2 << " ";
-                                }                            
+                                }
                             WhichWay  Expression
                                 {
                                     Variable *var = NULL;
@@ -451,11 +460,11 @@ ForStatement       :  yfor
                                     //TODO UNCHECK THIS AFTER CONSTANTS ARE WORKING
                                     //if(!checkTypesEqual(var->type, $5)) {
                                         //TODO record error
-                                        //std::cout << "ERROR: Invalid assignment" << std::endl;     
+                                        //std::cout << "ERROR: Invalid assignment" << std::endl;
                                     //}
                                     //if(!checkTypesEqual(var->type, $8)) {
                                         //TODO record error
-                                        //std::cout << "ERROR: Incompatible whichway type" << std::endl;     
+                                        //std::cout << "ERROR: Incompatible whichway type" << std::endl;
                                     //}
                                     std::cout << "; " << $2;
                                     if ($7)
@@ -470,19 +479,19 @@ ForStatement       :  yfor
                                     //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
                    ;
-WhichWay           :  yto  
+WhichWay           :  yto
                                 {
                                     // WhichWay will be true if it is "to" and false if "downto"
                                     std::cout << "< ";
                                     $$ = true;
                                 }
                       |  ydownto
-                                {                                
+                                {
                                     std::cout << "> ";
                                     $$ = false;
                                 }
                    ;
-IOStatement        :  yread  yleftparen  
+IOStatement        :  yread  yleftparen
                                 {
                                     std::cout << getTabs() << "cin";
                                     handlingOutput = true;
@@ -492,12 +501,12 @@ IOStatement        :  yread  yleftparen
                                     std::cout << ";" << std::endl;
                                     handlingOutput = false;
                                 }
-                   |  yreadln  
+                   |  yreadln
                                 {
                                      std::cout << getTabs() << "while (getchar() != '\n')";
-                                     std::cout << ";" << std::endl; 
+                                     std::cout << ";" << std::endl;
                                 }
-                   |  yreadln  yleftparen 
+                   |  yreadln  yleftparen
                                 {
                                     std::cout << getTabs() << "cin";
                                     handlingOutput = true;
@@ -508,7 +517,7 @@ IOStatement        :  yread  yleftparen
                                     std::cout << ";" << std::endl;
                                     std::cout << "cout << \"\\n\";" << std::endl;
                                 }
-                   |  ywrite  yleftparen  
+                   |  ywrite  yleftparen
                                 {
                                     std::cout << getTabs() << "cout";
                                     handlingInput = true;
@@ -518,12 +527,12 @@ IOStatement        :  yread  yleftparen
                                     std::cout << ";" << std::endl;
                                     handlingInput = false;
                                 }
-                   |  ywriteln  
+                   |  ywriteln
                                 {
                                     std::cout << "cout << \"\\n\"";
                                     std::cout << ";" << std::endl;
                                 }
-                   |  ywriteln  yleftparen  
+                   |  ywriteln  yleftparen
                                 {
                                     std::cout << getTabs() << "cout";
                                     handlingInput = true;
@@ -537,7 +546,7 @@ IOStatement        :  yread  yleftparen
                    ;
 /***************************  Designator Stuff  ******************************/
 
-DesignatorList     :  Designator  
+DesignatorList     :  Designator
                    |  DesignatorList  ycomma  Designator
                    ;
 Designator         :  yident
@@ -562,7 +571,6 @@ Designator         :  yident
                                        std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
                                     }
                                 }
-                                
                             }
                    ;
 DesignatorStuff    :  /*** empty ***/
@@ -585,11 +593,11 @@ MemoryStatement    :  ynew  yleftparen  yident  yrightparen
 /***************************  Expression Stuff  ******************************/
 
 Expression         :  SimpleExpression
-                        { 
-                            $$ = $1;                 
+                        {
+                            $$ = $1;
                         }
                    |  SimpleExpression  Relation  SimpleExpression
-                        { 
+                        {
                             //if (checkTypesEqual($1,$3))
                             $$ = BOOLEAN_TYPE;
                             //TODO - put this back in when Constants are implemented
@@ -601,18 +609,17 @@ Expression         :  SimpleExpression
                         }
                    ;
 SimpleExpression   :  TermExpr
-                        { 
-                            
+                        {
                             $$ = $1;
                         }
                    |  UnaryOperator  TermExpr
-                        { 
-                            $$ = $2; 
+                        {
+                            $$ = $2;
                         }
                    ;
-TermExpr           :  Term  
-                        { 
-                            $$ = $1; 
+TermExpr           :  Term
+                        {
+                            $$ = $1;
                         }
                    |  TermExpr  AddOperator  Term
                         {
@@ -620,149 +627,149 @@ TermExpr           :  Term
                                 $$ = BOOLEAN_TYPE;
                             }
                             else {
-                                $$ = getMultAddSubType($1,$3);    
-                            }        
+                                $$ = getMultAddSubType($1,$3);
+                            }
                         }
                    ;
-Term               :  Factor  
+Term               :  Factor
                             {
                                 $$ = $1;
                             }
-                   |  Term  ymultiply 
-                            { 
-                                std::cout << "*"; 
-                            }    
-                            Factor 
+                   |  Term  ymultiply
+                            {
+                                std::cout << "*";
+                            }
+                            Factor
                             {
                                 $$ = getMultAddSubType($1,$4);
                             }
-                   |  Term  ydivide 
-                            { 
-                                std::cout << "/ (double)"; 
-                            } 
-                            Factor 
+                   |  Term  ydivide
+                            {
+                                std::cout << "/ (double)";
+                            }
+                            Factor
                             {
                                 $$ = getDivideType($1,$4);
-                            } 
-                   |  Term  ydiv 
-                            { 
-                                std::cout << "/"; 
-                            } 
-                            Factor  
+                            }
+                   |  Term  ydiv
+                            {
+                                std::cout << "/";
+                            }
+                            Factor
                             {
                                 $$ = getDivModType($1,$4);
                             }
-                   |  Term  ymod 
-                            { 
-                                std::cout << "%"; 
-                            } 
-                            Factor 
+                   |  Term  ymod
+                            {
+                                std::cout << "%";
+                            }
+                            Factor
                             {
                                 $$ = getDivModType($1,$4);
-                            } 
-                   |  Term  yand 
-                            { 
-                                std::cout << "&&"; 
-                                $$ = NULL; 
-                            } 
+                            }
+                   |  Term  yand
+                            {
+                                std::cout << "&&";
+                                $$ = NULL;
+                            }
                             Factor
                    ;
-Factor             :  yinteger 
-                            { 
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
-                                std::cout << $1; 
-                                $$ = INTEGER_TYPE; 
-                            }
-                   |  yreal 
-                            { 
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
-                                std::cout << $1; 
-                                $$ = REAL_TYPE; 
-                            }
-                   |  ytrue 
-                            { 
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
-                                std::cout << "true"; 
-                                $$ = BOOLEAN_TYPE;  
-                            }
-                   |  yfalse 
-                            { 
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
-                                std::cout << "false"; 
-                                $$ = BOOLEAN_TYPE;  
-                            }
-                   |  ynil 
-                            { 
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
-                                std::cout << "NULL"; 
-                                $$ = NULL;  
-                            }
-                   |  ystring 
-                            { 
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
-                                std::cout << "\"" << $1 << "\""; 
-                                $$ = STRING_TYPE;  
-                            }
-           |  ychar                
+Factor             :  yinteger
                             {
                                 if (handlingInput)
                                     std::cout << " << ";
                                 else if (handlingOutput)
                                     std::cout << " >> ";
-                                std::cout << "\'" << $1 << "\'"; 
-                                $$ = CHAR_TYPE;  
+                                std::cout << $1;
+                                $$ = INTEGER_TYPE;
                             }
-                   |  Designator 
+                   |  yreal
                             {
                                 if (handlingInput)
                                     std::cout << " << ";
                                 else if (handlingOutput)
                                     std::cout << " >> ";
-                                $$ = $1;  
+                                std::cout << $1;
+                                $$ = REAL_TYPE;
                             }
-                   |  yleftparen 
-                            { 
+                   |  ytrue
+                            {
                                 if (handlingInput)
                                     std::cout << " << ";
                                 else if (handlingOutput)
                                     std::cout << " >> ";
-                                std::cout << "("; 
+                                std::cout << "true";
+                                $$ = BOOLEAN_TYPE;
                             }
-                              Expression 
-                              yrightparen 
-                            { 
-                                std::cout << ")"; 
+                   |  yfalse
+                            {
+                                if (handlingInput)
+                                    std::cout << " << ";
+                                else if (handlingOutput)
+                                    std::cout << " >> ";
+                                std::cout << "false";
+                                $$ = BOOLEAN_TYPE;
+                            }
+                   |  ynil
+                            {
+                                if (handlingInput)
+                                    std::cout << " << ";
+                                else if (handlingOutput)
+                                    std::cout << " >> ";
+                                std::cout << "NULL";
+                                $$ = NULL;
+                            }
+                   |  ystring
+                            {
+                                if (handlingInput)
+                                    std::cout << " << ";
+                                else if (handlingOutput)
+                                    std::cout << " >> ";
+                                std::cout << "\"" << $1 << "\"";
+                                $$ = STRING_TYPE;
+                            }
+                  |  ychar
+                            {
+                                if (handlingInput)
+                                    std::cout << " << ";
+                                else if (handlingOutput)
+                                    std::cout << " >> ";
+                                std::cout << "\'" << $1 << "\'";
+                                $$ = CHAR_TYPE;
+                            }
+                   |  Designator
+                            {
+                                if (handlingInput)
+                                    std::cout << " << ";
+                                else if (handlingOutput)
+                                    std::cout << " >> ";
+                                $$ = $1;
+                            }
+                   |  yleftparen
+                            {
+                                if (handlingInput)
+                                    std::cout << " << ";
+                                else if (handlingOutput)
+                                    std::cout << " >> ";
+                                std::cout << "(";
+                            }
+                              Expression
+                              yrightparen
+                            {
+                                std::cout << ")";
                                 $$ = $3;
                             }
-                   |  ynot  
-                            { 
+                   |  ynot
+                            {
                                 if (handlingInput)
                                     std::cout << " << ";
                                 else if (handlingOutput)
                                     std::cout << " >> ";
-                                std::cout << "!"; 
-                            } 
-                            Factor 
-                            { 
-                                $$ = $3; 
+                                std::cout << "!";
+                            }
+                            Factor
+                            {
+                                $$ = $3;
                             }
                    |  Setvalue { $$ = NULL; }
                    |  FunctionCall { $$ = NULL; }
@@ -771,7 +778,7 @@ Factor             :  yinteger
 /*  to handle that in FunctionCall because it is handled by Designator.     */
 /*  A FunctionCall has at least one parameter in parens, more are           */
 /*  separated with commas.                                                  */
-FunctionCall       :  yident 
+FunctionCall       :  yident
                                 {
                                     std::cout << getTabs();
                                     printf("%s ", $1);
@@ -786,25 +793,25 @@ FunctionCall       :  yident
                                         //Attempt to cast as function
                                         functionClass = dynamic_cast<Function*>(fSymbol);
                                         if (functionClass == NULL) {
-                                            std::cout << "ERROR: Symbol " << $1 
+                                            std::cout << "ERROR: Symbol " << $1
                                                 << " is not a function definition" << std::endl;
                                         }
                                     }
                                     else {
                                         /* TODO - record error */
-                                        std::cout << "ERROR: Symbol " << $1 
+                                        std::cout << "ERROR: Symbol " << $1
                                             << " has not been declared" << std::endl;
                                     }
 
                                     // Check the parameters to see if their types match
                                     std::vector<Parameter*> params = functionClass->getParameters();
-                                    //     
+                                    //
                                 }
                    ;
 Setvalue           :  yleftbracket ElementList  yrightbracket
                    |  yleftbracket yrightbracket
                    ;
-ElementList        :  Element  
+ElementList        :  Element
                    |  ElementList  ycomma  Element
                    ;
 Element            :  ConstExpression
@@ -838,7 +845,7 @@ ProcedureDecl      :  ProcedureHeading  ysemicolon
                             {
                                 exitScope();
                                 std::cout << getTabs() << "};" << std::endl;
-                            } 
+                            }
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident
                             {

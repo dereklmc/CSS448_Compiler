@@ -15,6 +15,7 @@
 #include "constant.h"
 #include "symbolictype.h"
 #include "stdtype.h"
+#include "constrange.h"
 
 #include <deque>
 
@@ -134,7 +135,7 @@ void createProcedureDecl(Procedure*);
 
 void createTypeSymbol(const char *, Type*);
 
-void createPointer(Type*&, const char*);
+void createPointer(PointerType*&, const char*);
 
 void getSymbolicType(Type *&, const char*);
 
