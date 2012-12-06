@@ -37,7 +37,7 @@ extern int lineNumber;
 %type   <unaryop> UnaryOperator
 %type   <arraytype> ArrayType
 
-%type   <type> Factor Term TermExpr SimpleExpression Expression Designator
+%type   <type> Factor Term TermExpr SimpleExpression Expression Designator FunctionCall
 %type   <boolean> AddOperator WhichWay
 
 %token  yand yarray yassign ybegin ycaret ycase ycolon ycomma yconst ydispose
@@ -292,6 +292,12 @@ Assignment         :  Designator
                       yassign { std::cout << " = "; }
                       Expression
                       {
+                      		bool equal = checkTypesEqual($1, $4);
+                      		if (!equal) {
+                      			std::stringstream ss;
+                      			ss << "***Error: Illegal assignment, lefthand and" << 
+                      				"righthand sides of the assignment are not equal";
+                      		}
                       		std::cout << ";" << std::endl;
                       }
                    ;
@@ -299,15 +305,19 @@ ProcedureCall      :  yident
                                 {
                                     std::cout << getTabs();
                                     printf("%s ", $1);
+                                    std::cout << "proc().call();" << std::endl;
+                               		//processProcedureCall($1);
                                 }
                    |  yident
                                 {
                                     std::cout << getTabs();
                                     printf("%s ", $1);
+                                    std::cout << "proc(";
                                 }
                       ActualParameters
                                 {
-                                    std::cout << std::endl;
+                                	//processProcedureCall($1);
+                                	std::cout << ").call();" << std::endl;
                                 }
                    ;
 IfStatement        :  IfStatementBlock
@@ -455,23 +465,34 @@ ForStatement       :  yfor
                             WhichWay  Expression
                                 {
                                     Variable *var = NULL;
-                                    searchStack($2,var); //Error being printed in searchStack
+                                    bool exists = searchStack($2,var); //Error being printed in searchStack
                                     //Check if yident and Expression have same types
                                     //TODO UNCHECK THIS AFTER CONSTANTS ARE WORKING
-                                    //if(!checkTypesEqual(var->type, $5)) {
-                                        //TODO record error
-                                        //std::cout << "ERROR: Invalid assignment" << std::endl;
-                                    //}
-                                    //if(!checkTypesEqual(var->type, $8)) {
-                                        //TODO record error
-                                        //std::cout << "ERROR: Incompatible whichway type" << std::endl;
-                                    //}
-                                    std::cout << "; " << $2;
-                                    if ($7)
-                                        std::cout << "++";
-                                    else
-                                        std::cout << "--";
-                                    std::cout << ") {" << std::endl;
+                                    if (exists) {
+                                    	if(!checkTypesEqual($5, var->type)) {
+                                        	//TODO record error
+                                        	std::stringstream ss;
+                                        	ss << "ERROR: Invalid for loop assignment";
+                                        	addError(ss.str());
+                                    	}
+                                    	if(!checkTypesEqual($8, var->type)) {
+                                        	//TODO record error
+                                        	std::stringstream ss;
+                                        	ss << "ERROR: Incompatible for loop whichway type";
+                                        	addError(ss.str());
+                                    	}
+                                    	std::cout << "; " << $2;
+                                    	if ($7)
+                                        	std::cout << "++";
+                                    	else
+                                        	std::cout << "--";
+                                    	std::cout << ") {" << std::endl;
+                                    }
+                                    else {
+                                    	stringstream ss;
+                                    	ss << "ERROR: Variable does not exist on stack";
+                                    	addError(ss.str());
+                                    }
                                 }
                             ydo  Statement
                                 {
@@ -551,28 +572,42 @@ DesignatorList     :  Designator
                    ;
 Designator         :  yident
                             {
+                            	Type* potentialReturnType = checkForReturnValue($1);
+                            	// Check current scope is a function and if this
+
                                 if (handlingInput)
                                     std::cout << " << ";
                                 else if (handlingOutput)
                                     std::cout << " >> ";
-                                std::cout << $1;
+                                else if (potentialReturnType == NULL)           
+                                	std::cout << $1;
                             }
                       DesignatorStuff
                             {
-                                Variable *var = NULL;
-                                if (searchStack<Variable>($1, var) && var != NULL) {
-                                    $$ = var->type;
-                                } else {
-                                    Constant *con = NULL;
-                                    if (searchStack<Constant>($1, con) && con != NULL) {
-                                        $$ = NULL; // TODO infer constant type.
-                                    } else {
-                                        $$ = NULL;
-                                        std::stringstream ss;
-                                        ss << "***ERROR(" << lineNumber << "): Identifier \"" << $1 << "\" not declared!";
-                                        addError(ss.str());
-                                        //std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
-                                    }
+                            	Type* potentialReturnType = NULL;
+                            	potentialReturnType = checkForReturnValue($1);
+                            	// If not handling return values
+                            	if (potentialReturnType == NULL) {
+                                	Variable *var = NULL;
+                                	if (searchStack<Variable>($1, var) && var != NULL) {
+                                    	$$ = var->type;
+                                	} else {
+                                    	Constant *con = NULL;
+                                    	if (searchStack<Constant>($1, con) && con != NULL) {
+                                        	$$ = getConstantType(con); // TODO infer constant type.
+                                    	} else {
+                                        	$$ = NULL;
+                                        	std::stringstream ss;
+                                        	ss << "***ERROR(" << lineNumber << "): Identifier \"" << $1 << "\" not declared!";
+                                        	addError(ss.str());
+                                        	//std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
+                                    	}
+                                	}
+                                }
+                                else // handling return values
+                                {
+                                	std::cout << getTabs() << "_returnValue";
+                                	$$ = potentialReturnType;
                                 }
                             }
                    ;
@@ -797,7 +832,7 @@ Factor             :  yinteger
                                 $$ = $3;
                             }
                    |  Setvalue { $$ = NULL; }
-                   |  FunctionCall { $$ = NULL; }
+                   |  FunctionCall { $$ = $1; }
                    ;
 /*  Functions with no parameters have no parens, but you don't need         */
 /*  to handle that in FunctionCall because it is handled by Designator.     */
@@ -813,8 +848,8 @@ FunctionCall       :  yident
                       ActualParameters
                                 {
                                     handlingProcFuncCalls = false;
-                                    //processFunctionCall($1);
                                     std::cout << ").call()._returnValue";
+                                    $$ = processFunctionCall($1);
                                 }
                    ;
 Setvalue           :  yleftbracket ElementList  yrightbracket

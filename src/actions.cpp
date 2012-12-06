@@ -18,7 +18,7 @@ std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 
 Stack symbolTable;
 
-void processFunctionCall(const char* ident) {
+Type* processFunctionCall(const char* ident) {
 	std::stringstream ss;
 	Symbol *fSymbol = NULL;
 	bool exists = searchStack(ident, fSymbol);
@@ -47,9 +47,46 @@ void processFunctionCall(const char* ident) {
 	for (int i = 0; i < temp; i++) {
 		typeVector.push_back(params[i]->type);
 	}
+	compareParamTypes(typeVector);
+	
+	if (exists)
+		return functionClass->getReturnType();
+	else
+		return NULL;
+	
+}
+
+void processProcedureCall(const char* ident) {
+	std::stringstream ss;
+	Symbol *fSymbol = NULL;
+	bool exists = searchStack(ident, fSymbol);
+	Procedure *procClass;
+	if (exists) {
+		//Attempt to cast as procedure
+		procClass = dynamic_cast<Procedure*>(fSymbol);
+		if (procClass == NULL) {
+			ss << "***ERROR(" << lineNumber << "): Symbol " 
+				<< ident << " is not a procedure definition";
+			addError(ss.str());
+		}
+	}
+	else {
+		/* TODO - record error */
+		ss << "***ERROR(" << lineNumber << "): Symbol " << ident 
+			<< " has not been declared";
+		addError(ss.str());
+	}
+
+	// Check the parameters to see if their types match
+	std::vector<Parameter*> params = procClass->getParameters();
+			
+	std::vector<Type*> typeVector;
+	int temp = params.size();
+	for (int i = 0; i < temp; i++) {
+		typeVector.push_back(params[i]->type);
+	}
 
 	compareParamTypes(typeVector);
-
 }
 
 void addParameterType(Type* t)
@@ -259,9 +296,10 @@ void createParameter(const char* ident)
             identBuffer.pop_front();
         }
     } else {
-	ss << "***ERROR(line: " << lineNumber << ") Type \"" << ident << "\" is undefined.";
-	addError(ss.str());
-        //std::cout << "***ERROR(line: " << lineNumber << ") Type \"" << ident << "\" is undefined." << std::endl;
+		// undefined, empty ident buffer
+		while (!identBuffer.empty()) {
+			identBuffer.pop_front();
+		}
     }
 }
 
@@ -590,12 +628,65 @@ void exitScope()
     std::cout << getTabs() << "}" << std::endl;
 }
 
+Type* getConstantType(Constant* c) {
+	int constType = c->getEnumType();
+	if (constType == INTEGER) {
+		return INTEGER_TYPE;
+	}
+	else if (constType == REAL) {
+		return REAL_TYPE;
+	}
+	else if (constType == BOOLEAN) {
+		return BOOLEAN_TYPE;
+	}
+	else if (constType == STRING) {
+		return STRING_TYPE;
+	}
+	else if (constType == CHAR) {
+		return CHAR_TYPE;
+	}
+	//TODO handle the symbol and nil versions
+}
+
+// Checks to see if the ident passed in matches the current scope's name
+// If so, it means that this ident is going to be a return statement
+// Returns the correct return Type if true, NULL if not
+Type* checkForReturnValue(const char* c) {
+
+	Type* retVal = NULL;
+	std::string currentName = symbolTable.current->name; //Get current scope's name
+	std::string otherName = (std::string)(c);
+	if (currentName.compare(otherName) == 0) {	//if the name matches
+		// Find the function's object in the frame before it
+		Function* funcSym = NULL;
+		bool exists = searchStack(currentName.c_str(), funcSym);
+		// Verify that the symbol found was a function object
+		if (funcSym != NULL) {
+			retVal = funcSym->getReturnType(); //get the correct return type for this	
+		}
+	}
+	return retVal;
+}
+
 bool checkTypesEqual(Type *a, Type *b)
 {
 	//if (!a->equals(b)) {
 		//std::cout << "***ERROR(line: " << lineNumber << "): Types are not equal, illegal assignment!" << std::endl;
 		//areEqual = false;
 	//}
+	std::stringstream ss;
+	if (a == NULL) {
+		ss << "***ERROR(line: " << lineNumber << "): Lefthand side Type in type checks is null" << std::endl;
+		if (b == NULL)
+			ss << " and righthand side Type in type checks is null" << std::endl;
+		addError(ss.str());
+		return false;
+	}
+	else if (b == NULL) {
+		ss << "***ERROR(line: " << lineNumber << "): Righthand side Type in type checks is null" << std::endl;
+		addError(ss.str());
+		return false;
+	}
 	return a->equals(b);
 }
 
@@ -609,6 +700,9 @@ void  compareParamTypes(std::vector<Type*> a)
 		//Already know that param sets not equal
 		ss << "***ERROR(line: " << lineNumber << "): Parameter sets are not equal";
 		addError(ss.str());
+	}
+	else if ((alength == 0) && (blength == 0)) {
+		// Parameter sets are equal
 	}
 	else {
 		//Compare each of the Types in both vectors
