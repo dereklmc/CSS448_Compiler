@@ -59,10 +59,12 @@ CompilationUnit    :  ProgramModule
 ProgramModule      :  yprogram yident ProgramParameters ysemicolon
                                 {
                                     createProgramScope($2);
+                                    std::cout << "class Program {" << std::endl;
                                 }
                       Block ydot
                                 {
                                     exitScope();
+                                    std::cout << "};" << std::endl;
                                     printErrorLog();
                                 }
                    ;
@@ -83,11 +85,12 @@ IdentList          :  yident
 Block              :  Declarations
                       ybegin
                                 {
-                                    std::cout << getTabs() << "void call() {" << std::endl;
+                                    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << std::endl;
                                 }
                       StatementSequence
                       yend
                                 {
+                                	std::cout << getTabs() << "\treturn *this;" << std::endl;
                                     std::cout << getTabs() << "}" << std::endl;
                                 }
                    ;
@@ -304,15 +307,13 @@ Assignment         :  Designator
 ProcedureCall      :  yident
                                 {
                                     std::cout << getTabs();
-                                    printf("%s ", $1);
-                                    std::cout << "proc().call();" << std::endl;
+                                    std::cout << $1 << "().call();" << std::endl;
                                		//processProcedureCall($1);
                                 }
                    |  yident
                                 {
                                     std::cout << getTabs();
-                                    printf("%s ", $1);
-                                    std::cout << "proc(";
+                                    std::cout << $1 << "(";
                                 }
                       ActualParameters
                                 {
@@ -841,8 +842,7 @@ Factor             :  yinteger
 FunctionCall       :  yident
                                 {
                                     std::cout << getTabs();
-                                    printf("%s ", $1);
-									std::cout << "func(";
+									std::cout << $1 << "(";
 									handlingProcFuncCalls = true;
                                 }
                       ActualParameters
