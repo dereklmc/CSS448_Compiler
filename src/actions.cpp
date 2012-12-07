@@ -548,7 +548,6 @@ void createVariableList(Type *&type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
-
             identBuffer.pop_front();
             
             Variable* var = new Variable(ident,type->clone());
@@ -584,12 +583,17 @@ void createRecordType(Type *&createdType) {
 	    ss << "***ERROR(line: " << lineNumber << "): " << var->name 
 			<< "already exists in record";
 	    addError(ss.str());
+	    variableBuffer.pop_front();
             //std::cerr << "***ERROR(line: " << lineNumber << "): " << var->name << "already exists in record" << std::endl;
             delete var;
             var = NULL;
         }
-        variableBuffer.pop_front();
+	else 
+            variableBuffer.pop_front();
     }
+    // in case there are stranglers
+    while (!identBuffer.empty())
+	identBuffer.pop_front();
     createdType = record;
 }
 

@@ -143,7 +143,7 @@ VariableDecl       :  IdentList  ycolon  AnonType
                                     //checkPointers();
                                     //generateRecords();
                                     createVariables($3);
-                                    std::cout << std::endl;
+                                    //std::cout << std::endl;
                                 }
                    ;
 
