@@ -85,7 +85,7 @@ IdentList          :  yident
 Block              :  Declarations
                       ybegin
                                 {
-                                    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << std::endl;
+                                    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << std::endl << getTabs();
                                 }
                       StatementSequence
                       yend
@@ -273,7 +273,9 @@ FieldList          :  IdentList  ycolon  AnonType
 /***************************  Statements  ************************************/
 
 StatementSequence  :  Statement
-                   |  StatementSequence  ysemicolon  Statement
+                   |  StatementSequence  ysemicolon
+		  	{std::cout << getTabs();}
+		      Statement
                    ;
 Statement          :  Assignment
                    |  ProcedureCall
@@ -447,8 +449,7 @@ RepeatStatement    :  yrepeat
                       StatementSequence  yuntil
                                 {
                                     exitScope();
-				    std::cout << std::endl;
-                                    std::cout << getTabs() << "} while(";
+				    std::cout << " while(";
                                 }
                       Expression
                                 {
