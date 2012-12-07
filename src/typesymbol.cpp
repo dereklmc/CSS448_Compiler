@@ -49,3 +49,12 @@ std::string TypeSymbol::generateTypeDeclCode()
 		return (type->generateOptionalCode()+ " " + name + type->generateTypeCode());
 	return ("typedef " + type->generateOptionalCode()+ " " + name + type->generateTypeCode());
 };
+
+/******************************************************************************
+ * clone
+ * TODO
+ */
+Symbol* TypeSymbol::clone() const
+{
+    return new TypeSymbol(name, type->clone());
+}

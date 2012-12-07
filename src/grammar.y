@@ -117,14 +117,14 @@ TypeDefList        :  TypeDef  ysemicolon
                    |  TypeDefList TypeDef ysemicolon
                    ;
 VariableDeclBlock  :  yvar
-                     VariableDeclList
+                      VariableDeclList
                                 {
                                     // TODO ???
                                 }
-           |  /*** empty ***/
+                   |  /*** empty ***/
                    ;
 VariableDeclList   :  VariableDecl ysemicolon
-           |  VariableDeclList VariableDecl ysemicolon
+                   |  VariableDeclList VariableDecl ysemicolon
                    ;
 ConstantDef        :  yident yequal ConstExpression
                                 {
@@ -137,11 +137,11 @@ TypeDef            :  yident yequal Type
                                     createTypeSymbol($1, $3);
                                     std::cout << std::endl;
                                 }
-                   |  yident yequal PointerType
                    ;
 VariableDecl       :  IdentList  ycolon  AnonType
                                 {
                                     //checkPointers();
+                                    //generateRecords();
                                     createVariables($3);
                                     std::cout << std::endl;
                                 }
@@ -200,18 +200,9 @@ ConstFactor        :  yident
                 }
                    ;
 AnonType           :  Type
-                   |  ycaret yident
                                 {
-                                    Symbol *s = NULL;
-                                    bool result = symbolTable.searchStack(std::string($2),s);
-                                    if (result) {
-                                        $$ = new PointerType(s);
-                                    } else {
-										std::stringstream ss;
-                                        ss << "***ERROR(" << lineNumber << "): \"" 
-											<< $2 << "\" is undefined!";
-										addError(ss.str());
-                                    }
+                                    checkPointers();
+                                    // check Records
                                 }
                    ;
 Type               :  yident    {
@@ -221,7 +212,10 @@ Type               :  yident    {
                                 {
                                     $$ = dynamic_cast<Type*>($1);
                                 }
-/*                 |  PointerType  */
+                   |  PointerType
+                                {
+                                    $$ = dynamic_cast<Type*>($1);
+                                }
                    |  RecordType
                                 {
                                     $$ = dynamic_cast<Type*>($1);
@@ -229,7 +223,7 @@ Type               :  yident    {
                    |  SetType
                    ;
 ArrayType          :  yarray yleftbracket Subrange SubrangeList
-                      yrightbracket yof AnonType
+                      yrightbracket yof Type
                                 {
                                     createArrayType($$, $7);
                                 }
@@ -264,7 +258,7 @@ PointerType        :  ycaret  yident
 FieldListSequence  :  FieldList
                    |  FieldListSequence  ysemicolon  FieldList
                    ;
-FieldList          :  IdentList  ycolon  AnonType
+FieldList          :  IdentList  ycolon  Type
                                 {
                                     createVariableList($3);
                                 }
@@ -865,8 +859,8 @@ Factor             :  yinteger
 FunctionCall       :  yident
                                 {
                                     std::cout << getTabs();
-				    std::cout << $1 << "(";
-				    handlingProcFuncCalls = true;
+                                    std::cout << $1 << "(";
+                                    handlingProcFuncCalls = true;
                                 }
                       ActualParameters
                                 {

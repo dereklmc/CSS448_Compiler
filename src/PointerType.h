@@ -13,14 +13,15 @@ class PointerType : public Type {
 
     public:
         // ctr, creates a variable with a name that points to a given ident.
-        PointerType( Symbol*);
+        PointerType(Symbol*);
         ~PointerType();
         // Defined to release PointerType's reference to Symbol.
         // Since pointee is also in the symbol table, the ST will deallocate 
         // pointee.
         Symbol* getPointee() const;
+        void setPointee(Symbol*);
         Type* clone() const;
-		std::string printCName() const {return "";};
+        std::string printCName() const {return "";};
 
     private:
         // The ident that the pointer points to.
