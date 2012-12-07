@@ -25,7 +25,7 @@ int ConstRange::getLength() const
     if(start->getType() == INTEGER)
     {
         std::stringstream tempEndStream, tempStartStream;
-        std::cout << "END CODE: " << end->generateCode() << std::endl;
+        //std::cout << "END CODE: " << end->generateCode() << std::endl;
         tempEndStream << end->generateCode(); 
         int tempEnd, tempStart;
         tempEndStream >> tempEnd;

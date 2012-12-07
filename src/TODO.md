@@ -1,31 +1,26 @@
 # TODO List
 
-1. GenerateCode() for arrays and set types
-    - Fix bugs showing up in sttest.p, where multidimensional array showing wonky dimensions
-	- Fix non-typedef arrays in var declarations 
+1. _Hugo_ GenerateCode() for arrays and set types
+    - <s>_Hugo_Fix bugs showing up in sttest.p, where multidimensional array showing wonky dimensions </s> done?
+	- <s>_Hugo_Fix non-typedef arrays in var declarations </s> done?
 2. Handle calling Procedures
-	- <s> _Nina_ Standard Procedure: write, writeln, read, readln in IOStatement within grammar </s>
+2. <s> _Nina_Handle calling Procedures </s>
+	- <s> Standard Procedure: write, writeln, read, readln in IOStatement within grammar </s>
 	- <s> Standard Procedure: new, dispose in MemoryStatement within grammar. </s> I think this is done?
-	- Non-standard Procedure Types
-3. Handle calling Functions
-	- Return type checking
-<<<<<<< HEAD
-	- Handle checking for returns by looking at function name
-4. <s>_Derek_ Generate Code for subroutines<s>
+	- <s>Non-standard Procedure Types </s>
+3. <s> _Nina_ Handle calling Functions </s>
+	-  <s> Return type checking </s>
+	- <s>Handle checking for returns by looking at function name </s>
+4. <s>_Derek_ Generate Code for subroutines</s>
 5. <s>_Nina_ For/while loops, repeat statements</s> 
-=======
-4. ~~_Derek_ Generate Code for subroutines~~
-5. ~~_Nina_ For/while loops, repeat statements~~
->>>>>>> cf6b3cd328eb198367159e965ea2a452e1bb9a43
 	- Still need to uncomment type checking when Constants are figured out
 6. ~~_Nina_ Case Statements~~
+		- Still need to uncomment type checking when Constants are figured out
 7. _Derek_ Constants
 	- Properly scope constant
-	- Infer type?
+	- <s>Infer type? </s> Nina: I think this is done, but you might need to check
     - Implement Symbol#isConstant bool
         - Defaults to false
-    - Figure out how to generate Constants
-        - Look at the Dragon Book
 8. POINTERS
 	-Designator stuff
 	-General pointer usage stuff
@@ -33,8 +28,10 @@
 9. Designators 
 	- Pointers (see 9)
 	- array referencing      
-10. Log errors
+10. _Nina_Log errors
 	- line #s
+	- Halfway done, almost finished
 11. Print errors
 12. Comments
-13. _Derek_ Change Function#call to return itself, by reference.
+13. Take code out of grammar.y and incorporate it into methods in actions.cpp
+14. Sort actions.cpp

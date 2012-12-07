@@ -30,6 +30,7 @@ extern StdType *BOOLEAN_TYPE;
 extern StdType *STRING_TYPE;
 extern StdType *REAL_TYPE;
 extern StdType *CHAR_TYPE;
+extern StdType *NIL_TYPE;
 
 void initStdTypes();
 

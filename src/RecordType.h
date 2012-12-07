@@ -37,6 +37,7 @@ class RecordType : public Type {
         int scope;
         // Helper method for #print, prints tabs indicated by scope.
         void printScopeTabs(std::ostream&) const;
+	void getScopeTabs();
         std::string generateTypeCode() const;
 		std::string generateVarDeclCode() const;
 };
