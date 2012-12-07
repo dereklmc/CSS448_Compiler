@@ -44,7 +44,7 @@ class SetType : public Type
 		std::string generateVarDeclCode() const
 		{
 			std::string tempString = "setType var code here!\n";
-            return tempString;
+            		return tempString;
 		}
 };
 

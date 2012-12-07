@@ -5,9 +5,8 @@
 #include "stdtype.h"
 #include "TypeSymbol.h"
 #include "constant.h"
-
 #include <iostream>
-
+using namespace std;
 class Stack
 {
     friend std::ostream& operator<<(std::ostream& out, const Stack& s)
@@ -26,7 +25,7 @@ class Stack
         // Constructor
         Stack()
         {
-            currentScope = -1;
+            currentScope = 0;
             zeroeth = new StackFrame(currentScope, "language");
             current = zeroeth;
             

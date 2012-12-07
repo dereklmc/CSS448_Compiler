@@ -101,9 +101,15 @@ std::string RecordType::generateTypeCode() const
 	for (int i = 0; i < fields.size(); i++)
 	{
 		//TODO print tabs
-		tempString += "\t";
+		for(int j = 0; j < scope; j++) {
+        		tempString += "    ";
+    		}
+		tempString += "    ";
 		tempString += (fields[i]->generateCode() + ";\n");
 	}
+	for(int i = 1; i < scope - 1; i++) {
+        	tempString += "    ";
+    	}
 	tempString += "}";
     return tempString;
 }

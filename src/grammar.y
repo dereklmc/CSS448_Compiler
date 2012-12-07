@@ -58,13 +58,13 @@ CompilationUnit    :  ProgramModule
                    ;
 ProgramModule      :  yprogram yident ProgramParameters ysemicolon
                                 {
-                                    createProgramScope($2);
                                     std::cout << "class Program {" << std::endl;
+				    createProgramScope($2);
                                 }
                       Block ydot
                                 {
                                     exitScope();
-                                    std::cout << "};" << std::endl;
+				    std::cout << ";" << std::endl;
                                     printErrorLog();
                                 }
                    ;
@@ -128,14 +128,12 @@ VariableDeclList   :  VariableDecl ysemicolon
                    ;
 ConstantDef        :  yident yequal ConstExpression
                                 {
-                                    std::cout << getTabs();
                                     createConstant($1, $3);
                                     std::cout << std::endl;
                                 }
                    ;
 TypeDef            :  yident yequal Type
                                 {
-                                    std::cout << getTabs();
                                     createTypeSymbol($1, $3);
                                     std::cout << std::endl;
                                 }
@@ -144,7 +142,6 @@ TypeDef            :  yident yequal Type
 VariableDecl       :  IdentList  ycolon  AnonType
                                 {
                                     //checkPointers();
-                                    std::cout << getTabs();
                                     createVariables($3);
                                     std::cout << std::endl;
                                 }
@@ -269,7 +266,6 @@ FieldListSequence  :  FieldList
                    ;
 FieldList          :  IdentList  ycolon  AnonType
                                 {
-                                    std::cout << getTabs();
                                     createVariableList($3);
                                 }
                    ;
@@ -332,6 +328,7 @@ IfStatement        :  IfStatementBlock
                       yelse
                             {
                                 exitScope();
+				std::cout << std::endl;
                                 std::cout << getTabs() << "else {" << std::endl;
                                 createLoopCaseScope("else");
                             }
@@ -353,6 +350,7 @@ IfStatementBlock   :  yif
 EndIf                 :  /*** empty ***/
                             {
                                 exitScope();
+				std::cout << std::endl;
                             }
                       ;
 CaseStatement      :  ycase
@@ -370,6 +368,7 @@ CaseStatement      :  ycase
                             {
                                 setCaseType(NULL);
                                 exitScope();
+				std::cout << std::endl;
                                 //std::cout << std::endl << getTabs() << "}" << std::endl;
                             }
                       yend
@@ -436,6 +435,7 @@ WhileStatement     :  ywhile
                       ydo  Statement
                                 {
                                     exitScope();
+				    std::cout << std::endl;
                                     //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
                    ;
@@ -447,6 +447,7 @@ RepeatStatement    :  yrepeat
                       StatementSequence  yuntil
                                 {
                                     exitScope();
+				    std::cout << std::endl;
                                     std::cout << getTabs() << "} while(";
                                 }
                       Expression
@@ -507,6 +508,7 @@ ForStatement       :  yfor
                             ydo  Statement
                                 {
                                     exitScope();
+			 	    std::cout << std::endl;
                                     //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
                    ;
@@ -863,8 +865,8 @@ Factor             :  yinteger
 FunctionCall       :  yident
                                 {
                                     std::cout << getTabs();
-									std::cout << $1 << "(";
-									handlingProcFuncCalls = true;
+				    std::cout << $1 << "(";
+				    handlingProcFuncCalls = true;
                                 }
                       ActualParameters
                                 {
@@ -903,45 +905,39 @@ SubprogDeclList    :  /*** empty ***/
                    ;
 ProcedureDecl      :  ProcedureHeading  ysemicolon
                             {
-                                std::cout << getTabs();
                                 createProcedureDecl($1);
                             }
                       Block
                             {
                                 exitScope();
-                                std::cout << getTabs() << "};" << std::endl;
+				std::cout << ";" << std::endl;
                             }
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident
                             {
-                                std::cout << getTabs();
                                 createFunctionDecl($3, $1);
                             }
                       ysemicolon  Block
                             {
                                 exitScope();
-                                std::cout << getTabs() << "};" << std::endl;
+				std::cout << ";" << std::endl;
                             }
                    ;
 ProcedureHeading   :  yprocedure yident
                                 {
-                                    std::cout << getTabs();
                                     createProcedure($2, $$);
                                 }
                    |  yprocedure yident FormalParameters
                                 {
-                                    std::cout << getTabs();
                                     createProcedure($2, $$);
                                 }
                    ;
 FunctionHeading    :  yfunction  yident
                                 {
-                                    std::cout << getTabs();
                                     createFunction($2, $$);
                                 }
                    |  yfunction  yident FormalParameters
                                 {
-                                    std::cout << getTabs();
                                     createFunction($2, $$);
                                 }
                    ;
@@ -952,12 +948,10 @@ FormalParamList    :  OneFormalParam
                    ;
 OneFormalParam     :  yvar IdentList ycolon yident
                                 {
-                                    std::cout << getTabs();
                                     createParameter($4);
                                 }
                    |  IdentList ycolon yident
                                 {
-                                    std::cout << getTabs();
                                     createParameter($3);
                                 }
                    ;

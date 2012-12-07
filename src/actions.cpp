@@ -366,9 +366,9 @@ void createProcedureDecl(Procedure* proc)
     /* Put procedure in parent scope */
     symbolTable.current->addSymbol(proc);
     /* Enter Procedure Scope */
-    symbolTable.createScope(proc->name);
     std::cout << getTabs() << "class " << proc->name << " {" << std::endl;
     std::cout << getTabs() << "public:" << std::endl ;
+    symbolTable.createScope(proc->name);
 
     /* Put procedure params on symbol stack. */
     std::vector<Parameter*> toPutOnStack = proc->getParameters();
@@ -413,10 +413,16 @@ void createLoopCaseScope(const char *ident)
 void createTypeSymbol(const char *ident, Type *type)
 {
     if (type != NULL) {
-        std::string name(ident);
-        TypeSymbol *symbol = new TypeSymbol(name, type);
-        symbolTable.current->addSymbol(symbol);
-        std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
+	SetType* sType = dynamic_cast<SetType*>(type);
+	if (sType == NULL) {
+        	std::string name(ident);
+        	TypeSymbol *symbol = new TypeSymbol(name, type);
+        	symbolTable.current->addSymbol(symbol);
+        	std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
+	}
+	else {
+		std::cout << getTabs() << "/* This is where set type " << ident << " would have been defined */";
+	}
     }
 }
 
@@ -619,7 +625,7 @@ void exitScope()
     /* Mem management */
     delete scope;
     scope = NULL;
-    std::cout << getTabs() << "}" << std::endl;
+    std::cout << getTabs() << "}";
 }
 
 Type* getConstantType(Constant* c) {
