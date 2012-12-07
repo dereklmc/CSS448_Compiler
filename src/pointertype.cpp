@@ -16,6 +16,14 @@ Symbol* PointerType::getPointee() const
 {
     return pointee;
 }
+
+void PointerType::setPointee(Symbol *pointee)
+{
+    delete this->pointee;
+    this->pointee = NULL;
+    this->pointee = pointee;
+}
+
 /*******************************************************************************
  *
  * Destructor.
@@ -26,7 +34,7 @@ Symbol* PointerType::getPointee() const
  */
 PointerType::~PointerType()
 {
-    delete pointee;
+    //delete pointee;
     pointee = NULL;
 }
 
@@ -43,7 +51,7 @@ void PointerType::print(std::ostream &output) const
 
 Type* PointerType::clone() const
 {
-    PointerType *clone = new PointerType(*this);
+    PointerType *clone = new PointerType(pointee->clone());
     return clone;
 }
 

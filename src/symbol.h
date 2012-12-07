@@ -47,6 +47,8 @@ class Symbol
 	    }
 	    
 	    virtual std::string generateCode() const { return name; }
+	    
+	    virtual Symbol* clone() const { std::cerr << "*** Symbol#clone() called! Should be pure virtual ***" << std::endl; return NULL; }
 };
 
 #endif

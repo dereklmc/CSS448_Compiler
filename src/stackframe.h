@@ -21,11 +21,11 @@ class StackFrame
         {
             printScopeTabs(out);
             out << name << " " << "contains: " << std::endl;
-	        int symbolSize = symbols.size();
+            int symbolSize = symbols.size();
             for(int x = 0; x < symbolSize; x++) {
                 printScopeTabs(out);
                 out << "\t" << *symbols[x];
-		        out << std::endl;
+                out << std::endl;
             }
             out << std::endl;
         }

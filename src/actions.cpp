@@ -405,6 +405,30 @@ void createPointer(PointerType*& createdType, const char *ident)
 }
 
 /******************************************************************************
+ * checkPointers()
+ * While the ptrBuffer is not empty, takes the pointer from the front and 
+ * searches the symbol table for the pointee's name. Whether or not the pointee
+ * is found in the symbol table, the pointer will be popped off the ptrBuffer.
+ *****************************************************************************/
+void checkPointers()
+{
+    while(!ptrBuffer.empty())
+    {
+        PointerType* ptr = ptrBuffer.front();
+        Symbol* foundSymbol = NULL;
+        bool found = symbolTable.searchStack(ptr->getPointee()->name, foundSymbol);
+        if(found)
+        {
+            ptr->setPointee(foundSymbol);
+        } else {
+            std::cout << "Error: Pointee does not exist." << std::endl;
+        }
+     
+        ptrBuffer.pop_front();
+    }
+}
+
+/******************************************************************************
  * getSymbolicType(Type*&, const char*)
  * First searches the stack for a TypeSymbol matching the name passed in. If 
  * that name is found, then a new SymbolicType object is saved to the Type*&
@@ -502,8 +526,8 @@ void createVariables(Type *&type) {
             identBuffer.pop_front();
             
             Variable* var = new Variable(ident,type->clone());
-	        symbolTable.current->addSymbol(var);
-			std::cout << getTabs() << var->generateCode() << ";"<<std::endl;
+            symbolTable.current->addSymbol(var);
+            std::cout << getTabs() << var->generateCode() << ";"<<std::endl;
         }
         delete type;
         type = NULL;
@@ -548,28 +572,6 @@ void createConstant(const char *ident, ConstValue *&value) {
     Constant *symbol = new Constant(std::string(ident), value);
     symbolTable.current->addSymbol(symbol);
     std::cout << getTabs() << symbol->generateCode() << std::endl;
-}
-
-/******************************************************************************
- * checkPointers()
- * While the ptrBuffer is not empty, takes the pointer from the front and 
- * searches the symbol table for the pointee's name. Whether or not the pointee
- * is found in the symbol table, the pointer will be popped off the ptrBuffer.
- *****************************************************************************/
-void checkPointers()
-{
-    while(!ptrBuffer.empty())
-    {
-        PointerType* ptr = ptrBuffer.front();
-        Symbol* temp = NULL;
-        symbolTable.searchStack(ptr->getPointee()->name, temp);
-        if(temp != NULL)
-        {
-            //std::cout << "POINTEE FOUND!" << std::endl;
-        }
-     
-        ptrBuffer.pop_front();
-    }
 }
 
 /******************************************************************************
