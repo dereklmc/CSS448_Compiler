@@ -210,7 +210,10 @@ AnonType           :  Type
                                     if (result) {
                                         $$ = new PointerType(s);
                                     } else {
-                                        std::cout << "ERROR: \"" << $2 << "\" is undefined!" << std::endl;
+										std::stringstream ss;
+                                        ss << "***ERROR(" << lineNumber << "): \"" 
+											<< $2 << "\" is undefined!";
+										addError(ss.str());
                                     }
                                 }
                    ;
@@ -295,11 +298,13 @@ Assignment         :  Designator
                       yassign { std::cout << " = "; }
                       Expression
                       {
-                      		bool equal = checkTypesEqual($1, $4);
+                      		bool equal = checkTypesEqual($4, $1);
                       		if (!equal) {
                       			std::stringstream ss;
-                      			ss << "***Error: Illegal assignment, lefthand and" << 
-                      				"righthand sides of the assignment are not equal";
+                      			ss << "***Error(line: " << lineNumber 
+									<< "): Illegal assignment, lefthand and " << 
+               						"righthand sides of the assignment are not equal";
+								addError(ss.str());
                       		}
                       		std::cout << ";" << std::endl;
                       }
@@ -308,7 +313,7 @@ ProcedureCall      :  yident
                                 {
                                     std::cout << getTabs();
                                     std::cout << $1 << "().call();" << std::endl;
-                               		//processProcedureCall($1);
+                               		processProcedureCall($1);
                                 }
                    |  yident
                                 {
@@ -317,7 +322,7 @@ ProcedureCall      :  yident
                                 }
                       ActualParameters
                                 {
-                                	//processProcedureCall($1);
+                                	processProcedureCall($1);
                                 	std::cout << ").call();" << std::endl;
                                 }
                    ;
@@ -422,8 +427,9 @@ WhileStatement     :  ywhile
                                     if (!BOOLEAN_TYPE->equals($3)) {
                                         // TODO, record error message
                                         std::stringstream ss;
-                                        ss << "***ERROR(" << lineNumber << "): Expression is not conditional";
-                                        //std::cout << "ERROR: Expression is not conditional" << std::endl;
+                                        ss << "***ERROR(" << lineNumber 
+											<< "): Expression is not conditional";
+										addError(ss.str());
                                     }
                                     std::cout << ") {" << std::endl;
                                 }
@@ -473,13 +479,15 @@ ForStatement       :  yfor
                                     	if(!checkTypesEqual($5, var->type)) {
                                         	//TODO record error
                                         	std::stringstream ss;
-                                        	ss << "ERROR: Invalid for loop assignment";
+                                        	ss << "***ERROR(line: " << lineNumber 
+												<< "): Invalid for loop assignment";
                                         	addError(ss.str());
                                     	}
                                     	if(!checkTypesEqual($8, var->type)) {
                                         	//TODO record error
                                         	std::stringstream ss;
-                                        	ss << "ERROR: Incompatible for loop whichway type";
+                                        	ss << "***ERROR(line: " << lineNumber 
+												<< ": Incompatible for loop whichway type";
                                         	addError(ss.str());
                                     	}
                                     	std::cout << "; " << $2;
@@ -491,7 +499,8 @@ ForStatement       :  yfor
                                     }
                                     else {
                                     	stringstream ss;
-                                    	ss << "ERROR: Variable does not exist on stack";
+                                    	ss << "***ERROR(line: " << lineNumber 
+											<< "): Variable does not exist on stack";
                                     	addError(ss.str());
                                     }
                                 }
@@ -595,13 +604,15 @@ Designator         :  yident
                                 	} else {
                                     	Constant *con = NULL;
                                     	if (searchStack<Constant>($1, con) && con != NULL) {
-                                        	$$ = getConstantType(con); // TODO infer constant type.
+											std::cout << "***Infering Constant Type ";
+											Type* t = getConstantType(con);
+											std::cout << *t << "***";
+                                        	$$ = t; // TODO infer constant type.
                                     	} else {
                                         	$$ = NULL;
                                         	std::stringstream ss;
                                         	ss << "***ERROR(" << lineNumber << "): Identifier \"" << $1 << "\" not declared!";
                                         	addError(ss.str());
-                                        	//std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
                                     	}
                                 	}
                                 }
@@ -659,14 +670,16 @@ Expression         :  SimpleExpression
                         }
                    |  SimpleExpression  Relation  SimpleExpression
                         {
-                            //if (checkTypesEqual($1,$3))
-                            $$ = BOOLEAN_TYPE;
+                            if (checkTypesEqual($1,$3))
+                            	$$ = BOOLEAN_TYPE;
                             //TODO - put this back in when Constants are implemented
-                            //else
-                            //{
-                                //std::cout << "ERROR: Invalid relation" << std::endl;
-                                //$$ = NULL;
-                            //}
+                            else
+                            {
+								std::stringstream ss;
+                                ss << "***ERROR(line: " << lineNumber << "): Invalid relation";
+								addError(ss.str());
+                                $$ = NULL;
+                            }
                         }
                    ;
 SimpleExpression   :  TermExpr
@@ -778,7 +791,7 @@ Factor             :  yinteger
                                 else if (handlingOutput)
                                     std::cout << " >> ";
                                 std::cout << "NULL";
-                                $$ = NULL;
+                                $$ = NIL_TYPE;
                             }
                    |  ystring
                             {

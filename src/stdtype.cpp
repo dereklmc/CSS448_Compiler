@@ -6,6 +6,7 @@ StdType *BOOLEAN_TYPE = NULL;
 StdType *STRING_TYPE = NULL;
 StdType *REAL_TYPE = NULL;
 StdType *CHAR_TYPE = NULL;
+StdType *NIL_TYPE = NULL;
 
 void initStdTypes()
 {
@@ -14,6 +15,7 @@ void initStdTypes()
     STRING_TYPE = new StdType("string", "string");
     REAL_TYPE = new StdType("real", "double");
     CHAR_TYPE = new StdType("char", "char");
+	NIL_TYPE = new StdType("nil", "NULL");
 }
 
 StdType::StdType(std::string pname, std::string cname) : Type()
