@@ -85,7 +85,7 @@ IdentList          :  yident
 Block              :  Declarations
                       ybegin
                                 {
-                                    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << std::endl << getTabs();
+                                    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << std::endl;
                                 }
                       StatementSequence
                       yend
@@ -274,7 +274,6 @@ FieldList          :  IdentList  ycolon  AnonType
 
 StatementSequence  :  Statement
                    |  StatementSequence  ysemicolon
-		  	{std::cout << getTabs();}
 		      Statement
                    ;
 Statement          :  Assignment
@@ -287,7 +286,7 @@ Statement          :  Assignment
                    |  WhileStatement
                    |  RepeatStatement
                    |  ForStatement
-                   |  IOStatement
+                   |  {std::cout << getTabs();}	IOStatement
                    |  MemoryStatement
                    |  ybegin StatementSequence yend
                    |  /*** empty ***/
@@ -527,7 +526,7 @@ WhichWay           :  yto
                    ;
 IOStatement        :  yread  yleftparen
                                 {
-                                    std::cout << getTabs() << "cin";
+                                    std::cout << "cin";
                                     handlingOutput = true;
                                 }
               DesignatorList  yrightparen
@@ -537,12 +536,12 @@ IOStatement        :  yread  yleftparen
                                 }
                    |  yreadln
                                 {
-                                     std::cout << getTabs() << "while (getchar() != '\n')";
+                                     std::cout << "while (getchar() != '\n')";
                                      std::cout << ";" << std::endl;
                                 }
                    |  yreadln  yleftparen
                                 {
-                                    std::cout << getTabs() << "cin";
+                                    std::cout << "cin";
                                     handlingOutput = true;
                                 }
               DesignatorList  yrightparen
@@ -553,7 +552,7 @@ IOStatement        :  yread  yleftparen
                                 }
                    |  ywrite  yleftparen
                                 {
-                                    std::cout << getTabs() << "cout";
+                                    std::cout << "cout";
                                     handlingInput = true;
                                 }
                       ExpList  yrightparen
@@ -568,7 +567,7 @@ IOStatement        :  yread  yleftparen
                                 }
                    |  ywriteln  yleftparen
                                 {
-                                    std::cout << getTabs() << "cout";
+                                    std::cout << "cout";
                                     handlingInput = true;
                                 }
                       ExpList  yrightparen
@@ -589,9 +588,9 @@ Designator         :  yident
                             	// Check current scope is a function and if this
 
                                 if (handlingInput)
-                                    std::cout << " << ";
+                                    std::cout << " << " << $1;
                                 else if (handlingOutput)
-                                    std::cout << " >> ";
+                                    std::cout << " >> " << $1;
                                 else if (potentialReturnType == NULL)           
                                 	std::cout << $1;
                             }
