@@ -621,7 +621,7 @@ void exitScope()
     /* Exit Function scope */
     StackFrame *scope = symbolTable.leaveScope();
     /* Print exited scope. */
-    std::cout << *scope;
+    //std::cout << *scope;
     /* Mem management */
     delete scope;
     scope = NULL;
