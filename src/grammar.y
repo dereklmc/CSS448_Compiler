@@ -601,8 +601,9 @@ Designator         :  yident
                                 	Variable *var = NULL;
                                 	if (searchStack<Variable>($1, var) && var != NULL) {
                                     	$$ = var->type;
-                                	} else {
+                                	} else { // Try for a constant
                                     	Constant *con = NULL;
+										
                                     	if (searchStack<Constant>($1, con) && con != NULL) {
 											std::cout << "***Infering Constant Type ";
 											Type* t = getConstantType(con);
@@ -670,7 +671,8 @@ Expression         :  SimpleExpression
                         }
                    |  SimpleExpression  Relation  SimpleExpression
                         {
-                            if (checkTypesEqual($1,$3))
+							//std::cout << "Attempting to compare " << *$1 << " to " << *$3;
+                            if (checkTypesEqual($3,$1))
                             	$$ = BOOLEAN_TYPE;
                             //TODO - put this back in when Constants are implemented
                             else
@@ -743,10 +745,16 @@ Term               :  Factor
                             }
                    |  Term  yand
                             {
-                                std::cout << "&&";
-                                $$ = NULL;
+                                std::cout << " && ";
+
                             }
                             Factor
+							{
+								if (checkTypesEqual($1,$4))
+									$$ = BOOLEAN_TYPE;
+								else
+									$$ = NULL;
+							}
                    ;
 Factor             :  yinteger
                             {

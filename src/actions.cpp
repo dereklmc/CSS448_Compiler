@@ -683,9 +683,13 @@ bool checkTypesEqual(Type *a, Type *b)
 		ss << "***ERROR(line: " << lineNumber << "): Righthand side Type in type checks is null";
 		addError(ss.str());
 	}
-	else if (a->equals(b) || b->equals(NIL_TYPE))
+	else if (b->equals(NIL_TYPE)) {
 		areEqual = true;
-	
+	}
+	else if (a->equals(b)) {
+		areEqual = true;
+	}
+
 	return areEqual;
 }
 
