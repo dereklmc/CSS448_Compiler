@@ -22,7 +22,10 @@
 extern Stack symbolTable;
 extern int lineNumber;
 
-void processFunctionCall(const char* ident);
+Type* getConstantType(Constant*);
+Type* checkForReturnValue(const char*);
+void processProcedureCall(const char* ident);
+Type* processFunctionCall(const char* ident);
 void addParameterType(Type* t);
 void addError(std::string);
 void setCaseType(Type* t);
@@ -71,10 +74,9 @@ bool searchStack(const char *ident, T *&castSymbol)
     if (!isFound) {
         castSymbol = NULL;
 	std::stringstream ss;
-	ss << "***ERROR(line: " << lineNumber << "): Ident \"" << ident << "\" does not name a symbol.";
-	std::string errorMessage = ss.str();
-	addError(errorMessage);
-        //std::cout << "***ERROR(line: " << lineNumber << ")Ident \"" << ident << "\" does not name a symbol." << std::endl;
+	ss << "***ERROR(line: " << lineNumber << "): Ident \"" << ident << "\" is undefined.";
+	addError(ss.str());
+        //std::cout << "***ERROR(line: " << lineNumber << ")Ident \"" << ident << "\" is undefined." << std::endl;
     } else {
         castSymbol = dynamic_cast<T*>(symbol); // = foundType;
     }
