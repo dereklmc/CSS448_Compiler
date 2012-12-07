@@ -97,7 +97,7 @@ Declarations       :  ConstantDefBlock
                       SubprogDeclList
                    ;
 ConstantDefBlock   :  yconst ConstDefList
-           |  /*** empty ***/
+                   |  /*** empty ***/
                    ;
 ConstDefList       :  ConstantDef ysemicolon
                    |  ConstDefList ConstantDef ysemicolon
@@ -140,7 +140,7 @@ TypeDef            :  yident yequal Type
                    ;
 VariableDecl       :  IdentList  ycolon  AnonType
                                 {
-                                    checkPointers();
+                                    //checkPointers();
                                     std::cout << getTabs();
                                     createVariables($3);
                                     std::cout << std::endl;
