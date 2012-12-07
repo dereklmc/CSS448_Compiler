@@ -20,6 +20,9 @@
 using namespace std;
 bool handlingInput = false;
 bool handlingOutput = false;
+
+Symbol *currentDesignator = NULL;
+
 extern YYSTYPE yylval;
 
 %}
@@ -539,12 +542,11 @@ Designator         :  yident
 								else if (handlingOutput)
 									std::cout << " >> ";
 								std::cout << $1;
-							}
-                      DesignatorStuff
-							{
+								
 								Variable *var = NULL;
 								if (searchStack<Variable>($1, var) && var != NULL) {
 									$$ = var->type;
+									currentDesignator = var;
 								} else {
 									Constant *con = NULL;
 									if (searchStack<Constant>($1, con) && con != NULL) {
@@ -554,6 +556,9 @@ Designator         :  yident
 									   std::cout << "ERROR:: Identifier \"" << $1 << "\" not declared!" << std::endl;
 									}
 								}
+							}
+                      DesignatorStuff
+							{
 								
 							}
                    ;
@@ -563,6 +568,25 @@ DesignatorStuff    :  /*** empty ***/
 theDesignatorStuff :  ydot yident
                    |  yleftbracket ExpList yrightbracket
                    |  ycaret
+                            {
+                                if (currentDesignator == NULL) {
+                                    // return;
+                                }
+                                Variable *var = dynamic_cast<Variable*>(currentDesignator);
+                                if (var == NULL) {
+                                    std::cout << "*** Error Cannot dereference \"" << var->name << "\"" << std::endl;
+                                    currentDesignator = NULL;
+                                } else {
+                                    PointerType *pt = dynamic_cast<PointerType*>(var->type);
+                                    if (pt == NULL) {
+                                        std::cout << "*** Error Cannot dereference \"" << var->name << "\"" << std::endl;
+                                        currentDesignator = NULL;
+                                    } else {
+                                        currentDesignator = pt->getPointee();
+                                        std::cout << "[0]" << std::endl;
+                                    }
+                                }
+                            }
                    ;
 ActualParameters   :  yleftparen  ExpList  yrightparen
                    ;
