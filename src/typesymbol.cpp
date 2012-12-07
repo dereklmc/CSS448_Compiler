@@ -1,5 +1,6 @@
 #include "TypeSymbol.h"
-        
+#include <typeinfo>
+#include "RecordType.h"
 // Standard ctr, see Symbol.
 TypeSymbol::TypeSymbol(std::string name, Type *type) :
         Symbol(name)
@@ -43,5 +44,17 @@ std::string TypeSymbol::generateCode()
  */
 std::string TypeSymbol::generateTypeDeclCode()
 {
+	RecordType* record = dynamic_cast<RecordType*>(type);
+	if (record != NULL)
+		return (type->generateOptionalCode()+ " " + name + type->generateTypeCode());
 	return ("typedef " + type->generateOptionalCode()+ " " + name + type->generateTypeCode());
 };
+
+/******************************************************************************
+ * clone
+ * TODO
+ */
+Symbol* TypeSymbol::clone() const
+{
+    return new TypeSymbol(name, type->clone());
+}

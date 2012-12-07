@@ -15,9 +15,10 @@ class TypeSymbol : public Symbol {
         TypeSymbol(std::string, Type *);
         ~TypeSymbol();
         std::string generateCode();
-		std::string generateTypeDeclCode();
+        std::string generateTypeDeclCode();
         void print(std::ostream&) const;
-		Type* getMyType() const;    
+        Type* getMyType() const;
+        Symbol* clone() const;
 
     private:
         Type *type;

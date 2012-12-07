@@ -78,12 +78,12 @@ class ArrayType : public Type
 		std::string generateVarDeclCode() const
 		{
 			std::ostringstream tempString;
-            /*for(int x = 0; x < ranges.size(); x++)
+            tempString << optionalCode;
+            for(int x = 0; x < ranges.size(); x++)
             {
                 tempString << "[";
-                tempString << ranges[x]->getLength();
                 tempString << "]";
-            }*/
+            }
 		    return tempString.str();
 		}
 

@@ -1,10 +1,11 @@
 # TODO List
 
 1. _Hugo_ GenerateCode() for arrays and set types
-    - Fix bugs showing up in sttest.p, where multidimensional array showing wonky dimensions
-	- Fix non-typedef arrays in var declarations 
+    - <s>_Hugo_Fix bugs showing up in sttest.p, where multidimensional array showing wonky dimensions </s> done?
+	- <s>_Hugo_Fix non-typedef arrays in var declarations </s> done?
+2. Handle calling Procedures
 2. <s> _Nina_Handle calling Procedures </s>
-	- <s> _Nina_ Standard Procedure: write, writeln, read, readln in IOStatement within grammar </s>
+	- <s> Standard Procedure: write, writeln, read, readln in IOStatement within grammar </s>
 	- <s> Standard Procedure: new, dispose in MemoryStatement within grammar. </s> I think this is done?
 	- <s>Non-standard Procedure Types </s>
 3. <s> _Nina_ Handle calling Functions </s>
@@ -12,8 +13,9 @@
 	- <s>Handle checking for returns by looking at function name </s>
 4. <s>_Derek_ Generate Code for subroutines</s>
 5. <s>_Nina_ For/while loops, repeat statements</s> 
+	- Still need to uncomment type checking when Constants are figured out
+6. ~~_Nina_ Case Statements~~
 		- Still need to uncomment type checking when Constants are figured out
-6. <s>_Nina_ Case Statements </s>
 7. _Derek_ Constants
 	- Properly scope constant
 	- <s>Infer type? </s> Nina: I think this is done, but you might need to check
