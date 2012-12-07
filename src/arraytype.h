@@ -3,6 +3,9 @@
 
 #include "Type.h"
 #include "range.h"
+#include <sstream>
+
+#include <iostream>
 
 class ArrayType : public Type
 {
@@ -11,7 +14,7 @@ class ArrayType : public Type
         ArrayType(Type *type)
         {
             this->type = type;
-			optionalCode = type->generateTypeCode();
+            optionalCode = type->generateTypeCode();
         }
         
         ~ArrayType()
@@ -58,19 +61,30 @@ class ArrayType : public Type
 				std::string temp = optionalCode;
 				return temp;
 
-		};
+		}
 
         std::string generateTypeCode() const
         {
-            std::string tempString = "[] = {}";
-            return tempString;
+			std::ostringstream tempString;
+            for(int x = 0; x < ranges.size(); x++)
+            {
+                tempString << "[";
+                tempString << ranges[x]->getLength();
+                tempString << "]";
+            }
+		    return tempString.str();
         }
 
 		std::string generateVarDeclCode() const
 		{
-			std::string tempString;
-		tempString = "";
-			return tempString;
+			std::ostringstream tempString;
+            /*for(int x = 0; x < ranges.size(); x++)
+            {
+                tempString << "[";
+                tempString << ranges[x]->getLength();
+                tempString << "]";
+            }*/
+		    return tempString.str();
 		}
 
 };

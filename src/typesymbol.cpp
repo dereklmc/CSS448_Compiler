@@ -13,6 +13,11 @@ TypeSymbol::~TypeSymbol()
     type = NULL;
 }
 
+Type* TypeSymbol::getMyType() const
+{
+	return type;
+}
+
 void TypeSymbol::print(std::ostream& out) const
 {
      Symbol::print(out);
@@ -38,5 +43,5 @@ std::string TypeSymbol::generateCode()
  */
 std::string TypeSymbol::generateTypeDeclCode()
 {
-	return ("typedef " + type->generateOptionalCode()+ " " + name + type->generateTypeCode() + ";");
+	return ("typedef " + type->generateOptionalCode()+ " " + name + type->generateTypeCode());
 };

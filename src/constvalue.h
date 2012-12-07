@@ -34,6 +34,7 @@ class ConstValue
         ConstValue(std::string value, ConstValueType type);
         void setOperator(UnaryOperator op);
         std::string generateCode() const;
+        ConstValueType getType() const;
     
     private:
         std::string value;

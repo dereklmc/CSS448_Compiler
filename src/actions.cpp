@@ -9,13 +9,218 @@ std::deque<PointerType*> ptrBuffer;
 std::deque<Range*> rangeBuffer;
 std::deque<Variable*> variableBuffer;
 
-std::vector<std::string> errorLog;
+std::vector<Type*> parameterTypeCheckBuffer;
+
+std::deque<std::string> errorLog;
+Type* caseType;
+std::deque<ConstValue*> caseLabelBuffer;
+std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 
 Stack symbolTable;
+
+Type* processFunctionCall(const char* ident) {
+	std::stringstream ss;
+	Symbol *fSymbol = NULL;
+	bool exists = searchStack(ident, fSymbol);
+	Function *functionClass;
+	if (exists) {
+		//Attempt to cast as function
+		functionClass = dynamic_cast<Function*>(fSymbol);
+		if (functionClass == NULL) {
+			ss << "***ERROR(" << lineNumber << "): Symbol " 
+				<< ident << " is not a function definition";
+			addError(ss.str());
+		}
+	}
+	else {
+		/* TODO - record error */
+		ss << "***ERROR(" << lineNumber << "): Symbol " << ident 
+			<< " has not been declared";
+		addError(ss.str());
+	}
+
+	// Check the parameters to see if their types match
+	std::vector<Parameter*> params = functionClass->getParameters();
+			
+	std::vector<Type*> typeVector;
+	int temp = params.size();
+	for (int i = 0; i < temp; i++) {
+		typeVector.push_back(params[i]->type);
+	}
+	compareParamTypes(typeVector);
+	
+	if (exists)
+		return functionClass->getReturnType();
+	else
+		return NULL;
+	
+}
+
+void processProcedureCall(const char* ident) {
+	std::stringstream ss;
+	Symbol *fSymbol = NULL;
+	bool exists = searchStack(ident, fSymbol);
+	Procedure *procClass;
+	if (exists) {
+		//Attempt to cast as procedure
+		procClass = dynamic_cast<Procedure*>(fSymbol);
+		if (procClass == NULL) {
+			ss << "***ERROR(" << lineNumber << "): Symbol " 
+				<< ident << " is not a procedure definition";
+			addError(ss.str());
+		}
+	}
+	else {
+		/* TODO - record error */
+		ss << "***ERROR(" << lineNumber << "): Symbol " << ident 
+			<< " has not been declared";
+		addError(ss.str());
+	}
+
+	// Check the parameters to see if their types match
+	std::vector<Parameter*> params = procClass->getParameters();
+			
+	std::vector<Type*> typeVector;
+	int temp = params.size();
+	for (int i = 0; i < temp; i++) {
+		typeVector.push_back(params[i]->type);
+	}
+
+	compareParamTypes(typeVector);
+}
+
+void addParameterType(Type* t)
+{
+	parameterTypeCheckBuffer.push_back(t);
+}
+
+void checkConditionalExpressionType(Type* t) {
+	if (!BOOLEAN_TYPE->equals(t)) {
+	    std::stringstream ss;
+	    ss << "ERROR: Expression is not conditional";
+	    addError(ss.str());
+	    //std::cout << "ERROR: Expression is not conditional" << std::endl;
+	}
+}
+
+void setCaseType(Type* t)
+{
+	caseType = t;
+}
+
+void addCaseLabel(ConstValue* c)
+{
+	caseLabelBuffer.push_back(c);
+}
 
 std::string getTabs()
 {
 	return symbolTable.getCurrentTabs();
+}
+
+void printCaseLabel()
+{
+	std::cout << getTabs() << "case ";
+	std::deque<ConstValue*> tempQueue;
+	while (!caseLabelBuffer.empty()) {
+        ConstValue* val = caseLabelBuffer.front();
+		caseLabelTypeCheckBuffer.push_back(val);	// Push this value on a separate buffer for
+													// type checking later
+		int type = val->getType();
+		if (type == STRING)
+			std::cout << "\"" << val->generateCode() << "\"";
+		else if (type == CHAR)
+			std::cout << "\'" << val->generateCode() << "\'";
+		else
+			std::cout << val->generateCode();
+        caseLabelBuffer.pop_front();
+		if (!caseLabelBuffer.empty())
+			std::cout << ", ";
+    }
+
+	std::cout << ": " << std::endl << getTabs() << "{" << std::endl;
+}
+
+// TODO handle Symbols for case, and nils
+void typeCheckCaseLabel()
+{
+	std::string errorMessage;
+	std::stringstream ss;
+	while (!caseLabelTypeCheckBuffer.empty()) {
+			ConstValue* val = caseLabelTypeCheckBuffer.front();
+			int type = val->getType();
+			// If the case label's type is an int, compare int type to the type
+			// of the expression in switch(expression)
+			if ((type == INTEGER) && (!checkTypesEqual(INTEGER_TYPE, caseType))){
+				// TODO record error
+				ss << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					"\"(int) does not match case expression type"; 
+				errorMessage = ss.str();
+				errorLog.push_back(errorMessage);
+				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					//"\"(int) does not match case expression type" << std::endl; 
+			}
+			// If case label's type is a real
+			else if ((type == REAL) && (!checkTypesEqual(REAL_TYPE, caseType))){
+				// TODO record error
+				ss << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					"\"(real) does not match case expression type"; 
+				errorMessage = ss.str();
+				errorLog.push_back(errorMessage);
+				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					//"\"(real) does not match case expression type" << std::endl; 
+			}
+			// Boolean
+			else if ((type == BOOLEAN) && (!checkTypesEqual(BOOLEAN_TYPE, caseType))){
+				// TODO record error
+				ss << std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					"\"(bool) does not match case expression type"; 
+				errorMessage = ss.str();
+				errorLog.push_back(errorMessage);
+				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					//"\"(bool) does not match case expression type" << std::endl; 
+			}
+			// String
+			else if ((type == STRING) && (!checkTypesEqual(STRING_TYPE, caseType))){
+				// TODO record error
+				ss << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					"\"(string) does not match case expression type"; 
+				errorMessage = ss.str();
+				errorLog.push_back(errorMessage);
+				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					//"\"(string) does not match case expression type" << std::endl; 
+			}
+			// Char
+			else if ((type == CHAR) && (!checkTypesEqual(CHAR_TYPE, caseType))){
+				// TODO record error
+				ss << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					"\"(char) does not match case expression type";
+				errorMessage = ss.str();
+				errorLog.push_back(errorMessage);
+				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+					//"\"(char) does not match case expression type" << std::endl; 
+			}
+			else if (type == SYMBOL) {
+				std::string symbolNameStr = val->generateCode();
+				const char* sName = symbolNameStr.c_str();
+				Variable* v = NULL;
+				if (searchStack(sName, v)) {	// No need to worry that it can't find symbol (?)
+					if (!checkTypesEqual(v->type, caseType)) {
+						ss << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+							"\"(Symbol)'s type does not match case expression type";
+						errorMessage = ss.str();
+						errorLog.push_back(errorMessage);
+						//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+						//"\"(Symbol)'s type does not match case expression type" << std::endl; 				
+					}
+				}
+				else
+					{}
+					// symbol does not exist
+			}
+			caseLabelTypeCheckBuffer.pop_front();
+			ss.clear();
+	}
 }
 
 /******************************************************************************
@@ -73,6 +278,7 @@ void createProgramScope(const char *ident) {
  *****************************************************************************/
 void createParameter(const char* ident)
 {
+    std::stringstream ss;
     //printf("%s ", ident);
     /* Search Symbol Table for Type corresponding to yident. */
     TypeSymbol *type = NULL;
@@ -90,7 +296,10 @@ void createParameter(const char* ident)
             identBuffer.pop_front();
         }
     } else {
-        std::cout << "ERROR! Type \"" << ident << "\" is undefined." << std::endl;
+		// undefined, empty ident buffer
+		while (!identBuffer.empty()) {
+			identBuffer.pop_front();
+		}
     }
 }
 
@@ -121,7 +330,7 @@ void createFunction(const char *ident, Function *&funcPtr)
 {
     funcPtr = new Function(std::string(ident));
     /* Add parameters */
-    while (!paramBuffer.empty()) { // yacc error ::  yacc: e - line 374 of "grammar.y", $4 is untyped
+    while (!paramBuffer.empty()) {
         funcPtr->addParameter(paramBuffer.front());
         paramBuffer.pop_front();
     }
@@ -213,7 +422,7 @@ void createTypeSymbol(const char *ident, Type *type)
         std::string name(ident);
         TypeSymbol *symbol = new TypeSymbol(name, type);
         symbolTable.current->addSymbol(symbol);
-		std::cout << getTabs() << symbol->generateTypeDeclCode();
+        std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
     }
 }
 
@@ -224,14 +433,13 @@ void createTypeSymbol(const char *ident, Type *type)
  * pushed onto the ptrBuffer. This pointer is also saved to the Type*& that
  * was passed in.
  *****************************************************************************/
-void createPointer(Type*& createdType, const char *ident)
+void createPointer(PointerType*& createdType, const char *ident)
 {
     // Find symbol for ident
     Symbol *s = new Symbol(ident);
     
-    PointerType *ptr = new PointerType(s);
-    ptrBuffer.push_back(ptr);
-    createdType = ptr;
+    createdType = new PointerType(s);
+    ptrBuffer.push_back(createdType);
 }
 
 /******************************************************************************
@@ -248,7 +456,11 @@ void getSymbolicType(Type *&type, const char *name)
         type = new SymbolicType(typeSymbol);
     } else {
         type = NULL;
-        std::cout << "ERROR! Type \"" << name << "\" is undefined." << std::endl;
+	std::stringstream ss;
+	ss << "***ERROR(line: " << lineNumber << "): Type \"" << name << "\" is undefined.";
+	std::string errorMessage = ss.str();
+	errorLog.push_back(errorMessage);
+        //std::cout << "***ERROR(line: " << lineNumber << "): Type \"" << name << "\" is undefined." << std::endl;
     }
 }
 
@@ -329,7 +541,7 @@ void createVariables(Type *&type) {
             
             Variable* var = new Variable(ident,type->clone());
 	        symbolTable.current->addSymbol(var);
-			std::cout << getTabs() << var->generateCode() << ";";
+			std::cout << getTabs() << var->generateCode() << ";"<<std::endl;
         }
         delete type;
         type = NULL;
@@ -337,11 +549,15 @@ void createVariables(Type *&type) {
 }
 
 void createRecordType(Type *&createdType) {
+    std::stringstream ss;
+
     RecordType *record = new RecordType(symbolTable.currentScope);
     while (!variableBuffer.empty()) {
         Variable *var = variableBuffer.front();
         if (!record->addField(var)) {
-            std::cerr << "ERROR: " << var->name << "already exists in record" << std::endl;
+	    ss << "***ERROR(line: " << lineNumber << "): " << var->name << "already exists in record";
+	    addError(ss.str());
+            //std::cerr << "***ERROR(line: " << lineNumber << "): " << var->name << "already exists in record" << std::endl;
             delete var;
             var = NULL;
         }
@@ -412,54 +628,115 @@ void exitScope()
     std::cout << getTabs() << "}" << std::endl;
 }
 
+Type* getConstantType(Constant* c) {
+	int constType = c->getEnumType();
+	if (constType == INTEGER) {
+		return INTEGER_TYPE;
+	}
+	else if (constType == REAL) {
+		return REAL_TYPE;
+	}
+	else if (constType == BOOLEAN) {
+		return BOOLEAN_TYPE;
+	}
+	else if (constType == STRING) {
+		return STRING_TYPE;
+	}
+	else if (constType == CHAR) {
+		return CHAR_TYPE;
+	}
+	//TODO handle the symbol and nil versions
+}
+
+// Checks to see if the ident passed in matches the current scope's name
+// If so, it means that this ident is going to be a return statement
+// Returns the correct return Type if true, NULL if not
+Type* checkForReturnValue(const char* c) {
+
+	Type* retVal = NULL;
+	std::string currentName = symbolTable.current->name; //Get current scope's name
+	std::string otherName = (std::string)(c);
+	if (currentName.compare(otherName) == 0) {	//if the name matches
+		// Find the function's object in the frame before it
+		Function* funcSym = NULL;
+		bool exists = searchStack(currentName.c_str(), funcSym);
+		// Verify that the symbol found was a function object
+		if (funcSym != NULL) {
+			retVal = funcSym->getReturnType(); //get the correct return type for this	
+		}
+	}
+	return retVal;
+}
+
 bool checkTypesEqual(Type *a, Type *b)
 {
 	//if (!a->equals(b)) {
-		//std::cout << "Types are not equal, illegal assignment!" << std::endl;
+		//std::cout << "***ERROR(line: " << lineNumber << "): Types are not equal, illegal assignment!" << std::endl;
 		//areEqual = false;
 	//}
+	std::stringstream ss;
+	if (a == NULL) {
+		ss << "***ERROR(line: " << lineNumber << "): Lefthand side Type in type checks is null" << std::endl;
+		if (b == NULL)
+			ss << " and righthand side Type in type checks is null" << std::endl;
+		addError(ss.str());
+		return false;
+	}
+	else if (b == NULL) {
+		ss << "***ERROR(line: " << lineNumber << "): Righthand side Type in type checks is null" << std::endl;
+		addError(ss.str());
+		return false;
+	}
 	return a->equals(b);
 }
 
-//Nina's WIP - no touchy!
-void  compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b)
+void  compareParamTypes(std::vector<Type*> a)
 {
+	std::stringstream ss;
+	
 	int alength = a.size();
-	int blength = b.size();
-	if (alength != blength)
-	{
+	int blength = parameterTypeCheckBuffer.size();
+	if (alength != blength) {
 		//Already know that param sets not equal
-		//Record error
-		std::cout << "ERROR: Parameter sets are not equal" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): Parameter sets are not equal";
+		addError(ss.str());
 	}
-	else
-	{
-		//Compare each of the Parameters in both vectors
+	else if ((alength == 0) && (blength == 0)) {
+		// Parameter sets are equal
+	}
+	else {
+		//Compare each of the Types in both vectors
 		int currentIndex = 0;
-		while ((currentIndex < alength) && (currentIndex < blength))
-		{
+		while ((currentIndex < alength) && (currentIndex < blength)) {
 			//checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type);
 			//NOTE Should we take error message out of checkTypesEqual and make it return a bool?
-			if (!checkTypesEqual(a[currentIndex]->type, b[currentIndex]->type)) {
-					std::cout << "ERROR: Parameter set types are not equal" << std::endl; 
-			 		//TODO make this error message more specific
-					break;
+			if (!checkTypesEqual(a[currentIndex], parameterTypeCheckBuffer[currentIndex])) {
+				ss << "***ERROR(line: " << lineNumber << "): Parameter set types are not equal";
+				addError(ss.str());
+				break;
 			}
 			currentIndex++;
 		}
-		if ((currentIndex < alength) || (currentIndex < blength))
-		{
-			std::cout << "ERROR: Parameter sets are not equal" << std::endl;
+		if ((currentIndex < alength) || (currentIndex < blength)) {
+			ss <<  "***ERROR(line: " << lineNumber << "): Parameter sets are not equal";
+			addError(ss.str());
 		}
 	}
+
+	parameterTypeCheckBuffer.clear(); // Clear the buffer for the next comparison
 }
 
+void addError(std::string s)
+{
+	errorLog.push_back(s);
+}
 
 void printErrorLog()
 {
-    for (int i = 0; i < errorLog.size(); i++) {
+    while (!errorLog.empty()) {
         // Print error
-
+	std::cout << errorLog.front() << std::endl;
+	errorLog.pop_front();
         // Remove error from log.
     }
 }
@@ -480,8 +757,12 @@ void printErrorLog()
  ******************************************************************************/
 Type* getDivModType(Type *left, Type *right)
 {
+	std::stringstream ss;
 	if (left == NULL || right == NULL) {
 		// TODO: log error
+		ss << "***ERROR(line: " << lineNumber << "): left or righthand Type in div/mod is NULL";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): left or righthand Type in div/mod is NULL" << std::endl;
 		return NULL;
 	}
 	
@@ -493,13 +774,17 @@ Type* getDivModType(Type *left, Type *right)
 	
 	if (!leftIsInteger && !leftIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong left hand arg type to \"*\"" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): wrong left hand arg type to \"*\"";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): wrong left hand arg type to \"*\"" << std::endl;
 		return NULL;
 	}
 
 	if (!rightIsInteger && !rightIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong right hand arg type to \"mod\"" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): wrong right hand arg type to \"mod\"";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): wrong right hand arg type to \"mod\"" << std::endl;
 		return NULL;
 	}
 	
@@ -507,7 +792,9 @@ Type* getDivModType(Type *left, Type *right)
 	if (leftIsReal || rightIsReal)
 	{
 		// TODO log error
-		std::cout << "ERROR:: either right or left hand args for \"div\" are reals" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): either right or left hand args for \"div\" are reals";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): either right or left hand args for \"div\" are reals" << std::endl;
 		return NULL;
 	}
 
@@ -530,9 +817,12 @@ Type* getDivModType(Type *left, Type *right)
  ******************************************************************************/
 Type* getDivideType(Type *left, Type *right)
 {
+	std::stringstream ss;
 	if (left == NULL || right == NULL) {
 		// TODO: log error
-		std::cout << std::endl << "One of these is NULL" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): left or righthand Type of divide is NULL";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): left or righthand Type of divide is NULL" << std::endl;
 		return NULL;
 	}
 	bool leftIsInteger = INTEGER_TYPE->equals(left);
@@ -542,13 +832,17 @@ Type* getDivideType(Type *left, Type *right)
 
 	if (!leftIsInteger && !leftIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong left hand arg type to \"/\"" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): wrong left hand arg type to \"/\"";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): wrong left hand arg type to \"/\"" << std::endl;
 		return NULL;
 	}
 
 	if (!rightIsInteger && !rightIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong right hand arg type to \"/\"" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): wrong right hand arg type to \"/\"";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): wrong right hand arg type to \"/\"" << std::endl;
 		return NULL;
 	}
 	
@@ -573,8 +867,12 @@ Type* getDivideType(Type *left, Type *right)
  ******************************************************************************/
 Type* getMultAddSubType(Type *left, Type *right)
 {
+	std::stringstream ss;
 	if (left == NULL || right == NULL) {
 		// TODO: log error
+		ss << "***ERROR(line: " << lineNumber << "): left or righthand Type of multiplication/addition/subraction is NULL";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): left or righthand Type of multiplication/addition/subraction is NULL" << std::endl;
 		return NULL;
 	}
 	
@@ -586,13 +884,17 @@ Type* getMultAddSubType(Type *left, Type *right)
 	
 	if (!leftIsInteger && !leftIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong left hand arg type to \"*/+/-\"" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): wrong left hand arg type to \"*/+/-\"";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): wrong left hand arg type to \"*/+/-\"" << std::endl;
 		return NULL;
 	}
 
 	if (!rightIsInteger && !rightIsReal) {
 		// TODO log error
-		std::cout << "ERROR:: wrong right hand arg type to \"*/+/-\"" << std::endl;
+		ss << "***ERROR(line: " << lineNumber << "): wrong right hand arg type to \"*/+/-\"";
+		addError(ss.str());
+		//std::cout << "***ERROR(line: " << lineNumber << "): wrong right hand arg type to \"*/+/-\"" << std::endl;
 		return NULL;
 	}
 
@@ -605,7 +907,9 @@ Type* getMultAddSubType(Type *left, Type *right)
 	}
 
 	// SHOULD NOT REACH THIS POINT !!!
-	std::cout << "ERROR:: fatal" << std::endl;
+	ss << "***ERROR(line: " << lineNumber << "): fatal";
+	addError(ss.str());
+	//std::cout << "***ERROR(line: " << lineNumber << "): fatal" << std::endl;
 	return NULL;
 }
 

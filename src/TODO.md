@@ -1,30 +1,35 @@
 # TODO List
 
-1. GenerateCode() for arrays and set types
-    - 
-2. Handle calling Procedures
-	- Standard Procedure: write, writeln, read, readln in IOStatement within grammar
-	- Standard Procedure: new, dispose in MemoryStatement within grammar
-	- Non-standard Proecure Types
-3. Handle calling Functions
-	- Return type checking
-4. GenerateCode() for Procedure and Function calls
-5. Create a PascalArray (template class - params type of array, and type of indices)
-	- Defined in header file
-	- Has an index converter (0 based)
-	- Used for code generation
-	- Recursively generate for multi-dimensional arrays
-6. _Nina_ For/while loops, repeat statements
-7. Case Statements
-9. _Derek_ Constants
+1. _Hugo_ GenerateCode() for arrays and set types
+    - Fix bugs showing up in sttest.p, where multidimensional array showing wonky dimensions
+	- Fix non-typedef arrays in var declarations 
+2. <s> _Nina_Handle calling Procedures </s>
+	- <s> _Nina_ Standard Procedure: write, writeln, read, readln in IOStatement within grammar </s>
+	- <s> Standard Procedure: new, dispose in MemoryStatement within grammar. </s> I think this is done?
+	- <s>Non-standard Procedure Types </s>
+3. <s> _Nina_ Handle calling Functions </s>
+	-  <s> Return type checking </s>
+	- <s>Handle checking for returns by looking at function name </s>
+4. <s>_Derek_ Generate Code for subroutines</s>
+5. <s>_Nina_ For/while loops, repeat statements</s> 
+		- Still need to uncomment type checking when Constants are figured out
+6. <s>_Nina_ Case Statements </s>
+7. _Derek_ Constants
 	- Properly scope constant
-	- Infer type?
+	- <s>Infer type? </s> Nina: I think this is done, but you might need to check
     - Implement Symbol#isConstant bool
         - Defaults to false
-    - Figure out how to generate Constants
-        - Look at the Dragon Book
-        
-10. Log errors
+8. POINTERS
+	-Designator stuff
+	-General pointer usage stuff
+	-Linked lists?
+9. Designators 
+	- Pointers (see 9)
+	- array referencing      
+10. _Nina_Log errors
 	- line #s
+	- Halfway done, almost finished
 11. Print errors
 12. Comments
+13. Take code out of grammar.y and incorporate it into methods in actions.cpp
+14. Sort actions.cpp

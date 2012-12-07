@@ -15,14 +15,28 @@
 #include "constant.h"
 #include "symbolictype.h"
 #include "stdtype.h"
+#include "constrange.h"
 
 #include <deque>
 
 extern Stack symbolTable;
-void checkPointers();
+extern int lineNumber;
 
+Type* getConstantType(Constant*);
+Type* checkForReturnValue(const char*);
+void processProcedureCall(const char* ident);
+Type* processFunctionCall(const char* ident);
+void addParameterType(Type* t);
+void addError(std::string);
+void setCaseType(Type* t);
+void checkPointers();
+void printCaseLabel();
+void addCaseLabel(ConstValue* c);
+void typeCheckCaseLabel();
 void addIdent(const char *);
 void createLoopCaseScope(const char *ident);
+
+void checkConditionalExpressionType(Type*);
 
 bool stackHasSymbol(const char *);
 
@@ -59,7 +73,10 @@ bool searchStack(const char *ident, T *&castSymbol)
     bool isFound = symbolTable.searchStack(identStr, symbol);
     if (!isFound) {
         castSymbol = NULL;
-        std::cout << "Ident \"" << ident << "\" does not name a symbol." << std::endl;
+	std::stringstream ss;
+	ss << "***ERROR(line: " << lineNumber << "): Ident \"" << ident << "\" is undefined.";
+	addError(ss.str());
+        //std::cout << "***ERROR(line: " << lineNumber << ")Ident \"" << ident << "\" is undefined." << std::endl;
     } else {
         castSymbol = dynamic_cast<T*>(symbol); // = foundType;
     }
@@ -124,7 +141,7 @@ void createProcedureDecl(Procedure*);
 
 void createTypeSymbol(const char *, Type*);
 
-void createPointer(Type*&, const char*);
+void createPointer(PointerType*&, const char*);
 
 void getSymbolicType(Type *&, const char*);
 
@@ -158,7 +175,7 @@ void exitScope();
 
 bool checkTypesEqual(Type*, Type*);
 
-void compareParamTypes(std::vector<Parameter*> a, std::vector<Parameter*> b);
+void compareParamTypes(std::vector<Type*> a);
 
 void printErrorLog();
 

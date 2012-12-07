@@ -14,6 +14,7 @@ class Function : public Procedure
             returnType = NULL;
         }
         void setType(Type *t)    {returnType = t;}
+	Type* getReturnType() const {return returnType;}
     private:
         Type *returnType;
 };

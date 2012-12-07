@@ -9,11 +9,11 @@ var
 (* **************************    main      ********************************** *)
 
 begin
-  writeln('Please enter an integer between 0 and 100');
+  writeln('Please enter an integer between 0 and 100', '***');
   read(number);
   while (number < 0) or (number > 100) do begin
      writeln('Try again please, integer between 0 and 100');
-     read(number);
+     read(number, number);
   end;
 
   write("If this was a grade, you would receive a grade of:  ");

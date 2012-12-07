@@ -2,6 +2,7 @@
 #define RANGE_H
 
 #include "constvalue.h"
+#include <sstream>
 
 class Range
 {
@@ -14,6 +15,7 @@ class Range
     public:
         virtual Range* clone() const =0;
         virtual ~Range() { }
+        virtual int getLength() const { return -1; } 
     
     protected:
         virtual void print(std::ostream& out) const =0;
@@ -34,6 +36,10 @@ class CharRange : public Range
             return new CharRange(start, end);
         }
         
+        int getLength() const
+        {
+            return (end-start);
+        }
     protected:
         void print(std::ostream& out) const
         {
@@ -42,40 +48,6 @@ class CharRange : public Range
         
     private:
         char start, end;
-
-};
-
-class ConstRange : public Range
-{
-
-    public:
-        ConstRange(ConstValue *start, ConstValue *end)
-        {
-            this->start = start;
-            this->end = end;
-        }
-        
-        ~ConstRange()
-        {
-            delete start;
-            start = NULL;
-            delete end;
-            end = NULL;
-        }
-        
-        Range* clone() const
-        {
-            return new ConstRange(new ConstValue(*start), new ConstValue(*end));
-        }
-        
-    protected:
-        void print(std::ostream& out) const
-        {
-            out << *start << " " << *end;
-        }
-        
-    private:
-        ConstValue *start, *end;
 
 };
 

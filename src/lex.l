@@ -23,6 +23,7 @@
 #include <iostream>	// For cout
 #include <iomanip>	// For setw and left
 
+int lineNumber = 1;
 void saveText();
 
 %}
@@ -102,7 +103,7 @@ writeln			{ return ywriteln; }
 					BEGIN(0);
 					return ychar;
 				}
-<STRING2>[^'][^'][^']*[']	{ yymore(); }
+<STRING2>[^'][^'][^']*		{ yymore(); }
 <STRING2>[']			{
 					yyless(yyleng-1);
                             		yylval.text = strdup(yytext);
@@ -156,7 +157,7 @@ writeln			{ return ywriteln; }
 <INITIAL>")"    { return yrightparen; }
 ";"			    { return ysemicolon; }
 	/** Misc */
-\n					{ /* ECHO; */ }
+\n					{ /* ECHO; */ lineNumber++;}
 {letter}({letter}|[0-9])* 				{
                                             yylval.text = strdup(yytext);
 											return yident;
