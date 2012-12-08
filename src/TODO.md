@@ -21,16 +21,17 @@
     - Implement Symbol#isConstant bool
         - Defaults to false
 8. POINTERS
-	-Designator stuff
+	-~~Designator stuff~~
 	-General pointer usage stuff
 	-Linked lists?
 9. Designators 
-	- Pointers (see 9)
-	- array referencing      
+	- ~~Pointers (see 8)~~
+	- array referencing
+	- ~~record access~~
 10. _Nina_Log errors
 	- line #s
 	- Halfway done, almost finished
 11. Print errors
 12. Comments
 13. Take code out of grammar.y and incorporate it into methods in actions.cpp
-14. Sort actions.cpp
+14. ~~Sort actions.cpp~~
