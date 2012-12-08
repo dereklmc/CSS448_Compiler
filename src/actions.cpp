@@ -18,6 +18,16 @@ std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 
 Stack symbolTable;
 
+/******************************************************************************
+ * Handles when a function call is encountered in the grammar. First searches
+ * if a symbol by ident's name exists in the symbol table. If it does, then it
+ * checks to see if it is a function object. If it is a function object, it
+ * moves along without printing any errors.
+ * It then moves on and grabs the correct parameter types for the function
+ * object on the stack and uses compareParamTypes() to evaluate if the 
+ * correct parameter types and the ones passed in match.
+ * Lastly, returns the correct return type for the function call.
+ *****************************************************************************/
 Type* processFunctionCall(const char* ident) {
 	std::stringstream ss;
 	Symbol *fSymbol = NULL;
@@ -40,22 +50,33 @@ Type* processFunctionCall(const char* ident) {
 	}
 
 	// Check the parameters to see if their types match
-	std::vector<Parameter*> params = functionClass->getParameters();
+	if (exists) {
+		std::vector<Parameter*> params = functionClass->getParameters();
 			
-	std::vector<Type*> typeVector;
-	int temp = params.size();
-	for (int i = 0; i < temp; i++) {
-		typeVector.push_back(params[i]->type);
-	}
-	compareParamTypes(typeVector);
-	
-	if (exists)
+		std::vector<Type*> typeVector;
+		int temp = params.size();
+		for (int i = 0; i < temp; i++) {
+			typeVector.push_back(params[i]->type);
+		}
+		compareParamTypes(typeVector);
 		return functionClass->getReturnType();
+ 	}
 	else
+		while(!parameterTypeCheckBuffer.empty())
+			parameterTypeCheckBuffer.pop_front();
 		return NULL;
 	
 }
 
+/******************************************************************************
+ * Handles when a procedure call is encountered in the grammar. First searches
+ * if a symbol by ident's name exists in the symbol table. If it does, then it
+ * checks to see if it is a procedure object. If it is a procedure object, it
+ * moves along without printing any errors.
+ * It then moves on and grabs the correct parameter types for the procedure
+ * object on the stack and uses compareParamTypes() to evaluate if the 
+ * correct parameter types and the ones passed in match.
+ *****************************************************************************/
 void processProcedureCall(const char* ident) {
 	std::stringstream ss;
 	Symbol *fSymbol = NULL;
@@ -78,15 +99,21 @@ void processProcedureCall(const char* ident) {
 	}
 
 	// Check the parameters to see if their types match
-	std::vector<Parameter*> params = procClass->getParameters();
+	if (exists) {
+		std::vector<Parameter*> params = procClass->getParameters();
 			
-	std::vector<Type*> typeVector;
-	int temp = params.size();
-	for (int i = 0; i < temp; i++) {
-		typeVector.push_back(params[i]->type);
-	}
+		std::vector<Type*> typeVector;
+		int temp = params.size();
+		for (int i = 0; i < temp; i++) {
+			typeVector.push_back(params[i]->type);
+		}
 
-	compareParamTypes(typeVector);
+		compareParamTypes(typeVector);
+	}
+	else {
+		while (!parameterTypeCheckBuffer.empty())
+			parameterTypeCheckBuffer.pop_front();
+	}
 }
 
 void addParameterType(Type* t)
@@ -118,6 +145,16 @@ std::string getTabs()
 	return symbolTable.getCurrentTabs();
 }
 
+/******************************************************************************
+ * printCaseLabel()
+ * Prints out an individual case label. While the caseLabelBuffer is not empty,
+ * it takes a ConstValue* from the buffer and pushes it onto the
+ * caseLabelTypeCheckBuffer (used to type check this case label's ConstValues).
+ * Depending on the Type of the ConstValue, it will print out a different 
+ * sequence for the code generation.
+ * If the buffer is not empty by the end of a loop, a comma will be printed
+ * out.
+ *****************************************************************************/
 void printCaseLabel()
 {
 	std::cout << getTabs() << "case ";
@@ -141,7 +178,13 @@ void printCaseLabel()
 	std::cout << ": " << std::endl << getTabs() << "{" << std::endl;
 }
 
-// TODO handle Symbols for case, and nils
+/******************************************************************************
+ * typeCheckCaseLabel()
+ * Goes through the caseLabelTypeCheckBuffer and evaluates if its type is 
+ * valid for that switch case statement. Evaluates if the case label is of 
+ * integer, real, boolean, string, char, or symbol and if it equals the type 
+ * of the switch case's expression.
+ *****************************************************************************/
 void typeCheckCaseLabel()
 {
 	std::stringstream ss;
@@ -155,8 +198,6 @@ void typeCheckCaseLabel()
 				ss << "***ERROR(line: " << lineNumber << "): Case label \"" 
 					<< val->generateCode() << "\"(int) does not match case expression type"; 
 				errorLog.push_back(ss.str());
-				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
-					//"\"(int) does not match case expression type" << std::endl; 
 			}
 			// If case label's type is a real
 			else if ((type == REAL) && (!checkTypesEqual(REAL_TYPE, caseType))){
@@ -165,17 +206,14 @@ void typeCheckCaseLabel()
 					<< val->generateCode() << "\"(real) does not match case expression type"; 
 
 				errorLog.push_back(ss.str());
-				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
-					//"\"(real) does not match case expression type" << std::endl; 
 			}
 			// Boolean
 			else if ((type == BOOLEAN) && (!checkTypesEqual(BOOLEAN_TYPE, caseType))){
 				// TODO record error
-				ss << std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
+				ss << std::cout << "***ERROR(line: " << lineNumber 
+					<< "): Case label \"" << val->generateCode() <<
 					"\"(bool) does not match case expression type"; 
 				errorLog.push_back(ss.str());
-				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
-					//"\"(bool) does not match case expression type" << std::endl; 
 			}
 			// String
 			else if ((type == STRING) && (!checkTypesEqual(STRING_TYPE, caseType))){
@@ -183,8 +221,6 @@ void typeCheckCaseLabel()
 				ss << "***ERROR(line: " << lineNumber << "): Case label \"" 
 					<< val->generateCode() << "\"(string) does not match case expression type"; 
 				errorLog.push_back(ss.str());
-				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
-					//"\"(string) does not match case expression type" << std::endl; 
 			}
 			// Char
 			else if ((type == CHAR) && (!checkTypesEqual(CHAR_TYPE, caseType))){
@@ -192,21 +228,17 @@ void typeCheckCaseLabel()
 				ss << "***ERROR(line: " << lineNumber << "): Case label \"" 
 					<< val->generateCode() << "\"(char) does not match case expression type";
 				errorLog.push_back(ss.str());
-				//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
-					//"\"(char) does not match case expression type" << std::endl; 
 			}
 			else if (type == SYMBOL) {
 				std::string symbolNameStr = val->generateCode();
 				const char* sName = symbolNameStr.c_str();
 				Variable* v = NULL;
-				if (searchStack(sName, v)) {	// No need to worry that it can't find symbol (?)
+				if (searchStack(sName, v)) {
 					if (!checkTypesEqual(v->type, caseType)) {
 						ss << "***ERROR(line: " << lineNumber << "): Case label \"" 
 							<< val->generateCode() 
 							<< "\"(Symbol)'s type does not match case expression type";
-						errorLog.push_back(ss.str());
-						//std::cout << "***ERROR(line: " << lineNumber << "): Case label \"" << val->generateCode() <<
-						//"\"(Symbol)'s type does not match case expression type" << std::endl; 				
+						errorLog.push_back(ss.str()); 				
 					}
 				}
 				else
@@ -229,15 +261,9 @@ void addIdent(const char *ident)
 }
 
 /******************************************************************************
- * TODO DOCUMENTATION searchStack
+ * stackHasSymbol(const char*)
  * Takes in a char array representing the name that will be searched for in
- * the Symbol Table and a pointer to a reference that will be cast into the
- * proper Symbol type.
- * Using Stack's searchStack method, it will attempt to find a Symbol matching
- * the name that was passed in. Once found it will be dynamically cast into
- * the proper type.
- * Returns: bool isFound - true if a symbol with a matching name was found in
- *					the symbol table
+ * the Symbol Table. Returns whether or not a symbol by that name was found.
  *****************************************************************************/
 bool stackHasSymbol(const char *ident)
 {
@@ -408,7 +434,10 @@ void createLoopCaseScope(const char *ident)
 
 /******************************************************************************
  * createTypeSymbol(const char*, Type*)
- * If the Type ptr passed in is not NULL, then a new TypeSymbol will be
+ * Check to see if the Type* passed in is not NULL. Then attempts to cast the 
+ * type as a SetType. If it is a SetType, no TypeSymbol is created. This would
+ * be removed if we were to implement handling of SetTypes. 
+ * If the Type* was not a SetType, then a new TypeSymbol will be
  * instantiated with the char* array representing its name, and with the Type*
  * passed in. This TypeSymbol will then be added to the current scope.
  ******************************************************************************/
@@ -485,10 +514,9 @@ void getSymbolicType(Type *&type, const char *name)
         type = new SymbolicType(typeSymbol);
     } else {
         type = NULL;
-	std::stringstream ss;
-	ss << "***ERROR(line: " << lineNumber << "): Type \"" << name << "\" is undefined.";
-	errorLog.push_back(ss.str());
-        //std::cout << "***ERROR(line: " << lineNumber << "): Type \"" << name << "\" is undefined." << std::endl;
+		std::stringstream ss;
+		ss << "***ERROR(line: " << lineNumber << "): Type \"" << name << "\" is undefined.";
+		errorLog.push_back(ss.str());
     }
 }
 
@@ -521,8 +549,8 @@ void createSetType(Type *&createdType)
 
 /******************************************************************************
  * creatStringRange(const char*, const char*)
- * Creates a new Range object using the two char* arrays passed in. Then
- * pushes this object onto the rangeBuffer.
+ * Creates a new Range object using the two char* passed in. Then pushes this 
+ * object onto the rangeBuffer.
  *****************************************************************************/
 void createStringRange(const char* start, const char* stop) {
     Range *range = new CharRange(start[0], stop[0]);
@@ -545,6 +573,7 @@ void createConstRange(ConstValue *start, ConstValue *stop) {
  * popped off and used to create a new Variable object of the type passed in.
  * These Variable objects are then pushed onto the variableBuffer. 
  * Deletes the Type object passed in and nullifies the pointer.
+ * Used when creating RecordType objects.
  *****************************************************************************/
 void createVariableList(Type *&type) {
     if (type != NULL) {
@@ -560,6 +589,14 @@ void createVariableList(Type *&type) {
     }
 }
 
+/******************************************************************************
+ * createVariables(Type*&)
+ * Using the Type*& passed in (as long as it is not NULL), the identBuffer
+ * will be emptied, creating new Variables with that name and Type*&, and 
+ * attempt to add them to the current scope.
+ * Lastly, generates code for each Variable object created.
+ * Used in the VariableDecl.
+ *****************************************************************************/
 void createVariables(Type *&type) {
     if (type != NULL) {
         while (!identBuffer.empty()) {
@@ -639,6 +676,12 @@ void exitScope()
     std::cout << getTabs() << "}";
 }
 
+/******************************************************************************
+ * getConstantType(Constant*)
+ * Infers the Constant's type based on the enum value stored in the Constant,
+ * then returns the type it represents.
+ * NOTE: Have not handled Constant's with a Symbol value!
+ *****************************************************************************/
 Type* getConstantType(Constant* c) {
 	int constType = c->getEnumType();
 	if (constType == INTEGER) {
@@ -659,7 +702,7 @@ Type* getConstantType(Constant* c) {
 	else if (constType == NIL) {
 		return NIL_TYPE;	
 	}
-	//TODO handle the symbol and nil versions
+	//TODO handle the symbol 
 }
 
 // Checks to see if the ident passed in matches the current scope's name
@@ -682,12 +725,19 @@ Type* checkForReturnValue(const char* c) {
 	return retVal;
 }
 
+/******************************************************************************
+ * checkTypesEqual(Type*, Type*)
+ * Evaluates the two Type* passed in to test if they are equal or valid to
+ * interact with each other.
+ * Initially checks to see if either Type* is NULL, in which case, they are
+ * not equal. Then checks to see if the righthand side is of a NIL_TYPE, in 
+ * which case, the interaction is valid.
+ * Lastly checks if the Types are equal using one of the Type's equals() 
+ * method.
+ * Returns areEqual T/F
+ *****************************************************************************/
 bool checkTypesEqual(Type *a, Type *b)
 {
-	//if (!a->equals(b)) {
-		//std::cout << "***ERROR(line: " << lineNumber << "): Types are not equal, illegal assignment!" << std::endl;
-		//areEqual = false;
-	//}
 	bool areEqual = false;
 	std::stringstream ss;
 	if (a == NULL) {
@@ -754,10 +804,8 @@ void addError(std::string s)
 void printErrorLog()
 {
     while (!errorLog.empty()) {
-        // Print error
-	std::cout << errorLog.front() << std::endl;
-	errorLog.pop_front();
-        // Remove error from log.
+		std::cout << errorLog.front() << std::endl;
+		errorLog.pop_front();
     }
 }
 
