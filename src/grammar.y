@@ -65,7 +65,7 @@ ProgramModule      :  yprogram yident ProgramParameters ysemicolon
                       Block ydot
                                 {
                                     exitScope();
-				    std::cout << ";" << std::endl;
+                                    std::cout << ";" << std::endl;
                                     printErrorLog();
                                 }
                    ;
@@ -112,6 +112,7 @@ TypeDefBlock       :  /*** empty ***/
                                     //loop throught all pointers
                                     //add to symbol table
                                     checkPointers();
+                                    // TODO generate Records/Arrays
                                 }
                    ;
 TypeDefList        :  TypeDef  ysemicolon
