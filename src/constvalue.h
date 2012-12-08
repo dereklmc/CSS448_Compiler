@@ -31,8 +31,8 @@ class ConstValue
     }
 
     public:
-        ConstValue(std::string value, ConstValueType type);
-        void setOperator(UnaryOperator op);
+        ConstValue(std::string, ConstValueType);
+        void setOperator(UnaryOperator);
         std::string generateCode() const;
         ConstValueType getType() const;
     

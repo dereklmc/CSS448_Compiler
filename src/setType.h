@@ -12,6 +12,7 @@ class SetType : public Type
         SetType(Range* range)
         {
             this->range = range;
+            typeDefed = false;
         }
         
         ~SetType()

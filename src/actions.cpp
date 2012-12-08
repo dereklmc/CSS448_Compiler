@@ -412,17 +412,18 @@ void createLoopCaseScope(const char *ident)
  ******************************************************************************/
 void createTypeSymbol(const char *ident, Type *type)
 {
-    if (type != NULL) {
-	SetType* sType = dynamic_cast<SetType*>(type);
-	if (sType == NULL) {
-        	std::string name(ident);
-        	TypeSymbol *symbol = new TypeSymbol(name, type);
-        	symbolTable.current->addSymbol(symbol);
-        	std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
-	}
-	else {
-		std::cout << getTabs() << "/* This is where set type " << ident << " would have been defined */";
-	}
+    if (type != NULL) { 
+        type->typeDefed = true;
+        SetType* sType = dynamic_cast<SetType*>(type);
+        if (sType == NULL) { 
+                std::string name(ident);
+                TypeSymbol *symbol = new TypeSymbol(name, type);
+                symbolTable.current->addSymbol(symbol);
+                std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
+        }
+        else {
+            std::cout << getTabs() << "/* This is where set type " << ident << " would have been defined */";
+        }
     }
 }
 
@@ -533,6 +534,7 @@ void createStringRange(const char* start, const char* stop) {
  * this Range object onto the rangeBuffer.
  *****************************************************************************/
 void createConstRange(ConstValue *start, ConstValue *stop) {
+    
     Range *range = new ConstRange(start, stop);
     rangeBuffer.push_back(range);
 }
@@ -564,7 +566,6 @@ void createVariables(Type *&type) {
         while (!identBuffer.empty()) {
             std::string ident = identBuffer.front();
             identBuffer.pop_front();
-            
             Variable* var = new Variable(ident,type->clone());
             symbolTable.current->addSymbol(var);
             std::cout << getTabs() << var->generateCode() << ";"<<std::endl;

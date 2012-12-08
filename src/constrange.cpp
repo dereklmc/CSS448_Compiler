@@ -20,22 +20,22 @@ Range* ConstRange::clone() const
     return new ConstRange(new ConstValue(*start), new ConstValue(*end));
 }
 
-int ConstRange::getLength() const
+std::string ConstRange::getLength() const
 {
-    if(start->getType() == INTEGER)
-    {
-        std::stringstream tempEndStream, tempStartStream;
-        //std::cout << "END CODE: " << end->generateCode() << std::endl;
-        tempEndStream << end->generateCode(); 
-        int tempEnd, tempStart;
-        tempEndStream >> tempEnd;
+    std::stringstream tempEndStream, tempStartStream;
+    // check start types
+    if(start->getType() == INTEGER || start->getType() == SYMBOL)
         tempStartStream << start->generateCode();
-        tempStartStream >> tempStart;
-        return tempEnd-tempStart+1;
-    }
-    if(start->getType() == CHAR)
-        return (end->generateCode()[0]-start->generateCode()[0]+1);
-    return -1;
+    else if(start->getType() == CHAR)
+        tempStartStream << start->generateCode()[0];
+
+    // check end types
+    if(end->getType() == INTEGER || end->getType() == SYMBOL)
+        tempEndStream << end->generateCode();
+    else if(end->getType() == CHAR)
+        tempEndStream << end->generateCode()[0];
+
+    return (tempEndStream.str()+"-"+tempStartStream.str()+"+1");
 }
 
 void ConstRange::print(std::ostream& out) const

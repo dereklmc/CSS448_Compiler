@@ -14,6 +14,7 @@ class ArrayType : public Type
         ArrayType(Type *type)
         {
             this->type = type;
+            typeDefed = false;
             optionalCode = type->generateTypeCode();
         }
         
@@ -79,10 +80,13 @@ class ArrayType : public Type
 		{
 			std::ostringstream tempString;
             tempString << optionalCode;
-            for(int x = 0; x < ranges.size(); x++)
+            if(!typeDefed)
             {
-                tempString << "[";
-                tempString << "]";
+                for(int x = 0; x < ranges.size(); x++)
+                {
+                    tempString << "[";
+                    tempString << "]";
+                }
             }
 		    return tempString.str();
 		}

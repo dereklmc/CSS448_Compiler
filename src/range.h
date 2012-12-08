@@ -15,7 +15,7 @@ class Range
     public:
         virtual Range* clone() const =0;
         virtual ~Range() { }
-        virtual int getLength() const { return -1; } 
+        virtual std::string getLength() const =0; 
     
     protected:
         virtual void print(std::ostream& out) const =0;
@@ -36,9 +36,12 @@ class CharRange : public Range
             return new CharRange(start, end);
         }
         
-        int getLength() const
+        std::string getLength() const
         {
-            return (end-start);
+            std::stringstream temp;
+            temp << (end-start);
+            std::string tempString = temp.str();
+            return tempString;
         }
     protected:
         void print(std::ostream& out) const
