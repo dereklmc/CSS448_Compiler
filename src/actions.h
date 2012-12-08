@@ -22,6 +22,8 @@
 extern Stack symbolTable;
 extern int lineNumber;
 
+extern Symbol *currentDesignator;
+
 Type* getConstantType(Constant*);
 Type* checkForReturnValue(const char*);
 void processProcedureCall(const char* ident);
@@ -185,4 +187,8 @@ Type* getMultAddSubType(Type*,Type*);
 Type* getDivideType(Type *left, Type *right);
 Type* getDivModType(Type *left, Type *right);
 
+
+void dereferenceDesignator();
+
+void accessField(const char *ident);
 #endif

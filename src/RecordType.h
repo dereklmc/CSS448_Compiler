@@ -22,6 +22,7 @@ class RecordType : public Type {
         Type* clone() const;
         // Add a new field to the current record.
         bool addField(Variable*&);
+        Variable* getField(const std::string &) const;
         // Checks if field with given name is in the current record.
         bool hasField(const std::string&) const;
 		std::string generateOptionalCode() const {return "struct";};
@@ -37,7 +38,7 @@ class RecordType : public Type {
         int scope;
         // Helper method for #print, prints tabs indicated by scope.
         void printScopeTabs(std::ostream&) const;
-	void getScopeTabs();
+        void getScopeTabs();
         std::string generateTypeCode() const;
 		std::string generateVarDeclCode() const;
 };

@@ -52,12 +52,21 @@ bool RecordType::addField(Variable *&field)
  */
 bool RecordType::hasField(const std::string &fieldName) const
 {
+    getField(fieldName) != NULL;
+}
+
+/*******************************************************************************
+ *
+ * Returns a field with a given name. If the field does not exist, returns null.
+ */
+Variable* RecordType::getField(const std::string &fieldName) const
+{
     for(int i = 0; i < fields.size(); i++) {
         if (fields[i]->name == fieldName) {
-            return true;
+            return fields[i];
         }
     }
-    return false;
+    return NULL;
 }
 
 /*******************************************************************************

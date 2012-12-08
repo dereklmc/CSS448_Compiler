@@ -40,7 +40,6 @@ bool SymbolicType::equals(Type *other) const
 	if (castedType == NULL) {
 		return false;
 	}
-	
 	return *(castedType->symbol) == *symbol;
 }
 

@@ -20,9 +20,6 @@
 using namespace std;
 bool handlingInput = false;
 bool handlingOutput = false;
-
-Symbol *currentDesignator = NULL;
-
 bool handlingProcFuncCalls = false;
 extern YYSTYPE yylval;
 extern int lineNumber;
@@ -292,6 +289,24 @@ Assignment         :  Designator
                       yassign { std::cout << " = "; }
                       Expression
                       {
+                            /*********** ASSIGNMENT DEBUG ************/
+                            /**
+                            std::cout << "==*== ASSIGNMENT TYPES ::: ";
+                            std::cout << "<";
+                            std::cout << std::flush << $1 << std::flush;
+                            std::cout << ">=\"";
+                            std::cout << std::flush << *($1) << std::flush;
+                            std::cout << "\"";
+                            std::cout << " ::== ";
+                            std::cout << "<";
+                            std::cout << std::flush << $4 << std::flush;
+                            std::cout << ">=\"";
+                            std::cout << std::flush << *($4) << std::flush;
+                            std::cout << "\"";
+                            std::cout << " ==*==" << std::endl;
+                            */
+                            /*********** ASSIGNMENT DEBUG ************/
+                            
                       		bool equal = checkTypesEqual($4, $1);
                       		if (!equal) {
                       			std::stringstream ss;
@@ -589,7 +604,15 @@ Designator         :  yident
                                 else if (handlingOutput)
                                     std::cout << " >> " << $1;
                                 else if (potentialReturnType == NULL)           
-                                	std::cout << $1;
+                                	std::cout << $1 << std::flush;
+                                
+                                currentDesignator = NULL;
+                                symbolTable.searchStack($1,currentDesignator);
+                            }
+                      DesignatorStuff
+                            {
+                            	Type* potentialReturnType = NULL;
+                            	potentialReturnType = checkForReturnValue($1);
                             	// If not handling return values
                             	if (potentialReturnType == NULL) {
                                 	Variable *var = NULL;
@@ -617,35 +640,18 @@ Designator         :  yident
                                 	$$ = potentialReturnType;
                                 }
                             }
-                      DesignatorStuff
-							{
-								
-							}
                    ;
 DesignatorStuff    :  /*** empty ***/
                    |  DesignatorStuff  theDesignatorStuff
                    ;
 theDesignatorStuff :  ydot yident
+                            {
+                                accessField($2);
+                            }
                    |  yleftbracket ExpList yrightbracket
                    |  ycaret
                             {
-                                if (currentDesignator == NULL) {
-                                    // return;
-                                }
-                                Variable *var = dynamic_cast<Variable*>(currentDesignator);
-                                if (var == NULL) {
-                                    std::cout << "*** Error Cannot dereference \"" << var->name << "\"" << std::endl;
-                                    currentDesignator = NULL;
-                                } else {
-                                    PointerType *pt = dynamic_cast<PointerType*>(var->type);
-                                    if (pt == NULL) {
-                                        std::cout << "*** Error Cannot dereference \"" << var->name << "\"" << std::endl;
-                                        currentDesignator = NULL;
-                                    } else {
-                                        currentDesignator = pt->getPointee();
-                                        std::cout << "[0]" << std::endl;
-                                    }
-                                }
+                                dereferenceDesignator();
                             }
                    ;
 ActualParameters   :  yleftparen  ExpList  yrightparen
@@ -850,12 +856,12 @@ Factor             :  yinteger
                                     std::cout << " << ";
                                 else if (handlingOutput)
                                     std::cout << " >> ";
-                                std::cout << "(";
+                                std::cout << "(" << std::flush;
                             }
                               Expression
                               yrightparen
                             {
-                                std::cout << ")";
+                                std::cout << ")" << std::flush;
                                 $$ = $3;
                             }
                    |  ynot
@@ -864,7 +870,7 @@ Factor             :  yinteger
                                     std::cout << " << ";
                                 else if (handlingOutput)
                                     std::cout << " >> ";
-                                std::cout << "!";
+                                std::cout << "!" << std::flush;
                             }
                             Factor
                             {

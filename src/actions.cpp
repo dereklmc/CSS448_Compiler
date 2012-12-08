@@ -18,6 +18,8 @@ std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 
 Stack symbolTable;
 
+Symbol *currentDesignator = NULL;
+
 Type* processFunctionCall(const char* ident) {
 	std::stringstream ss;
 	Symbol *fSymbol = NULL;
@@ -922,4 +924,68 @@ Type* getMultAddSubType(Type *left, Type *right)
 	return NULL;
 }
 
+Type* getRawType(Type *type)
+{
+    SymbolicType *st = dynamic_cast<SymbolicType*>(type);
+    if (st == NULL) {
+        return type;
+    }
+    return st->getSymbol()->getMyType();
+}
 
+Type* getSymbolType(Symbol *s)
+{
+    Variable *var = dynamic_cast<Variable*>(currentDesignator);
+    if (var != NULL) {
+        return getRawType(var->type);
+    }
+    
+    TypeSymbol *typedSymbol = dynamic_cast<TypeSymbol*>(currentDesignator);
+    if (typedSymbol != NULL) {
+        return typedSymbol->getMyType();
+    }
+    
+    std::cout << "Symbol \"" << s->name << "\" does not have a type!" << std::endl;
+    return NULL;
+}
+
+void dereferenceDesignator()
+{
+    if (currentDesignator == NULL) {
+        std::cout << "*** Error Cannot dereference NULL designator." << std::endl;
+        return;
+    }
+    Type *designatorType = getSymbolType(currentDesignator);
+    PointerType *ptr = dynamic_cast<PointerType*>(designatorType);
+    if (ptr == NULL) {
+        std::cout << "*** Error Cannot dereference \"" << currentDesignator->name << "\"of non-pointer type." << std::endl;
+        currentDesignator = NULL;
+        return;
+    }
+
+    currentDesignator = ptr->getPointee();
+    std::cout << "[0]" << flush;
+}
+
+void accessField(const char *ident)
+{
+    if (currentDesignator == NULL) {
+        std::cout << "*** Error Cannot dereference NULL designator." << std::endl;
+        return;
+    }
+    
+    Type *designatorType = getSymbolType(currentDesignator);
+    RecordType *recordType = dynamic_cast<RecordType*>(designatorType);
+    if (recordType == NULL) {
+        std::cout << "*** Error Cannot access field in \"" << currentDesignator->name << "\"of non-record type." << std::endl;
+        currentDesignator = NULL;
+        return;
+    }
+    
+    currentDesignator = recordType->getField(std::string(ident));
+    if (currentDesignator == NULL) {
+        std::cout << "*** Error Field \"" << ident << "\" is not a valid field in record\"" << currentDesignator->name << "\"!" << std::endl;
+    }
+    
+    std::cout << "." << ident << std::flush;
+}
