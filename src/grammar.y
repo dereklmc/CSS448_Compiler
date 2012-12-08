@@ -21,6 +21,7 @@ using namespace std;
 bool handlingInput = false;
 bool handlingOutput = false;
 bool handlingProcFuncCalls = false;
+bool designatorTab = true;
 extern YYSTYPE yylval;
 extern int lineNumber;
 
@@ -143,7 +144,7 @@ VariableDecl       :  IdentList  ycolon  AnonType
                                     //checkPointers();
                                     //generateRecords();
                                     createVariables($3);
-                                    std::cout << std::endl;
+                                    //std::cout << std::endl;
                                 }
                    ;
 
@@ -272,9 +273,6 @@ StatementSequence  :  Statement
                    ;
 Statement          :  Assignment
                    |  ProcedureCall
-                      {
-                          //Handle procedue calls
-                      }
                    |  IfStatement
                    |  CaseStatement
                    |  WhileStatement
@@ -285,10 +283,16 @@ Statement          :  Assignment
                    |  ybegin StatementSequence yend
                    |  /*** empty ***/
                    ;
+				   ;
 Assignment         :  Designator
-                      yassign { std::cout << " = "; }
+                      yassign 
+								{ 
+									std::cout << " = "; 
+									designatorTab = false;
+								}
                       Expression
                       {
+							designatorTab = true;
                       		bool equal = checkTypesEqual($4, $1);
                       		if (!equal) {
                       			std::stringstream ss;
@@ -334,9 +338,11 @@ IfStatementBlock   :  yif
                             {
                                 std::cout << getTabs() << "if (";
                                 createLoopCaseScope("if");
+								designatorTab = false;
                             }
                       Expression
                             {
+								designatorTab = true;
                                 checkConditionalExpressionType($3);
                                 std::cout << ") {" << std::endl;
                             }
@@ -352,9 +358,11 @@ CaseStatement      :  ycase
                                {
                                 std::cout << getTabs() << "switch(";
                                 createLoopCaseScope("case");
+								designatorTab = false;
                             }
                       Expression
                             {
+								designatorTab = true;
                                 std::cout << ") {" << std::endl;
                                 setCaseType($3);
                             }
@@ -415,9 +423,11 @@ WhileStatement     :  ywhile
                                 {
                                     std::cout << getTabs() << "while (";
                                     createLoopCaseScope("while");
+									designatorTab = false;
                                 }
                       Expression
                                 {
+									designatorTab = true;
                                     if (!BOOLEAN_TYPE->equals($3)) {
                                         // TODO, record error message
                                         std::stringstream ss;
@@ -442,10 +452,12 @@ RepeatStatement    :  yrepeat
                       StatementSequence  yuntil
                                 {
                                     exitScope();
-				    std::cout << " while(";
+				    				std::cout << " while(";
+									designatorTab = false;
                                 }
                       Expression
                                 {
+									designatorTab = true;
                                     std::cout << ");" << std::endl;
                                 }
                       EndRepeat
@@ -459,6 +471,7 @@ ForStatement       :  yfor
                                     createLoopCaseScope("for");
                                     printf("%s ", $2);
                                     std::cout << "= ";
+									designatorTab = false;
                                 }
                             yassign  Expression
                                 {
@@ -466,6 +479,7 @@ ForStatement       :  yfor
                                 }
                             WhichWay  Expression
                                 {
+									designatorTab = true;
                                     Variable *var = NULL;
                                     bool exists = searchStack($2,var); //Error being printed in searchStack
                                     //Check if yident and Expression have same types
@@ -522,11 +536,13 @@ IOStatement        :  yread  yleftparen
                                 {
                                     std::cout << "cin";
                                     handlingOutput = true;
+									designatorTab = false;
                                 }
               DesignatorList  yrightparen
                                 {
                                     std::cout << ";" << std::endl;
                                     handlingOutput = false;
+									designatorTab = true;
                                 }
                    |  yreadln
                                 {
@@ -537,10 +553,12 @@ IOStatement        :  yread  yleftparen
                                 {
                                     std::cout << "cin";
                                     handlingOutput = true;
+									designatorTab = false;
                                 }
               DesignatorList  yrightparen
                                 {
                                     handlingOutput = false;
+									designatorTab = true;
                                     std::cout << ";" << std::endl;
                                     std::cout << "cout << \"\\n\";" << std::endl;
                                 }
@@ -548,9 +566,11 @@ IOStatement        :  yread  yleftparen
                                 {
                                     std::cout << "cout";
                                     handlingInput = true;
+									designatorTab = false;
                                 }
                       ExpList  yrightparen
                                 {
+									designatorTab = true;
                                     std::cout << ";" << std::endl;
                                     handlingInput = false;
                                 }
@@ -563,9 +583,11 @@ IOStatement        :  yread  yleftparen
                                 {
                                     std::cout << "cout";
                                     handlingInput = true;
+									designatorTab = false;
                                 }
                       ExpList  yrightparen
                                 {
+									designatorTab = true;
                                     std::cout << " << \"\\n\"";
                                     std::cout << ";" << std::endl;
                                     handlingInput = false;
@@ -580,7 +602,8 @@ Designator         :  yident
                             {
                             	Type* potentialReturnType = checkForReturnValue($1);
                             	// Check current scope is a function and if this
-
+								if (designatorTab)
+									std::cout << getTabs();
                                 if (handlingInput)
                                     std::cout << " << " << $1;
                                 else if (handlingOutput)
@@ -624,10 +647,26 @@ DesignatorStuff    :  /*** empty ***/
                    |  DesignatorStuff  theDesignatorStuff
                    ;
 theDesignatorStuff :  ydot yident
-                   |  yleftbracket ExpList yrightbracket
+                   |  yleftbracket 
+									{
+										designatorTab = false;
+									}
+							ExpList 
+									{
+										designatorTab = true;
+									}
+							yrightbracket
                    |  ycaret
                    ;
-ActualParameters   :  yleftparen  ExpList  yrightparen
+ActualParameters   :  yleftparen
+									{
+										designatorTab = false;
+									}
+					  ExpList  
+									{
+										designatorTab = true;
+									}
+					  yrightparen
                    ;
 ExpList            :  Expression
 								{
