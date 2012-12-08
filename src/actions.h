@@ -435,8 +435,18 @@ bool searchStack(const char *ident, T *&castSymbol)
     return isFound;
 }
 
-
+/******************************************************************************
+ * dereferenceDesignator(ConstValue* c)
+ * Check if the current designator is a pointer and find the symbol it is
+ * pointing too, if any. Sets the current designator to that symbol, if found.
+ *****************************************************************************/
 void dereferenceDesignator();
 
+/******************************************************************************
+ * accessField(const char *ident)
+ * Check if the current designator is a record and if a given identifier is a
+ * field in that record. Sets the current designator to that field, if found.
+ *****************************************************************************/
 void accessField(const char *ident);
+
 #endif

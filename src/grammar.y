@@ -555,7 +555,7 @@ IOStatement        :  yread  yleftparen
                                     handlingOutput = true;
 									designatorTab = false;
                                 }
-              DesignatorList  yrightparen
+                      DesignatorList  yrightparen
                                 {
                                     std::cout << ";" << std::endl;
                                     handlingOutput = false;
@@ -572,7 +572,7 @@ IOStatement        :  yread  yleftparen
                                     handlingOutput = true;
 									designatorTab = false;
                                 }
-              DesignatorList  yrightparen
+                      DesignatorList  yrightparen
                                 {
                                     handlingOutput = false;
 									designatorTab = true;
@@ -637,13 +637,13 @@ Designator         :  yident
                             	potentialReturnType = checkForReturnValue($1);
                             	// If not handling return values
                             	if (potentialReturnType == NULL) {
-                                	Variable *var = NULL;
-                                	if (searchStack<Variable>($1, var) && var != NULL) {
+                                	Variable *var = dynamic_cast<Variable*>(currentDesignator);
+                                	if (var != NULL) {
                                     	$$ = var->type;
                                 	} else { // Try for a constant
-                                    	Constant *con = NULL;
+                                    	Constant *con = dynamic_cast<Constant*>(currentDesignator);
 										
-                                    	if (searchStack<Constant>($1, con) && con != NULL) {
+                                    	if (con != NULL) {
 											std::cout << "***Infering Constant Type ";
 											Type* t = getConstantType(con);
 											std::cout << *t << "***";
@@ -733,10 +733,11 @@ Expression         :  SimpleExpression
                         }
                    |  SimpleExpression  Relation  SimpleExpression
                         {
-							//std::cout << "Attempting to compare " << *$1 << " to " << *$3;
-                            if (checkTypesEqual($3,$1))
+							std::cout << "Attempting to compare " << *$1 << " to " << *$3;
+                            if (checkTypesEqual($3,$1)) {
                             	$$ = BOOLEAN_TYPE;
                             //TODO - put this back in when Constants are implemented
+                            }
                             else
                             {
 								std::stringstream ss;
@@ -980,7 +981,7 @@ FunctionDecl       :  FunctionHeading  ycolon  yident
                       ysemicolon  Block
                             {
                                 exitScope();
-				std::cout << ";" << std::endl;
+                                std::cout << ";" << std::endl;
                             }
                    ;
 ProcedureHeading   :  yprocedure yident
@@ -1032,12 +1033,12 @@ AddOperator        :  yplus { std::cout << "+"; $$ = false;}
                    |  yor     { std::cout << " || "; $$ = true;}
                    ;
 Relation           :  yequal  { std::cout << " == "; }
-              | ynotequal { std::cout << " != "; }
-               | yless { std::cout << " < "; }
-              | ygreater  { std::cout << " > "; }
-                      |  ylessequal { std::cout << " <= "; }
-              | ygreaterequal { std::cout << " >= "; }
-              | yin
+                   | ynotequal { std::cout << " != "; }
+                   | yless { std::cout << " < "; }
+                   | ygreater  { std::cout << " > "; }
+                   |  ylessequal { std::cout << " <= "; }
+                   | ygreaterequal { std::cout << " >= "; }
+                   | yin
                    ;
 
 %%

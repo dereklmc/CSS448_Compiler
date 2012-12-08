@@ -756,6 +756,9 @@ bool checkTypesEqual(Type *a, Type *b)
 	else if (b->equals(NIL_TYPE)) {
 		areEqual = true;
 	}
+	else if (a->equals(NIL_TYPE)) {
+		areEqual = true;
+	}
 	else if (a->equals(b)) {
 		areEqual = true;
 	}
