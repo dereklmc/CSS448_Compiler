@@ -63,7 +63,7 @@ Type* processFunctionCall(const char* ident) {
  	}
 	else
 		while(!parameterTypeCheckBuffer.empty())
-			parameterTypeCheckBuffer.pop_front();
+			parameterTypeCheckBuffer.pop_back();
 		return NULL;
 	
 }
@@ -112,7 +112,7 @@ void processProcedureCall(const char* ident) {
 	}
 	else {
 		while (!parameterTypeCheckBuffer.empty())
-			parameterTypeCheckBuffer.pop_front();
+			parameterTypeCheckBuffer.pop_back();
 	}
 }
 
