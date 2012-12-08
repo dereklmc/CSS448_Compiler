@@ -13,7 +13,7 @@ class ConstRange : public Range
         
         Range* clone() const;
 
-        int getLength() const;
+        std::string getLength() const;
         
     protected:
         void print(std::ostream& out) const;
