@@ -671,7 +671,6 @@ theDesignatorStuff :  ydot yident
                             {
                                 accessField($2);
                             }
-                   |  yleftbracket ExpList yrightbracket
                    |  yleftbracket 
 							{
 								designatorTab = false;
@@ -680,7 +679,7 @@ theDesignatorStuff :  ydot yident
 							{
 								designatorTab = true;
 							}
-							yrightbracket
+                      yrightbracket
                    |  ycaret
                             {
                                 dereferenceDesignator();
