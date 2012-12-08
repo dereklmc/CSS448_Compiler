@@ -355,11 +355,12 @@ void createFunctionDecl(const char* ident, Function* funcPtr)
 }
 
 /******************************************************************************
- * createProcedureDecl
+ * createProcedureDecl(Procedure*)
  * Takes in a pointer to a Procedure object.
- * It adds the Procedure to the current scope, then creates a new scope. 
- * Lastly, it gets the Procedure object's parameters (if any) and adds them
- * to the new current Procedure scope.
+ * It adds the Procedure to the current scope, then creates a new scope, gets 
+ * the Procedure object's parameters (if any), adds them
+ * to the new current Procedure scope, and generates the code for a procedure
+ * declaration.
  *****************************************************************************/
 void createProcedureDecl(Procedure* proc)
 {
@@ -393,7 +394,8 @@ void createProcedureDecl(Procedure* proc)
     
     for (int i = 0; i < toPutOnStack.size(); i++) {
         Parameter *param = toPutOnStack[i];
-        std::cout << getTabs() << "\tthis->" << param->name << " = " << param->name << ";" << std::endl;
+        std::cout << getTabs() << "\tthis->" << param->name << " = " 
+			<< param->name << ";" << std::endl;
     }
     
     std::cout << getTabs() << "}" << std::endl;
@@ -508,8 +510,8 @@ void createArrayType(ArrayType *&arrayType, Type *contentsType)
 
 /******************************************************************************
  * createSetType(Type*&)
- * Instantiates the passed in Type*& using the Range object in the rangeBuffer.
- * Top of rangeBuffer is then popped off.
+ * Instantiates the passed in Type*& as a SetType using a Range object in the
+ * rangeBuffer. Top of rangeBuffer is then popped off.
  *****************************************************************************/
 void createSetType(Type *&createdType)
 {
@@ -580,11 +582,11 @@ void createRecordType(Type *&createdType) {
     while (!variableBuffer.empty()) {
         Variable *var = variableBuffer.front();
         if (!record->addField(var)) {
-	    ss << "***ERROR(line: " << lineNumber << "): " << var->name 
-			<< "already exists in record";
-	    addError(ss.str());
-	    variableBuffer.pop_front();
-            //std::cerr << "***ERROR(line: " << lineNumber << "): " << var->name << "already exists in record" << std::endl;
+	    	ss << "***ERROR(line: " << lineNumber << "): " << var->name 
+				<< "already exists in record";
+	    	addError(ss.str());
+	    	variableBuffer.pop_front();
+
             delete var;
             var = NULL;
         }
@@ -593,12 +595,12 @@ void createRecordType(Type *&createdType) {
     }
     // in case there are stranglers
     while (!identBuffer.empty())
-	identBuffer.pop_front();
+		identBuffer.pop_front();
     createdType = record;
 }
 
 /******************************************************************************
- * createConstValye(ConstValue*&, const char*, ConstValueType)
+ * createConstValue(ConstValue*&, const char*, ConstValueType)
  * Instantiates the ConstValue object passed in with the const char* array
  * and ConstValueType also passed in.
  ******************************************************************************/
