@@ -9,13 +9,13 @@
 # The 'touch' command is useful for faking an update.  'touch y3.y' fools
 # make into thinking that the file y3.y has been changed by updating its date.
 
-OBJ = y.tab.o main.o lex.yy.o actions.o parameter.o pointertype.o procedure.o recordtype.o variable.o stdtype.o typesymbol.o constant.o constvalue.o symbolictype.o constrange.o # all object files, the  .o  files
+OBJ = y.tab.o main.o lex.yy.o actions.o parameter.o pointertype.o procedure.o recordtype.o variable.o stdtype.o typesymbol.o constant.o constvalue.o symbolictype.o constrange.o symbol.o# all object files, the  .o  files
 
 H = y.tab.h parser.h actions.h
 
 ACT = actions.h stack.h stackframe.h
 
-STH = stack.h arraytype.h constant.h constvalue.h function.h parameter.h PointerType.h procedure.h range.h RecordType.h setType.h stackframe.h stdtype.h symbolictype.h Type.h constrange.h sep.h
+STH = stack.h arraytype.h constant.h constvalue.h function.h parameter.h PointerType.h procedure.h range.h RecordType.h setType.h stackframe.h stdtype.h symbolictype.h Type.h constrange.h sep.h symbol.h
 
 # The $ is a macro reference.  The following ident is replaced with the
 # specified list.  Parens must be used if the ident is longer than one char.
@@ -57,6 +57,9 @@ stdtype.o: stdtype.cpp Type.h
 	g++ -g -c $<
 	
 typesymbol.o: typesymbol.cpp Type.h
+	g++ -g -c $<
+	
+symbol.o: symbol.cpp symbol.h Type.h
 	g++ -g -c $<
 
 actions.o: $(ACT) $(STH) $H actions.cpp    # actions.o depends on the .h and .cpp

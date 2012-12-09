@@ -51,7 +51,7 @@ void PointerType::print(std::ostream &output) const
 
 Type* PointerType::clone() const
 {
-    PointerType *clone = new PointerType(pointee->clone());
+    PointerType *clone = new PointerType(pointee);
     return clone;
 }
 

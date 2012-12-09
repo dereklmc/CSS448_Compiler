@@ -18,11 +18,12 @@
 #include "constrange.h"
 
 #include <deque>
+#include <stack>
 
 extern Stack symbolTable;
 extern int lineNumber;		// The current line of the program we are parsing
 
-extern Symbol *currentDesignator;
+extern std::stack<Symbol*> designators;
 
 /******************************************************************************
  * addAR(const char* ident, Type*)
@@ -461,5 +462,7 @@ void dereferenceDesignator();
  * field in that record. Sets the current designator to that field, if found.
  *****************************************************************************/
 void accessField(const char *ident);
+
+void accessArray();
 
 #endif

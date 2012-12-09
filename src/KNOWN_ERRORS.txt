@@ -33,5 +33,8 @@ sttest.p	OK (works as expected)
 sttest2.p	OK (works as expected)
 sttest3.p	OK
 subscripts.p	OK
+<<<<<<< HEAD
 
 	
+=======
+>>>>>>> 2f4377a12108eb70630e35776741e60a95452520

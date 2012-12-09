@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <stack>
 
 std::deque<Parameter*> paramBuffer;
 std::deque<std::string> identBuffer;
@@ -20,7 +21,7 @@ std::deque<TypeSymbol*> arBuffer;
 
 Stack symbolTable;
 
-Symbol *currentDesignator = NULL;
+std::stack<Symbol*> designators;
 
 /******************************************************************************
  * Handles when a function call is encountered in the grammar. First searches
@@ -1028,12 +1029,12 @@ Type* getRawType(Type *type)
 
 Type* getSymbolType(Symbol *s)
 {
-    Variable *var = dynamic_cast<Variable*>(currentDesignator);
+    Variable *var = dynamic_cast<Variable*>(s);
     if (var != NULL) {
         return getRawType(var->type);
     }
     
-    TypeSymbol *typedSymbol = dynamic_cast<TypeSymbol*>(currentDesignator);
+    TypeSymbol *typedSymbol = dynamic_cast<TypeSymbol*>(s);
     if (typedSymbol != NULL) {
         return typedSymbol->getMyType();
     }
@@ -1044,41 +1045,67 @@ Type* getSymbolType(Symbol *s)
 
 void dereferenceDesignator()
 {
-    if (currentDesignator == NULL) {
-        std::cout << "*** Error Cannot dereference NULL designator." << std::endl;
+    if (designators.top() == NULL) {
+        std::cout << "*** Error Cannot dereference NULL designator." << std::endl; // TODO
         return;
     }
-    Type *designatorType = getSymbolType(currentDesignator);
+    Type *designatorType = getSymbolType(designators.top());
     PointerType *ptr = dynamic_cast<PointerType*>(designatorType);
     if (ptr == NULL) {
-        std::cout << "*** Error Cannot dereference \"" << currentDesignator->name << "\"of non-pointer type." << std::endl;
-        currentDesignator = NULL;
+        std::cout << "*** Error Cannot dereference \"" << designators.top()->name << "\"of non-pointer type." << std::endl; // TODO
+        designators.pop();
+        designators.push(NULL);
         return;
     }
 
-    currentDesignator = ptr->getPointee();
+    designators.pop();
+    designators.push(ptr->getPointee());
     std::cout << "[0]" << flush;
+}
+
+void accessArray()
+{
+    if (designators.top() == NULL) {
+        std::cout << "*** Error Cannot dereference NULL designator." << std::endl; // TODO
+        return;
+    }
+    Type *designatorType = getSymbolType(designators.top());
+    ArrayType *arrayType = dynamic_cast<ArrayType*>(designatorType);
+    if (arrayType == NULL) {
+        std::cout << "*** Error Cannot access value in symbol \"" << designators.top()->name << "\"of non-array type." << std::endl; // TODO
+        designators.pop();
+        designators.push(NULL);
+        return;
+    }
+
+    Symbol *newDesignator = new TypeSymbol("array-temp", arrayType->type);
+    designators.pop();
+    designators.push(newDesignator);
 }
 
 void accessField(const char *ident)
 {
-    if (currentDesignator == NULL) {
-        std::cout << "*** Error Cannot dereference NULL designator." << std::endl;
+    if (designators.top() == NULL) {
+        std::cout << "*** Error Cannot dereference NULL designator." << std::endl; // TODO
         return;
     }
     
-    Type *designatorType = getSymbolType(currentDesignator);
+    Type *designatorType = getSymbolType(designators.top());
     RecordType *recordType = dynamic_cast<RecordType*>(designatorType);
     if (recordType == NULL) {
-        std::cout << "*** Error Cannot access field in \"" << currentDesignator->name << "\"of non-record type." << std::endl;
-        currentDesignator = NULL;
+        std::cout << "*** Error Cannot access field in \"" << designators.top()->name << "\"of non-record type." << std::endl; // TODO
+        designators.pop();
+        designators.push(NULL);
         return;
     }
     
-    currentDesignator = recordType->getField(std::string(ident));
-    if (currentDesignator == NULL) {
-        std::cout << "*** Error Field \"" << ident << "\" is not a valid field in record\"" << currentDesignator->name << "\"!" << std::endl;
+    Symbol *newDesignator = recordType->getField(std::string(ident));
+    if (newDesignator == NULL) {
+        std::cout << "*** Error Field \"" << ident << "\" is not a valid field in record\"" << designators.top()->name << "\"!" << std::endl; // TODO
     }
+    
+    designators.pop();
+    designators.push(newDesignator);
     
     std::cout << "." << ident << std::flush;
 }
