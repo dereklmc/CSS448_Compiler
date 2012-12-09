@@ -5,31 +5,30 @@ add.p
 fact.p
 	- Error falsely being thrown when a constant (int) is being passed into a function that 
 	  has an integer for a parameter
-list2.p
-	- line 98 is throwing an error
+
+No argument function calls are not handled.
+Calling a function in a grandparent or older scope may or may not work.
 
 
 
 Programs list
+----GOOD----------------------------------------------------------------------
+array2.p	    OK, G++ Compiles, Runs
+case.p		    OK, G++ Compiles, Runs
+exp.p		    OK, (working as expected)
+if.p		    OK, G++ Compiles, Runs
+nestedprocs.p	OK, G++ COMPILE, Runs
+sttest3.p	    OK, G++ Compiles, Runs
+----ERRORS--------------------------------------------------------------------
 add.p		- throws just one error at line 37 (see above)
-array.p		OK
-array2.p	OK, G++ Compiles, NO INDEX LOOKUP
-case.p		OK
-exp.p		OK (working as expected)
-fact.p		- just one problem at line 25, see above
-if.p		OK
+array.p		- array assignment fails
+fact.p		- problem at line 25, see above; missing line terminator in some error message.
 list.p		- problems at line 146, 147, 150 involving passing in typedef'd types (see above)
-list2.p     - problem with line 98
-            - problems with line 164, 165, 168, and 169 for the same reasons as list.p
-nestedprocs.p	OK
-pointer.p	- see above
+list2.p     - problems with line 164, 165, 168, and 169 for the same reasons as list.p
+pointer.p	- typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
+sttest.p	- See pointer.p
+sttest2.p	- See pointer.p
+subscripts.p	- For variable decl of type array: array stuff ("[<size>]") should come after name.
+                - For creates a new scope, throws off accessing procedure variables.
+--------------------------------------------------------------------------
 set.p		NOT IMPLEMENTED
-sttest.p	OK (works as expected)
-sttest2.p	OK (works as expected)
-sttest3.p	OK
-subscripts.p	OK
-<<<<<<< HEAD
-
-	
-=======
->>>>>>> 2f4377a12108eb70630e35776741e60a95452520

@@ -461,13 +461,12 @@ void createProcedureDecl(Procedure* proc)
         
         std::cout << getTabs() << paramVarSymbol->generateCode() << ";" << std::endl;
     }
+    std::cout << getTabs() << symbolTable.current->previous->name << " *parent;" << std::endl;
     
     std::cout << getTabs() << proc->name << "(";
+    std::cout << symbolTable.current->previous->name << " *parent";
     
-    if (toPutOnStack.size() > 0) {
-        std::cout << toPutOnStack[0]->generateCode() << std::flush;
-    }
-    for (int i = 1; i < toPutOnStack.size(); i++) {
+    for (int i = 0; i < toPutOnStack.size(); i++) {
         Parameter *param = toPutOnStack[i];
         std::cout << ", " << toPutOnStack[i]->generateCode() << std::flush;
     }
@@ -480,6 +479,7 @@ void createProcedureDecl(Procedure* proc)
 			<< param->name << ";" << std::endl;
     }
     
+    std::cout << getTabs() << "\tthis->parent = parent;" << std::endl;
     std::cout << getTabs() << "}" << std::endl;
 }
 

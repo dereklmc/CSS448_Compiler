@@ -324,13 +324,13 @@ Assignment         :  Designator
 ProcedureCall      :  yident
                                 {
                                     std::cout << getTabs();
-                                    std::cout << $1 << "().call();" << std::endl;
+                                    std::cout << $1 << "(this).call();" << std::endl;
                                		processProcedureCall($1);
                                 }
                    |  yident
                                 {
                                     std::cout << getTabs();
-                                    std::cout << $1 << "(";
+                                    std::cout << $1 << "(this,";
                                 }
                       ActualParameters
                                 {
@@ -624,17 +624,23 @@ Designator         :  yident
                             {
                             	Type* potentialReturnType = checkForReturnValue($1);
                             	// Check current scope is a function and if this
-								if (designatorTab)
+								if (designatorTab) {
 									std::cout << getTabs();
+								}
+								
                                 if (potentialReturnType == NULL) {
+                                    Symbol *foundDesignator = NULL;
+                                    int distance = symbolTable.findSymbol($1,foundDesignator);
+                                    if (distance < 0) {
+                                        // TODO print error;
+                                    }
+                                    for (int i = 0; i < distance; i++) {
+                                        std::cout << "parent->";
+                                    }
                                 	std::cout << $1 << std::flush;
+                                    designators.push(foundDesignator);
                             	}
                                 
-                                Symbol *foundDesignator = NULL;
-                                if (!symbolTable.searchStack($1,foundDesignator)) {
-                                    // TODO print error;
-                                }
-                                designators.push(foundDesignator);
                             }
                       DesignatorStuff
                             {
@@ -907,7 +913,7 @@ Factor             :  yinteger
 FunctionCall       :  yident
                                 {
                                     std::cout << getTabs();
-                                    std::cout << $1 << "(";
+                                    std::cout << $1 << "(this,";
                                     handlingProcFuncCalls = true;
                                 }
                       ActualParameters
