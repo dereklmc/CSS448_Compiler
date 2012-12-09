@@ -670,7 +670,8 @@ Designator         :  yident
                                 	std::cout << getTabs() << "_returnValue";
                                 	$$ = potentialReturnType;
                                 }
-                                designators.pop();
+								if (!designators.empty())
+                                	designators.pop();
                             }
                    ;
 DesignatorStuff    :  /*** empty ***/
@@ -703,11 +704,13 @@ theDesignatorStuff :  ydot yident
 ActualParameters   :  yleftparen
 							{
 								designatorTab = false;
+								handlingProcFuncCalls = true;
 								seps.push(COMMA);
 							}
 					  ExpList  
 							{
 							    seps.pop();
+								handlingProcFuncCalls = false;
 								designatorTab = true;
 							}
 					  yrightparen

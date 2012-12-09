@@ -130,7 +130,6 @@ void processProcedureCall(const char* ident) {
 		for (int i = 0; i < temp; i++) {
 			typeVector.push_back(params[i]->type);
 		}
-
 		compareParamTypes(typeVector);
 	}
 	else {
@@ -847,7 +846,6 @@ bool checkTypesEqual(Type *a, Type *b)
 void  compareParamTypes(std::vector<Type*> a)
 {
 	std::stringstream ss;
-	
 	int alength = a.size();
 	int blength = parameterTypeCheckBuffer.size();
 	if (alength != blength) {

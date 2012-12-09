@@ -1,7 +1,7 @@
-list.p
-	- Error falsely being thrown whenever a cellPtr type gets passed in to a procedure
-add.p
-	- Error falsely being thrown whenever a typedef'd array gets passed in to a procedure
+<s>list.p
+	- Error falsely being thrown whenever a cellPtr type gets passed in to a procedure </s>
+<s>add.p
+	- Error falsely being thrown whenever a typedef'd array gets passed in to a procedure </s>
 fact.p
 	- Error falsely being thrown when a constant (int) is being passed into a function that 
 	  has an integer for a parameter
@@ -21,8 +21,8 @@ case.p		    OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-add.p		    - throws just one error at line 37 (see above)
-subscripts.p	- Variable decl w/ array type: array stuff ("[<size>]") should come after name.
+add.p		    - <s>throws just one error at line 37 (see above) </s>
+subscripts.p	- <s>Variable decl w/ array type: array stuff ("[<size>]") should come after name. </s>
 pointer.p	    - typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
 
 ===============================================================================
@@ -37,7 +37,7 @@ array2.p	    OK, G++ Compiles, Runs
 
 array.p		-<s> Variable decl w/ array type: array stuff ("[<size>]") should come after name. </s>
 					I think I fixed this -- Nina
-list.p		- problems at line 146, 147, 150 involving passing in typedef'd types (see above)
+list.p		- <s>problems at line 146, 147, 150 involving passing in typedef'd types (see above) </s>
 fact.p		- problem at line 25, see above; missing line terminator in some error message.
 
 ===============================================================================
@@ -51,7 +51,7 @@ sttest3.p	    OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-list2.p     - problems with line 164, 165, 168, and 169 for the same reasons as list.p
+list2.p     - <s>problems with line 164, 165, 168, and 169 for the same reasons as list.p </s>
 sttest.p	- See pointer.p
 sttest2.p	- See pointer.p
 set.p		NOT IMPLEMENTED
