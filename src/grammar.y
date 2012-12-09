@@ -197,10 +197,10 @@ ConstFactor        :  yident
                                 {
                                     createConstValue($$, "false", BOOLEAN);
                                 }
-           |  ychar
-                {
-                    createConstValue($$, $1, CHAR);
-                }
+                   |  ychar
+                                {
+                                    createConstValue($$, $1, CHAR);
+                                }
                    ;
 AnonType           :  Type
                                 {
