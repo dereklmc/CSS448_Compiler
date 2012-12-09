@@ -46,10 +46,10 @@ class ArrayType : public Type
     	std::string printCName() const {return "";}
     	
         Type *type;
+        std::vector<Range*> ranges;
         
     private:
 		std::string optionalCode;
-        std::vector<Range*> ranges;
         
     protected:
         void print(std::ostream& out) const

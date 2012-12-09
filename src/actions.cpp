@@ -22,6 +22,7 @@ std::deque<TypeSymbol*> arBuffer;
 Stack symbolTable;
 
 std::stack<Symbol*> designators;
+std::deque<Range*> accessedArrayRanges;
 
 /******************************************************************************
  * Handles when a function call is encountered in the grammar. First searches
@@ -1099,6 +1100,10 @@ void accessArray()
         designators.pop();
         designators.push(NULL);
         return;
+    }
+    
+    for (int i = arrayType->ranges.size()-1; i > -1; i--) {
+        accessedArrayRanges.push_front(arrayType->ranges[i]);
     }
 
     Symbol *newDesignator = new TypeSymbol("array-temp", arrayType->type);

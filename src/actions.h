@@ -24,6 +24,7 @@ extern Stack symbolTable;
 extern int lineNumber;		// The current line of the program we are parsing
 
 extern std::stack<Symbol*> designators;
+extern std::deque<Range*> accessedArrayRanges;
 
 /******************************************************************************
  * addAR(const char* ident, Type*)

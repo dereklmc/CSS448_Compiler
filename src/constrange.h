@@ -14,12 +14,15 @@ class ConstRange : public Range
         Range* clone() const;
 
         std::string getLength() const;
+        std::string getStart() const;
         
     protected:
         void print(std::ostream& out) const;
 
     private:
         ConstValue *start, *end;
+        
+        std::string limit2Str(ConstValue *) const;
 
 };
 

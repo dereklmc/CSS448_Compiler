@@ -22,21 +22,20 @@ Range* ConstRange::clone() const
 
 std::string ConstRange::getLength() const
 {
-    std::stringstream tempEndStream, tempStartStream;
-    // check start types
-    if(start->getType() == INTEGER || start->getType() == SYMBOL)
-        tempStartStream << start->generateCode();
-    if(start->getType() == CHAR)
-        tempStartStream << "'"<< start->generateCode()[0] << "'";
+    return (limit2Str(end)+"-"+getStart()+"+1");
+}
 
-    // check end types
-    if(end->getType() == INTEGER || end->getType() == SYMBOL)
-        tempEndStream << end->generateCode();
-    if(end->getType() == CHAR)
-        tempEndStream << "'" << end->generateCode()[0] << "'";
+std::string ConstRange::getStart() const
+{
+    return limit2Str(start);
+}
 
+std::string ConstRange::limit2Str(ConstValue *limit) const
+{
+    if(limit->getType() == INTEGER || limit->getType() == SYMBOL || limit->getType() == CHAR)
+        return limit->generateCode();
 
-    return (tempEndStream.str()+"-"+tempStartStream.str()+"+1");
+    return " ";
 }
 
 void ConstRange::print(std::ostream& out) const

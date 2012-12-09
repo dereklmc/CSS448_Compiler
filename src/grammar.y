@@ -679,11 +679,12 @@ theDesignatorStuff :  ydot yident
 								designatorTab = false;
 								seps.push(ARRAY);
 								std::cout << "[";
+							    accessArray();
 							}
                       ExpList 
 							{
+							    accessedArrayRanges.clear();
 							    std::cout << "]";
-							    accessArray();
 								designatorTab = true;
 								seps.pop();
 							}
@@ -709,6 +710,12 @@ ExpList            :  Expression
 						    {
 							    if (handlingProcFuncCalls)
 								    addParameterType($1);
+								    
+							    if (!accessedArrayRanges.empty()) {
+							        Range *range = accessedArrayRanges.front();
+							        accessedArrayRanges.pop_front();
+							        std::cout << " - " << range->getStart();
+							    }
 						    }
                    |  ExpList
                             {
