@@ -5,6 +5,8 @@ add.p
 pointer.p
 	- pointers not printing out properly
 		-> instead of "int* pointer1" it is displaying " pointer1"
+array2.p
+	- array1dim needs to be an array of chars
 fact.p
 	- Error falsely being thrown when a constant (int) is being passed into a function that 
 	  has an integer for a parameter
@@ -31,3 +33,8 @@ sttest.p	OK (works as expected)
 sttest2.p	OK (works as expected)
 sttest3.p	OK
 subscripts.p	OK
+<<<<<<< HEAD
+
+	
+=======
+>>>>>>> 2f4377a12108eb70630e35776741e60a95452520
