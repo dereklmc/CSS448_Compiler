@@ -16,14 +16,14 @@ list2.p
 Programs list
 add.p		- throws just one error at line 37 (see above)
 array.p		OK
-array2.p	- throws just one error at line 18
+array2.p	OK, G++ Compiles, NO INDEX LOOKUP
 case.p		OK
 exp.p		OK (working as expected)
 fact.p		- just one problem at line 25, see above
 if.p		OK
 list.p		- problems at line 146, 147, 150 involving passing in typedef'd types (see above)
-list2.p		- problem with line 98
-		- problems with line 164, 165, 168, and 169 for the same reasons as list.p
+list2.p     - problem with line 98
+            - problems with line 164, 165, 168, and 169 for the same reasons as list.p
 nestedprocs.p	OK
 pointer.p	- see above
 set.p		NOT IMPLEMENTED
