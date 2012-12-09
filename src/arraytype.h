@@ -15,6 +15,7 @@ class ArrayType : public Type
         {
             this->type = type;
             typeDefed = false;
+            AR = true;
             optionalCode = type->generateTypeCode();
         }
         

@@ -34,6 +34,7 @@ class Type
 		virtual std::string printCName() const=0;
 		virtual bool equals(Type*) const { return false; }
         bool typeDefed;
+        bool AR;
 
     protected:
         virtual void print(std::ostream& out) const =0;

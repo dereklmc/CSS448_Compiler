@@ -112,8 +112,8 @@ TypeDefBlock       :  /*** empty ***/
                                 {
                                     //loop throught all pointers
                                     //add to symbol table
+                                    //createAR();
                                     checkPointers();
-                                    // TODO generate Records/Arrays
                                 }
                    ;
 TypeDefList        :  TypeDef  ysemicolon
@@ -137,8 +137,12 @@ ConstantDef        :  yident yequal ConstExpression
                    ;
 TypeDef            :  yident yequal Type
                                 {
-                                    createTypeSymbol($1, $3);
-                                    std::cout << std::endl;
+                                    //if($3->AR)
+                                    //    addAR($1, $3);
+                                    //else{
+                                        createTypeSymbol($1, $3);
+                                        std::cout << std::endl;
+                                    //}
                                 }
                    ;
 VariableDecl       :  IdentList  ycolon  AnonType

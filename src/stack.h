@@ -41,13 +41,13 @@ class Stack
             Symbol *symReal = new TypeSymbol("real", REAL_TYPE);
 	    	Symbol *symChar = new TypeSymbol("char", CHAR_TYPE);
             Symbol *symTrue = new Constant("true", new ConstValue("true", BOOLEAN));
-            Symbol *symFalse = new Constant("false", new ConstValue("false", BOOLEAN));	
+            Symbol *symFalse = new Constant("false", new ConstValue("false", BOOLEAN));
 			Symbol *symNil = new Constant("NULL", new ConstValue("NULL", NIL));
             zeroeth->addSymbol(symInt);
             zeroeth->addSymbol(symBool);
             zeroeth->addSymbol(symStr);
             zeroeth->addSymbol(symReal);
-	    zeroeth->addSymbol(symChar);
+	        zeroeth->addSymbol(symChar);
             zeroeth->addSymbol(symTrue);
             zeroeth->addSymbol(symFalse);
 			zeroeth->addSymbol(symNil);

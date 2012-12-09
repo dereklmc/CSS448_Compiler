@@ -15,6 +15,8 @@ std::deque<std::string> errorLog;
 Type* caseType;
 std::deque<ConstValue*> caseLabelBuffer;
 std::deque<ConstValue*> caseLabelTypeCheckBuffer;
+// Queue for ranges and records. Hence "ar"
+std::deque<TypeSymbol*> arBuffer;
 
 Stack symbolTable;
 
@@ -70,6 +72,18 @@ Type* processFunctionCall(const char* ident) {
 	
 }
 
+void addCaseLabel(ConstValue* c)
+{
+	caseLabelBuffer.push_back(c);
+}
+
+void createAR()
+{
+    TypeSymbol* temp = arBuffer.front();
+    std::cout << getTabs() << temp->generateTypeDeclCode() << std::endl;
+    symbolTable.current->addSymbol(temp);
+    arBuffer.pop_front();
+}
 /******************************************************************************
  * Handles when a procedure call is encountered in the grammar. First searches
  * if a symbol by ident's name exists in the symbol table. If it does, then it
@@ -122,24 +136,33 @@ void addParameterType(Type* t)
 {
 	parameterTypeCheckBuffer.push_back(t);
 }
+void addAR(const char *ident, Type* type)
+{
+    if (type != NULL) { 
+        type->typeDefed = true;
+        //SetType* sType = dynamic_cast<SetType*>(type);
+        //if (sType == NULL) { 
+                std::string name(ident);
+                TypeSymbol *symbol = new TypeSymbol(name, type);
+                arBuffer.push_back(symbol);
+        //}
+        //else {
+        //    std::cout << getTabs() << "/* This is where set type " << ident << " would have been defined */";
+        //}
+    }
+}
 
 void checkConditionalExpressionType(Type* t) {
 	if (!BOOLEAN_TYPE->equals(t)) {
 	    std::stringstream ss;
 	    ss << "***ERROR(line: " << lineNumber << "): Expression is not conditional";
-	    addError(ss.str());
-	    //std::cout << "ERROR: Expression is not conditional" << std::endl;
-	}
+	    addError(ss.str());	
+    }
 }
 
 void setCaseType(Type* t)
 {
 	caseType = t;
-}
-
-void addCaseLabel(ConstValue* c)
-{
-	caseLabelBuffer.push_back(c);
 }
 
 std::string getTabs()
@@ -607,7 +630,13 @@ void createVariables(Type *&type) {
             std::string ident = identBuffer.front();
             identBuffer.pop_front();
             Variable* var = new Variable(ident,type->clone());
-            symbolTable.current->addSymbol(var);
+            if(!symbolTable.current->addSymbol(var))
+            {
+                std::stringstream ss;
+                ss << "***ERROR(line: " << lineNumber << "): " << var->name 
+				<< " already exists in record";
+	    	    addError(ss.str());
+            }
             std::cout << getTabs() << var->generateCode() << ";"<<std::endl;
         }
         delete type;
@@ -623,7 +652,7 @@ void createRecordType(Type *&createdType) {
         Variable *var = variableBuffer.front();
         if (!record->addField(var)) {
 	    	ss << "***ERROR(line: " << lineNumber << "): " << var->name 
-				<< "already exists in record";
+				<< " already exists in record";
 	    	addError(ss.str());
 	    	variableBuffer.pop_front();
 
