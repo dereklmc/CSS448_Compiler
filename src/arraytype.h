@@ -43,9 +43,11 @@ class ArrayType : public Type
             return clone;
         }
 
-    	std::string printCName() const {return "";};
-    private:
+    	std::string printCName() const {return "";}
+    	
         Type *type;
+        
+    private:
 		std::string optionalCode;
         std::vector<Range*> ranges;
         
