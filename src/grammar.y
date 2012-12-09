@@ -232,7 +232,7 @@ Type               :  yident    {
 ArrayType          :  yarray yleftbracket Subrange SubrangeList
                       yrightbracket yof Type
                                 {
-                                    createArrayType($$, $7);
+							        createArrayType($$, $7);
                                 }
                    ;
 SubrangeList       :  /*** empty ***/
@@ -299,7 +299,7 @@ Assignment         :  Designator
                       Expression
                       {
                             /*********** ASSIGNMENT DEBUG ************/
-                            /**
+                            /*
                             std::cout << "==*== ASSIGNMENT TYPES ::: ";
                             std::cout << "<";
                             std::cout << std::flush << $1 << std::flush;
@@ -313,7 +313,7 @@ Assignment         :  Designator
                             std::cout << std::flush << *($4) << std::flush;
                             std::cout << "\"";
                             std::cout << " ==*==" << std::endl;
-                            */
+                            /**/
                             /*********** ASSIGNMENT DEBUG ************/
 							designatorTab = true;
                       		bool equal = checkTypesEqual($4, $1);
@@ -636,8 +636,11 @@ Designator         :  yident
                                 	std::cout << $1 << std::flush;
                             	}
                                 
-                                currentDesignator = NULL;
-                                symbolTable.searchStack($1,currentDesignator);
+                                Symbol *foundDesignator = NULL;
+                                if (!symbolTable.searchStack($1,foundDesignator)) {
+                                    // TODO print error;
+                                }
+                                designators.push(foundDesignator);
                             }
                       DesignatorStuff
                             {
@@ -645,21 +648,21 @@ Designator         :  yident
                             	potentialReturnType = checkForReturnValue($1);
                             	// If not handling return values
                             	if (potentialReturnType == NULL) {
-                                	Variable *var = dynamic_cast<Variable*>(currentDesignator);
+                                	Variable *var = dynamic_cast<Variable*>(designators.top());
+                                	Constant *con = dynamic_cast<Constant*>(designators.top());
+                                	TypeSymbol *ts = dynamic_cast<TypeSymbol*>(designators.top());
                                 	if (var != NULL) {
                                     	$$ = var->type;
-                                	} else { // Try for a constant
-                                    	Constant *con = dynamic_cast<Constant*>(currentDesignator);
-										
-                                    	if (con != NULL) {
-											Type* t = getConstantType(con);
-                                        	$$ = t; // TODO infer constant type.
-                                    	} else {
-                                        	$$ = NULL;
-                                        	std::stringstream ss;
-                                        	ss << "***ERROR(" << lineNumber << "): Identifier \"" << $1 << "\" not declared!";
-                                        	addError(ss.str());
-                                    	}
+                                	} else if (con != NULL) {
+										Type* t = getConstantType(con);
+                                    	$$ = t; // TODO infer constant type.
+                                	} else if (ts != NULL) {
+                                    	$$ = ts->getMyType();
+                                	} else {
+                                    	$$ = NULL;
+                                    	std::stringstream ss;
+                                    	ss << "***ERROR(" << lineNumber << "): Identifier \"" << $1 << "\" not declared!";
+                                    	addError(ss.str());
                                 	}
                                 }
                                 else // handling return values
@@ -667,6 +670,7 @@ Designator         :  yident
                                 	std::cout << getTabs() << "_returnValue";
                                 	$$ = potentialReturnType;
                                 }
+                                designators.pop();
                             }
                    ;
 DesignatorStuff    :  /*** empty ***/
@@ -685,6 +689,7 @@ theDesignatorStuff :  ydot yident
                       ExpList 
 							{
 							    std::cout << "]";
+							    accessArray();
 								designatorTab = true;
 								seps.pop();
 							}
