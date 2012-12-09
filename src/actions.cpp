@@ -311,13 +311,32 @@ bool stackHasSymbol(const char *ident)
  * discards any program parameters (at this point in time) and creates a new
  * scope with the program's name.
  *****************************************************************************/
-void createProgramScope(const char *ident) {
-    std::string scopeName(ident);
+void createProgramScope(const char *programName) {
+    std::string scopeName(programName);
 	// Discard program parameters
     while (!identBuffer.empty()) {
 		identBuffer.pop_front();
     }	
     symbolTable.createScope(scopeName);
+    
+    // Generate code.
+    std::cout << "#include <iostream>" << std::endl;
+    std::cout << "using namespace std;" << std::endl;
+    std::cout << "class " << programName << " {" << std::endl;
+    std::cout << "public:" << std::endl;
+}
+
+/*TODO*/
+void endProgram(const char *programName)
+{
+    std::cout << ";" << std::endl << std::endl;
+    std::cout << "int main() {" << std::endl;
+    std::cout << "\t" << programName << " p;" << std::endl;
+    std::cout << "\tp.call();" << std::endl;
+    std::cout << "\treturn 0;" << std::endl;
+    std::cout << "}" << std::endl;
+    
+    printErrorLog();
 }
 
 /******************************************************************************
@@ -1108,4 +1127,17 @@ void accessField(const char *ident)
     designators.push(newDesignator);
     
     std::cout << "." << ident << std::flush;
+}
+
+/** TODO */
+void startBlock()
+{
+    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << std::endl;
+}
+
+/** TODO */
+void endBlock()
+{
+    std::cout << getTabs() << "\treturn *this;" << std::endl;
+    std::cout << getTabs() << "}" << std::endl;
 }

@@ -463,6 +463,16 @@ void dereferenceDesignator();
  *****************************************************************************/
 void accessField(const char *ident);
 
+/** TODO */
 void accessArray();
+
+/** TODO */
+void endProgram(const char *);
+
+/** TODO */
+void startBlock();
+
+/** TODO */
+void endBlock();
 
 #endif

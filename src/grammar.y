@@ -60,23 +60,12 @@ CompilationUnit    :  ProgramModule
                    ;
 ProgramModule      :  yprogram yident ProgramParameters ysemicolon
                                 {
-                                    std::cout << "#include <iostream>" << std::endl;
-                                    std::cout << "using namespace std;" << std::endl;
-                                    std::cout << "class " << $2 << " {" << std::endl;
-                                    std::cout << "public:" << std::endl;
                                     createProgramScope($2);
                                 }
                       Block ydot
                                 {
                                     exitScope();
-                                    std::cout << ";" << std::endl;
-                                    std::cout << std::endl;
-                                    std::cout << "int main() {" << std::endl;
-                                    std::cout << "\t" << $2 << " p;" << std::endl;
-                                    std::cout << "\tp.call();" << std::endl;
-                                    std::cout << "\treturn 0;" << std::endl;
-                                    std::cout << "}" << std::endl;
-                                    printErrorLog();
+                                    endProgram($2);
                                 }
                    ;
 ProgramParameters  :  yleftparen  IdentList  yrightparen
@@ -96,13 +85,12 @@ IdentList          :  yident
 Block              :  Declarations
                       ybegin
                                 {
-                                    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << std::endl;
+                                    startBlock();
                                 }
                       StatementSequence
                       yend
                                 {
-                                	std::cout << getTabs() << "\treturn *this;" << std::endl;
-                                    std::cout << getTabs() << "}" << std::endl;
+                                	endBlock();
                                 }
                    ;
 Declarations       :  ConstantDefBlock

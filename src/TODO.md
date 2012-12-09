@@ -14,5 +14,5 @@
 5. Comments
 6. Take code out of grammar.y and incorporate it into methods in actions.cpp
 7. ~~Check for duplicate identifiers when creating variables~~
-8. Include "iostream" for iostatement. use std???
-9. Generate "int main() { Program p; p.call(); }"
+8. ~~Include "iostream" for iostatement. use std???~~
+9. ~~Generate "int main() { Program p; p.call(); }"~~
