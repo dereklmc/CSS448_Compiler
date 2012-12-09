@@ -1,5 +1,5 @@
 #include "variable.h"
-
+#include "arraytype.h"
 Variable::Variable()
 {
     type = NULL;
@@ -56,7 +56,11 @@ void Variable::clone(const Variable &rhs)
 
 std::string Variable::generateCode() const
 {
-    return (type->generateVarDeclCode() + " " + name);
+	ArrayType* a = dynamic_cast<ArrayType*>(type);
+	if (a != NULL)
+		return (type->generateOptionalCode() + " " + name + a->getRanges());
+	else
+    	return (type->generateVarDeclCode() + " " + name);
 }
 
 /*******************************************************************************

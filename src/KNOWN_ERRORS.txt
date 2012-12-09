@@ -35,7 +35,8 @@ array2.p	    OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-array.p		- Variable decl w/ array type: array stuff ("[<size>]") should come after name.
+array.p		-<s> Variable decl w/ array type: array stuff ("[<size>]") should come after name. </s>
+					I think I fixed this -- Nina
 list.p		- problems at line 146, 147, 150 involving passing in typedef'd types (see above)
 fact.p		- problem at line 25, see above; missing line terminator in some error message.
 
