@@ -1,6 +1,7 @@
 #include "TypeSymbol.h"
 #include <typeinfo>
 #include "RecordType.h"
+#include "PointerType.h"
 // Standard ctr, see Symbol.
 TypeSymbol::TypeSymbol(std::string name, Type *type) :
         Symbol(name)
@@ -32,10 +33,18 @@ void TypeSymbol::print(std::ostream& out) const
 std::string TypeSymbol::generateCode()
 {
 	std::string cName = type->printCName();
-	if (cName == "")
-		return name + type->generateVarDeclCode();
-	else
-		return type->generateVarDeclCode();
+	if (cName == "") {
+		PointerType* p = dynamic_cast<PointerType*>(type);
+		if (p == NULL)
+			return name + type->generateVarDeclCode();
+		else
+			return name;
+	}
+	else {
+		PointerType* p = dynamic_cast<PointerType*>(type);
+		if (p == NULL)
+			return type->generateVarDeclCode();
+	}
 }
 
 /******************************************************************************
