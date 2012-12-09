@@ -557,7 +557,7 @@ WhichWay           :  yto
                    ;
 IOStatement        :  yread  yleftparen
                                 {
-                                    std::cout << "cin";
+                                    std::cout << "cin >> ";
 									designatorTab = false;
 									seps.push(INPUT);
                                 }
@@ -574,7 +574,7 @@ IOStatement        :  yread  yleftparen
                                 }
                    |  yreadln  yleftparen
                                 {
-                                    std::cout << "cin";
+                                    std::cout << "cin >> ";
 									designatorTab = false;
 									seps.push(INPUT);
                                 }
