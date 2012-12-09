@@ -7,12 +7,31 @@ pointer.p
 		-> instead of "int* pointer1" it is displaying " pointer1"
 array2.p
 	- array that is supposed to be initialized to ['a'-'e'+1] is showing [-+1]
-case.p && if.p
-	- what should be "cin >> number" is showing up as cinnumber
-	- if.p - later what should be "cin >> number >> number" is showing up as "cinnumber >> number"
 fact.p
 	- Error falsely being thrown when a constant (int) is being passed into a function that 
 	  has an integer for a parameter
 list2.p
 	- line 98 is throwing an error
+
+
+
+Programs list
+add.p		- throws just one error at line 37 (see above)
+array.p		OK
+array2.p	- throws just one error at line 18
+case.p		OK
+exp.p		OK (working as expected)
+fact.p		- just one problem at line 25, see above
+if.p		OK
+list.p		- problems at line 146, 147, 150 involving passing in typedef'd types (see above)
+list2.p		- problem with line 98
+		- problems with line 164, 165, 168, and 169 for the same reasons as list.p
+nestedprocs.p	OK
+pointer.p	- see above
+set.p		NOT IMPLEMENTED
+sttest.p	OK (works as expected)
+sttest2.p	OK (works as expected)
+sttest3.p	OK
+subscripts.p	OK
+
 	
