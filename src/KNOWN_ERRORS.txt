@@ -1,13 +1,11 @@
-<s>list.p
-	- Error falsely being thrown whenever a cellPtr type gets passed in to a procedure </s>
-<s>add.p
-	- Error falsely being thrown whenever a typedef'd array gets passed in to a procedure </s>
 fact.p
 	- Error falsely being thrown when a constant (int) is being passed into a function that 
 	  has an integer for a parameter
 
 No argument function calls are not handled.
 Calling a function in a grandparent or older scope may or may not work.
+
+Values passed by reference aren't being passed by reference.
 
 ===============================================================================
  Regular Pascal Programs
@@ -18,11 +16,11 @@ simplest.p
 simplest2.p
 if.p		    OK, G++ Compiles, Runs
 case.p		    OK, G++ Compiles, Runs
+subscripts.p	OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-add.p		    - <s>throws just one error at line 37 (see above) </s>
-subscripts.p	- <s>Variable decl w/ array type: array stuff ("[<size>]") should come after name. </s>
+add.p		    - can't assign to arrays
 pointer.p	    - typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
 
 ===============================================================================
@@ -32,12 +30,14 @@ pointer.p	    - typedef of pointer is wrong, struct needs to be foreward defined
 ----GOOD-----------------------------------------------------------------------
 
 array2.p	    OK, G++ Compiles, Runs
+array.p		    OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-array.p		-<s> Variable decl w/ array type: array stuff ("[<size>]") should come after name. </s>
-					I think I fixed this -- Nina
-list.p		- <s>problems at line 146, 147, 150 involving passing in typedef'd types (see above) </s>
+list.p		- typedef issue, see pointer.p
+            - new cellPtr results in a cell**, not a cell*, must dereference pointers
+              before newing them.
+            - segfaults during run.
 fact.p		- problem at line 25, see above; missing line terminator in some error message.
 
 ===============================================================================
@@ -51,7 +51,7 @@ sttest3.p	    OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-list2.p     - <s>problems with line 164, 165, 168, and 169 for the same reasons as list.p </s>
+list2.p     - typedef issue, see pointer.p
 sttest.p	- See pointer.p
 sttest2.p	- See pointer.p
 set.p		NOT IMPLEMENTED
