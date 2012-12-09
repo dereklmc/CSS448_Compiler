@@ -749,7 +749,6 @@ Expression         :  SimpleExpression
                         }
                    |  SimpleExpression  Relation  SimpleExpression
                         {
-							std::cout << "Attempting to compare " << *$1 << " to " << *$3;
                             if (checkTypesEqual($3,$1)) {
                             	$$ = BOOLEAN_TYPE;
                             //TODO - put this back in when Constants are implemented
