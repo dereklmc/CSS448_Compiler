@@ -112,7 +112,7 @@ TypeDefBlock       :  /*** empty ***/
                                 {
                                     //loop throught all pointers
                                     //add to symbol table
-                                    //createAR();
+                                    createAR();
                                     checkPointers();
                                 }
                    ;
@@ -137,12 +137,12 @@ ConstantDef        :  yident yequal ConstExpression
                    ;
 TypeDef            :  yident yequal Type
                                 {
-                                    //if($3->AR)
-                                    //    addAR($1, $3);
-                                    //else{
+                                    if($3->AR)
+                                        addAR($1, $3);
+                                    else{
                                         createTypeSymbol($1, $3);
                                         std::cout << std::endl;
-                                    //}
+                                    }
                                 }
                    ;
 VariableDecl       :  IdentList  ycolon  AnonType

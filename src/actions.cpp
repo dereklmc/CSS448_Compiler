@@ -79,10 +79,15 @@ void addCaseLabel(ConstValue* c)
 
 void createAR()
 {
-    TypeSymbol* temp = arBuffer.front();
-    std::cout << getTabs() << temp->generateTypeDeclCode() << std::endl;
-    symbolTable.current->addSymbol(temp);
-    arBuffer.pop_front();
+    while(!arBuffer.empty())
+    {
+        stringstream ss;
+        TypeSymbol* symbol = arBuffer.front();
+        //const char* c = temp->getName().c_str();
+        std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
+        //createTypeSymbol(c, temp->getMyType());
+        arBuffer.pop_front();
+    }
 }
 /******************************************************************************
  * Handles when a procedure call is encountered in the grammar. First searches
@@ -140,15 +145,16 @@ void addAR(const char *ident, Type* type)
 {
     if (type != NULL) { 
         type->typeDefed = true;
-        //SetType* sType = dynamic_cast<SetType*>(type);
-        //if (sType == NULL) { 
+        SetType* sType = dynamic_cast<SetType*>(type);
+        if (sType == NULL) { 
                 std::string name(ident);
                 TypeSymbol *symbol = new TypeSymbol(name, type);
+                symbolTable.current->addSymbol(symbol); 
                 arBuffer.push_back(symbol);
-        //}
-        //else {
-        //    std::cout << getTabs() << "/* This is where set type " << ident << " would have been defined */";
-        //}
+        }
+        else {
+            std::cout << getTabs() << "/* This is where set type " << ident << " would have been defined */" << std::endl;
+        }
     }
 }
 
