@@ -27,13 +27,13 @@ std::string ConstRange::getLength() const
     if(start->getType() == INTEGER || start->getType() == SYMBOL)
         tempStartStream << start->generateCode();
     if(start->getType() == CHAR)
-        tempStartStream << start->generateCode()[0];
+        tempStartStream << "'"<< start->generateCode()[0] << "'";
 
     // check end types
     if(end->getType() == INTEGER || end->getType() == SYMBOL)
         tempEndStream << end->generateCode();
     if(end->getType() == CHAR)
-        tempEndStream << end->generateCode()[0];
+        tempEndStream << "'" << end->generateCode()[0] << "'";
 
 
     return (tempEndStream.str()+"-"+tempStartStream.str()+"+1");
