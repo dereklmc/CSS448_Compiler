@@ -12,18 +12,19 @@
 /* declarations section */
 #include "actions.h"
 #include "parser.h"
+#include "sep.h"
 
 #include <stdio.h>
 #include <iostream>
 #include <vector>
 
 using namespace std;
-bool handlingInput = false;
-bool handlingOutput = false;
 bool handlingProcFuncCalls = false;
 bool designatorTab = true;
 extern YYSTYPE yylval;
 extern int lineNumber;
+
+std::stack<std::string> seps;
 
 %}
 
@@ -552,14 +553,14 @@ WhichWay           :  yto
 IOStatement        :  yread  yleftparen
                                 {
                                     std::cout << "cin";
-                                    handlingOutput = true;
 									designatorTab = false;
+									seps.push(INPUT);
                                 }
                       DesignatorList  yrightparen
                                 {
                                     std::cout << ";" << std::endl;
-                                    handlingOutput = false;
 									designatorTab = true;
+									seps.pop();
                                 }
                    |  yreadln
                                 {
@@ -569,27 +570,27 @@ IOStatement        :  yread  yleftparen
                    |  yreadln  yleftparen
                                 {
                                     std::cout << "cin";
-                                    handlingOutput = true;
 									designatorTab = false;
+									seps.push(INPUT);
                                 }
                       DesignatorList  yrightparen
                                 {
-                                    handlingOutput = false;
 									designatorTab = true;
                                     std::cout << ";" << std::endl;
                                     std::cout << "cout << \"\\n\";" << std::endl;
+                                    seps.pop();
                                 }
                    |  ywrite  yleftparen
                                 {
-                                    std::cout << "cout";
-                                    handlingInput = true;
+                                    std::cout << "cout << ";
 									designatorTab = false;
+                                    seps.push(OUTPUT);
                                 }
                       ExpList  yrightparen
                                 {
 									designatorTab = true;
                                     std::cout << ";" << std::endl;
-                                    handlingInput = false;
+                                    seps.pop();
                                 }
                    |  ywriteln
                                 {
@@ -598,22 +599,27 @@ IOStatement        :  yread  yleftparen
                                 }
                    |  ywriteln  yleftparen
                                 {
-                                    std::cout << "cout";
-                                    handlingInput = true;
+                                    std::cout << "cout << ";
 									designatorTab = false;
+									seps.push(OUTPUT);
+									
                                 }
                       ExpList  yrightparen
                                 {
 									designatorTab = true;
                                     std::cout << " << \"\\n\"";
                                     std::cout << ";" << std::endl;
-                                    handlingInput = false;
+                                    seps.pop();
                                 }
                    ;
 /***************************  Designator Stuff  ******************************/
 
 DesignatorList     :  Designator
-                   |  DesignatorList  ycomma  Designator
+                   |  DesignatorList  ycomma
+                            {
+                                std::cout << seps.top();
+                            }
+                      Designator
                    ;
 Designator         :  yident
                             {
@@ -621,12 +627,9 @@ Designator         :  yident
                             	// Check current scope is a function and if this
 								if (designatorTab)
 									std::cout << getTabs();
-                                if (handlingInput)
-                                    std::cout << " << " << $1;
-                                else if (handlingOutput)
-                                    std::cout << " >> " << $1;
-                                else if (potentialReturnType == NULL)           
+                                if (potentialReturnType == NULL) {
                                 	std::cout << $1 << std::flush;
+                            	}
                                 
                                 currentDesignator = NULL;
                                 symbolTable.searchStack($1,currentDesignator);
@@ -673,10 +676,14 @@ theDesignatorStuff :  ydot yident
                    |  yleftbracket 
 							{
 								designatorTab = false;
+								seps.push(ARRAY);
+								std::cout << "[";
 							}
                       ExpList 
 							{
+							    std::cout << "]";
 								designatorTab = true;
+								seps.pop();
 							}
                       yrightbracket
                    |  ycaret
@@ -687,9 +694,11 @@ theDesignatorStuff :  ydot yident
 ActualParameters   :  yleftparen
 							{
 								designatorTab = false;
+								seps.push(COMMA);
 							}
 					  ExpList  
 							{
+							    seps.pop();
 								designatorTab = true;
 							}
 					  yrightparen
@@ -699,10 +708,15 @@ ExpList            :  Expression
 							    if (handlingProcFuncCalls)
 								    addParameterType($1);
 						    }
-                   |  ExpList  ycomma  Expression
+                   |  ExpList
+                            {
+                                std::cout << seps.top();
+                            }
+                      ycomma
+                      Expression
 							{
 								if (handlingProcFuncCalls)
-									addParameterType($3);
+									addParameterType($4);
 							}
                    ;
 MemoryStatement    :  ynew  yleftparen  yident
@@ -820,81 +834,45 @@ Term               :  Factor
                    ;
 Factor             :  yinteger
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << $1;
                                 $$ = INTEGER_TYPE;
                             }
                    |  yreal
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << $1;
                                 $$ = REAL_TYPE;
                             }
                    |  ytrue
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << "true";
                                 $$ = BOOLEAN_TYPE;
                             }
                    |  yfalse
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << "false";
                                 $$ = BOOLEAN_TYPE;
                             }
                    |  ynil
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << "NULL";
                                 $$ = NIL_TYPE;
                             }
                    |  ystring
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << "\"" << $1 << "\"";
                                 $$ = STRING_TYPE;
                             }
                   |  ychar
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << "\'" << $1 << "\'";
                                 $$ = CHAR_TYPE;
                             }
                    |  Designator
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 $$ = $1;
                             }
                    |  yleftparen
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << "(" << std::flush;
                             }
                               Expression
@@ -905,10 +883,6 @@ Factor             :  yinteger
                             }
                    |  ynot
                             {
-                                if (handlingInput)
-                                    std::cout << " << ";
-                                else if (handlingOutput)
-                                    std::cout << " >> ";
                                 std::cout << "!" << std::flush;
                             }
                             Factor
@@ -970,7 +944,7 @@ ProcedureDecl      :  ProcedureHeading  ysemicolon
                       Block
                             {
                                 exitScope();
-				std::cout << ";" << std::endl;
+                                std::cout << ";" << std::endl;
                             }
                    ;
 FunctionDecl       :  FunctionHeading  ycolon  yident

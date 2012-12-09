@@ -15,7 +15,7 @@ H = y.tab.h parser.h actions.h
 
 ACT = actions.h stack.h stackframe.h
 
-STH = stack.h arraytype.h constant.h constvalue.h function.h parameter.h PointerType.h procedure.h range.h RecordType.h setType.h stackframe.h stdtype.h symbolictype.h Type.h constrange.h
+STH = stack.h arraytype.h constant.h constvalue.h function.h parameter.h PointerType.h procedure.h range.h RecordType.h setType.h stackframe.h stdtype.h symbolictype.h Type.h constrange.h sep.h
 
 # The $ is a macro reference.  The following ident is replaced with the
 # specified list.  Parens must be used if the ident is longer than one char.
