@@ -485,7 +485,7 @@ void createProcedureDecl(Procedure* proc)
 
 void createLoopCaseScope(const char *ident)
 {
-	symbolTable.createScope(std::string(ident));
+	symbolTable.createControlScope(std::string(ident));
 }
 
 /******************************************************************************
@@ -731,6 +731,24 @@ void exitScope()
 {
     /* Exit Function scope */
     StackFrame *scope = symbolTable.leaveScope();
+    /* Print exited scope. */
+    //std::cout << *scope;
+    /* Mem management */
+    delete scope;
+    scope = NULL;
+    std::cout << getTabs() << "}";
+}
+
+/******************************************************************************
+ * exitControlScope
+ * Calls the symbol table's leaveControlScope() method, which returns the stackframe
+ * scope that is being exited. The contents of this scope is then printed out,
+ * and the StackFrame object is deleted.
+ *****************************************************************************/
+void exitControlScope()
+{
+    /* Exit Function scope */
+    StackFrame *scope = symbolTable.leaveControlScope();
     /* Print exited scope. */
     //std::cout << *scope;
     /* Mem management */

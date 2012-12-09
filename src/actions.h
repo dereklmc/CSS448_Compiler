@@ -286,6 +286,15 @@ void createVariables(Type *&);
 void exitScope();
 
 /******************************************************************************
+ * exitControlScope()
+ * Calls the symbol table's leaveControlScope() method, which returns the stackframe
+ * scope that is being exited. The contents of this scope is then printed out,
+ * and the StackFrame object is deleted.
+ *****************************************************************************/
+void exitControlScope();
+
+
+/******************************************************************************
  * getConstantType(Constant*)
  * Infers the Constant's type based on the enum value stored in the Constant,
  * then returns the type it represents.

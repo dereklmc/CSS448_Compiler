@@ -21,11 +21,13 @@ class Stack
         StackFrame* zeroeth;
         
         int currentScope;
+        int currentControlScope;
         
         // Constructor
         Stack()
         {
             currentScope = 0;
+            currentControlScope = 0;
             zeroeth = new StackFrame(currentScope, "language");
             current = zeroeth;
             
@@ -79,6 +81,16 @@ class Stack
             return true;
         }
         //---------------------------------------------------------------------
+        //                          createScope
+        // Creates the StackFrame with the given string for a control structure,
+        // appends it to the Linked-List.
+        bool createControlScope(std::string s)
+        {
+            createScope(s);
+            currentControlScope++;
+            return true;
+        }
+        //---------------------------------------------------------------------
         //                          leaveScope
         // "Pops" off the current StackFrame and returns a pointer to it.
         StackFrame* leaveScope()
@@ -87,6 +99,15 @@ class Stack
             current = current->previous;
             currentScope--;
             return temp;
+        }
+        //---------------------------------------------------------------------
+        //                          leaveScope
+        // "Pops" off the current control structure StackFrame and returns a 
+        // pointer to it.
+        StackFrame* leaveControlScope()
+        {
+            currentControlScope--;
+            return leaveScope();
         }
 
         //---------------------------------------------------------------------
@@ -113,7 +134,11 @@ class Stack
 				//Symbol if found, else NULL
 				bool wasFound = temp->findMatch(s, found);
 				if (wasFound) {
-					return distance;
+				    if (distance < currentControlScope){
+				        return 0;
+			        } else {
+					    return distance - currentControlScope;
+				    }
 				}
 				temp = temp->previous;
 				distance++;

@@ -532,7 +532,7 @@ ForStatement       :  yfor
                                 }
                             ydo  Statement
                                 {
-                                    exitScope();
+                                    exitControlScope();
 			 	    std::cout << std::endl;
                                     //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
