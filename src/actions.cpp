@@ -148,10 +148,14 @@ void addAR(const char *ident, Type* type)
         type->typeDefed = true;
         SetType* sType = dynamic_cast<SetType*>(type);
         if (sType == NULL) { 
-                std::string name(ident);
-                TypeSymbol *symbol = new TypeSymbol(name, type);
-                symbolTable.current->addSymbol(symbol); 
-                arBuffer.push_back(symbol);
+            std::string name(ident);
+            TypeSymbol *symbol = new TypeSymbol(name, type);
+            symbolTable.current->addSymbol(symbol); 
+            arBuffer.push_back(symbol);
+            
+            if (dynamic_cast<RecordType*>(type) != NULL) {
+                std::cout << getTabs() << "struct " << ident << ";" << std::endl;
+            }
         }
         else {
             std::cout << getTabs() << "/* This is where set type " << ident << " would have been defined */" << std::endl;

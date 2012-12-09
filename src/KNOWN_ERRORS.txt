@@ -2,11 +2,6 @@ list.p
 	- Error falsely being thrown whenever a cellPtr type gets passed in to a procedure
 add.p
 	- Error falsely being thrown whenever a typedef'd array gets passed in to a procedure
-pointer.p
-	- pointers not printing out properly
-		-> instead of "int* pointer1" it is displaying " pointer1"
-array2.p
-	- array1dim needs to be an array of chars
 fact.p
 	- Error falsely being thrown when a constant (int) is being passed into a function that 
 	  has an integer for a parameter

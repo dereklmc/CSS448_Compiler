@@ -144,10 +144,7 @@ TypeDef            :  yident yequal Type
                    ;
 VariableDecl       :  IdentList  ycolon  AnonType
                                 {
-                                    //checkPointers();
-                                    //generateRecords();
                                     createVariables($3);
-                                    //std::cout << std::endl;
                                 }
                    ;
 
