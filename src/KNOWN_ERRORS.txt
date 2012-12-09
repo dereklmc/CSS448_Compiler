@@ -9,26 +9,62 @@ fact.p
 No argument function calls are not handled.
 Calling a function in a grandparent or older scope may or may not work.
 
+***
+"For" creates a new scope, throws off accessing procedure variables.
+***
 
 
-Programs list
-----GOOD----------------------------------------------------------------------
-array2.p	    OK, G++ Compiles, Runs
-case.p		    OK, G++ Compiles, Runs
-exp.p		    OK, (working as expected)
+===============================================================================
+ Regular Pascal Programs
+-------------------------------------------------------------------------------
+----GOOD-----------------------------------------------------------------------
+
+simplest.p
+simplest2.p
 if.p		    OK, G++ Compiles, Runs
+case.p		    OK, G++ Compiles, Runs
+
+----ERROR----------------------------------------------------------------------
+
+add.p		    - throws just one error at line 37 (see above)
+subscripts.p	- Variable decl of type array: array stuff ("[<size>]") should come after name.
+                - "For" creates a new scope, throws off accessing procedure variables
+pointer.p	    - typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
+
+===============================================================================
+===============================================================================
+ Medium Pascal Programs
+-------------------------------------------------------------------------------
+----GOOD-----------------------------------------------------------------------
+
+array2.p	    OK, G++ Compiles, Runs
+
+----ERROR----------------------------------------------------------------------
+
+array.p		- "For" creates a new scope, throws off accessing procedure variables.
+list.p		- problems at line 146, 147, 150 involving passing in typedef'd types (see above)
+fact.p		- problem at line 25, see above; missing line terminator in some error message.
+
+===============================================================================
+===============================================================================
+ Hard Pascal Programs
+-------------------------------------------------------------------------------
+----GOOD-----------------------------------------------------------------------
+
 nestedprocs.p	OK, G++ COMPILE, Runs
 sttest3.p	    OK, G++ Compiles, Runs
-----ERRORS--------------------------------------------------------------------
-add.p		- throws just one error at line 37 (see above)
-array.p		- array assignment fails
-fact.p		- problem at line 25, see above; missing line terminator in some error message.
-list.p		- problems at line 146, 147, 150 involving passing in typedef'd types (see above)
+
+----ERROR----------------------------------------------------------------------
+
 list2.p     - problems with line 164, 165, 168, and 169 for the same reasons as list.p
-pointer.p	- typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
 sttest.p	- See pointer.p
 sttest2.p	- See pointer.p
-subscripts.p	- For variable decl of type array: array stuff ("[<size>]") should come after name.
-                - For creates a new scope, throws off accessing procedure variables.
---------------------------------------------------------------------------
 set.p		NOT IMPLEMENTED
+
+===============================================================================
+
+Other Programs
+----GOOD----------------------------------------------------------------------
+exp.p		    OK, (working as expected)
+----ERRORS--------------------------------------------------------------------
+--------------------------------------------------------------------------

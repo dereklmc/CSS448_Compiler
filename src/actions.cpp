@@ -1060,7 +1060,7 @@ Type* getSymbolType(Symbol *s)
     
     TypeSymbol *typedSymbol = dynamic_cast<TypeSymbol*>(s);
     if (typedSymbol != NULL) {
-        return typedSymbol->getMyType();
+        return getRawType(typedSymbol->getMyType());
     }
     
     std::cout << "Symbol \"" << s->name << "\" does not have a type!" << std::endl;

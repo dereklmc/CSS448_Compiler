@@ -714,9 +714,12 @@ ActualParameters   :  yleftparen
                    ;
 ExpList            :  Expression
 						    {
-							    if (handlingProcFuncCalls)
+							    if (handlingProcFuncCalls) {
 								    addParameterType($1);
-								    
+								}
+								if (accessedArrayRanges.empty() && seps.top() == ARRAY) {
+								    accessArray();
+								} 
 							    if (!accessedArrayRanges.empty()) {
 							        Range *range = accessedArrayRanges.front();
 							        accessedArrayRanges.pop_front();
@@ -730,8 +733,17 @@ ExpList            :  Expression
                       ycomma
                       Expression
 							{
-								if (handlingProcFuncCalls)
+								if (handlingProcFuncCalls) {
 									addParameterType($4);
+								}
+								if (accessedArrayRanges.empty() && seps.top() == ARRAY) {
+								    accessArray();
+								} 
+							    if (!accessedArrayRanges.empty()) {
+							        Range *range = accessedArrayRanges.front();
+							        accessedArrayRanges.pop_front();
+							        std::cout << " - " << range->getStart();
+							    }
 							}
                    ;
 MemoryStatement    :  ynew  yleftparen  yident
