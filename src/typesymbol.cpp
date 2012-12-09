@@ -58,3 +58,8 @@ Symbol* TypeSymbol::clone() const
 {
     return new TypeSymbol(name, type->clone());
 }
+
+std::string TypeSymbol::getName() const
+{
+    return name;
+}

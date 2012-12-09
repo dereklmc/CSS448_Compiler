@@ -16,6 +16,7 @@ class TypeSymbol : public Symbol {
         ~TypeSymbol();
         std::string generateCode();
         std::string generateTypeDeclCode();
+        std::string getName() const;
         void print(std::ostream&) const;
         Type* getMyType() const;
         Symbol* clone() const;
