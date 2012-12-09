@@ -35,9 +35,7 @@ array.p		    OK, G++ Compiles, Runs
 ----ERROR----------------------------------------------------------------------
 
 list.p		- typedef issue, see pointer.p
-            - new cellPtr results in a cell**, not a cell*, must dereference pointers
-              before newing them.
-            - segfaults during run.
+            - segfaults when running output of g++.
 fact.p		- problem at line 25, see above; missing line terminator in some error message.
 
 ===============================================================================

@@ -11,4 +11,3 @@
 	- Halfway done, almost finished
 4. Comments
 5. Take code out of grammar.y and incorporate it into methods in actions.cpp
-6. Differentiate between control structure scope (as in for loop) and function scope. When printing designators, they need the true function scope.

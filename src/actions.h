@@ -485,4 +485,7 @@ void startBlock();
 /** TODO */
 void endBlock();
 
+/** TODO */
+Type* getRawType(Type *);
+
 #endif

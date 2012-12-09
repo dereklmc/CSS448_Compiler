@@ -753,9 +753,18 @@ MemoryStatement    :  ynew  yleftparen  yident
 										{
 											Variable* sym = NULL;
 											bool found = searchStack($3, sym); //Check if variable exists, prints out error within searchStack
+											std::cout << getTabs() << $3 << " = new ";
+											
 											Type* symType = sym->type;
-											std::cout << getTabs() << $3 << " = new " <<
-												*symType << ";" << std::endl;
+											symType = getRawType(symType);
+											PointerType *ptr = dynamic_cast<PointerType*>(symType);
+											if (ptr == NULL) {
+											    // TODO error
+											    std::cout << *symType << ";" << std::endl;
+											} else {
+											    std::cout << ptr->getPointee()->name << ";" << std::endl;
+										    }
+											
 										}
 					  yrightparen
                    |  ydispose yleftparen  yident
