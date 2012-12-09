@@ -59,8 +59,10 @@ class StackFrame
         
         bool addSymbol(Symbol *s)
         {
+            if (findMatch(s->name, s)) {
+                return false;
+            }
             symbols.push_back(s);
-            findMatch(s->name, s);
             return true;
         }
 

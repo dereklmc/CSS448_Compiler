@@ -25,6 +25,13 @@ extern int lineNumber;		// The current line of the program we are parsing
 extern Symbol *currentDesignator;
 
 /******************************************************************************
+ * addAR(const char* ident, Type*)
+ * Takes a Type value that is either an ArrayType or a RecordType and places on
+ * to arBuffer.
+ *****************************************************************************/
+void addAR(const char* ident, Type* type);
+
+/******************************************************************************
  * addCaseLabel(ConstValue* c)
  * Takes a ConstValue and pushes it on the caseLabelBuffer. 
  *****************************************************************************/
@@ -79,6 +86,12 @@ void checkPointers();
  * parameters of the procedure or function being called.
  *****************************************************************************/
 void compareParamTypes(std::vector<Type*> a);
+
+/******************************************************************************
+ * createAR()
+ * Creates all the Types that had been fed into the arBuffer.
+ *****************************************************************************/
+void createAR();
 
 /******************************************************************************
  * createArrayType(ArrayType *&, Type*)

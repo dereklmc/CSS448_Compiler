@@ -11,6 +11,7 @@
 RecordType::RecordType(int parentScope) : Type()
 {
     this->scope = parentScope + 2;
+    AR = true;
 	optionalCode = "struct";
 }
 
