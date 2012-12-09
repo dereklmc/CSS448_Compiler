@@ -648,9 +648,7 @@ Designator         :  yident
                                     	Constant *con = dynamic_cast<Constant*>(currentDesignator);
 										
                                     	if (con != NULL) {
-											std::cout << "***Infering Constant Type ";
 											Type* t = getConstantType(con);
-											std::cout << *t << "***";
                                         	$$ = t; // TODO infer constant type.
                                     	} else {
                                         	$$ = NULL;
