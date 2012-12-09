@@ -1,5 +1,11 @@
 #include "PointerType.h"
-
+#include "TypeSymbol.h"
+#include "symbolictype.h"
+#include "stdtype.h"
+#include "PointerType.h"
+#include "RecordType.h"
+#include <sstream>
+using namespace std;
 /*******************************************************************************
  *
  * Constructor
@@ -63,6 +69,23 @@ std::string PointerType::generateTypeCode() const
 
 std::string PointerType::generateVarDeclCode() const
 {
+	TypeSymbol* t = dynamic_cast<TypeSymbol*>(pointee);
 	std::string tempString = "";
+	if (t != NULL) {
+		StdType* test = dynamic_cast<StdType*>(t->getMyType());	
+
+		RecordType* test3 = dynamic_cast<RecordType*>(t->getMyType());
+		if (test != NULL) {
+			std::stringstream ss;		
+			ss << t->generateCode() << "*";
+			tempString = ss.str();
+		}
+		else if (test3 == NULL) {
+			std::stringstream ss;
+			ss << t->getName() << "*";
+			tempString = ss.str();
+			
+		}
+	}
     return tempString;
 }
