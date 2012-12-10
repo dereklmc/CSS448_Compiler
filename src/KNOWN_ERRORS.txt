@@ -21,7 +21,8 @@ subscripts.p	OK, G++ Compiles, Runs
 ----ERROR----------------------------------------------------------------------
 
 add.p		    - can't assign to arrays
-pointer.p	    - typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
+pointer.p	    - typedef of pointer is wrong, struct needs to be foreward 
+                  defined, pointers need to print after forward definitions
 
 ===============================================================================
 ===============================================================================
@@ -60,4 +61,4 @@ Other Programs
 ----GOOD----------------------------------------------------------------------
 exp.p		    OK, (working as expected)
 ----ERRORS--------------------------------------------------------------------
---------------------------------------------------------------------------
+------------------------------------------------------------------------------

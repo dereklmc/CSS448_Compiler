@@ -154,7 +154,6 @@ void addPointers(const char* ident, Type* type)
     
     //add to symbolTable
     std::string name(ident);
-    std::cout << "Adding Pointer: " << name << std::endl;
     TypeSymbol *symbol = new TypeSymbol(name, type);
     symbolTable.current->addSymbol(symbol);
     ptrGenBuffer.push_back(symbol);

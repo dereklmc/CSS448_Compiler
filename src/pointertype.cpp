@@ -30,6 +30,9 @@ void PointerType::setPointee(Symbol *pointee)
     this->pointee = NULL;
     this->pointee = pointee;
 }
+std::string PointerType::generateOptionalCode() const{
+    return pointee->getName();
+}
 
 /*******************************************************************************
  *
