@@ -286,10 +286,9 @@ Statement          :  Assignment
                    |  ybegin StatementSequence yend
                    |  /*** empty ***/
                    ;
-				   ;
 Assignment         :  Designator
-                      yassign 
-								{ 
+                      yassign
+								{
 									std::cout << " = "; 
 									designatorTab = false;
 								}
@@ -628,7 +627,7 @@ Designator         :  yident
                             	Type* potentialReturnType = checkForReturnValue($1);
                             	// Check current scope is a function and if this
 								if (designatorTab) {
-									std::cout << getTabs();
+									//std::cout << getTabs();
 								}
 								
                                 if (potentialReturnType == NULL) {
@@ -640,6 +639,7 @@ Designator         :  yident
                                     for (int i = 0; i < distance; i++) {
                                         std::cout << "parent->";
                                     }
+                                    
                                     std::cout << foundDesignator->getDesignator() << std::flush;
                                     designators.push(foundDesignator);
                                 }
@@ -755,8 +755,8 @@ ExpList            :  Expression
 MemoryStatement    :  ynew  yleftparen  yident
 										{
 											Variable* sym = NULL;
-											bool found = searchStack($3, sym); //Check if variable exists, prints out error within searchStack
-											std::cout << getTabs() << $3 << " = new ";
+											bool found = searchStack<Variable>($3, sym); //Check if variable exists, prints out error within searchStack
+											std::cout << getTabs() << sym->getDesignator() << " = new ";
 											
 											Type* symType = sym->type;
 											symType = getRawType(symType);
