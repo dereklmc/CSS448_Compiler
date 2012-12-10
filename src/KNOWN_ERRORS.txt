@@ -55,8 +55,7 @@ set.p           NOT IMPLEMENTED
 ----
 funcerror.p     - Function on the left of an assignment is grammatical error.
 errors.p        - Segfaults when parsing rule for non-terminal DesignatorStuff
-sterror.p       - Don't check for duplicate type names.
-                - undefined type error prints twice
+sterror.p       - undefined type error prints twice
                 - identifiers are case sensitive.
                 - don't check for duplicate parameters
 arrayerror.p    - Doest record error for illegal subscripts

@@ -389,7 +389,13 @@ void createProcedure(const char *ident, Procedure *&procedurePtr)
     procedurePtr = new Procedure(std::string(ident));
     /* Add parameters */
     while (!paramBuffer.empty()) {
-        procedurePtr->addParameter(paramBuffer.front());
+        if (procedurePtr->hasParameter(paramBuffer.front())) {
+            std::stringstream ss;
+            ss << "***ERROR(line: " << lineNumber << "): Parameter \"" << paramBuffer.front()->name << " in procedure " << std::string(ident) << "was already defined.";
+            addError(ss.str());
+        } else {
+            procedurePtr->addParameter(paramBuffer.front());
+        }
         paramBuffer.pop_front();
     }
 }
@@ -492,7 +498,13 @@ void createLoopCaseScope(const char *ident)
  ******************************************************************************/
 void createTypeSymbol(const char *ident, Type *type)
 {
-    if (type != NULL) { 
+    std::string name(ident);
+    Symbol *temp = NULL;
+    if (symbolTable.current->findMatch(name,temp)) {
+        std::string errorText = "***Error, Type " + name + " was already defined";
+        addError(errorText);
+    }
+    if (type != NULL) {
         type->typeDefed = true;
         SetType* sType = dynamic_cast<SetType*>(type);
         if (sType == NULL) { 

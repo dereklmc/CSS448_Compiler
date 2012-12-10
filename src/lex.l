@@ -178,7 +178,6 @@ writeln			{ return ywriteln; }
 
 %%
 
-
 int yywrap()
 {
 	return 1;
