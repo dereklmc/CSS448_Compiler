@@ -4,7 +4,7 @@
 #include "Type.h"
 #include "range.h"
 #include <sstream>
-
+#include <vector>
 #include <iostream>
 
 class ArrayType : public Type
@@ -46,10 +46,23 @@ class ArrayType : public Type
     	std::string printCName() const {return "";}
     	
         Type *type;
+        std::vector<Range*> ranges;
+
+				std::string getRanges() const {
+			std::ostringstream tempString;
+
+            for(int x = 0; x < ranges.size(); x++)
+            {
+                tempString << "[";
+                tempString << ranges[x]->getLength();
+                tempString << "]";
+            }
+
+		    return tempString.str();
+		}
         
     private:
 		std::string optionalCode;
-        std::vector<Range*> ranges;
         
     protected:
         void print(std::ostream& out) const

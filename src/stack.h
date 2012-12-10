@@ -21,11 +21,13 @@ class Stack
         StackFrame* zeroeth;
         
         int currentScope;
+        int currentControlScope;
         
         // Constructor
         Stack()
         {
             currentScope = 0;
+            currentControlScope = 0;
             zeroeth = new StackFrame(currentScope, "language");
             current = zeroeth;
             
@@ -79,6 +81,16 @@ class Stack
             return true;
         }
         //---------------------------------------------------------------------
+        //                          createScope
+        // Creates the StackFrame with the given string for a control structure,
+        // appends it to the Linked-List.
+        bool createControlScope(std::string s)
+        {
+            createScope(s);
+            currentControlScope++;
+            return true;
+        }
+        //---------------------------------------------------------------------
         //                          leaveScope
         // "Pops" off the current StackFrame and returns a pointer to it.
         StackFrame* leaveScope()
@@ -88,6 +100,15 @@ class Stack
             currentScope--;
             return temp;
         }
+        //---------------------------------------------------------------------
+        //                          leaveScope
+        // "Pops" off the current control structure StackFrame and returns a 
+        // pointer to it.
+        StackFrame* leaveControlScope()
+        {
+            currentControlScope--;
+            return leaveScope();
+        }
 
         //---------------------------------------------------------------------
         //                          searchStack
@@ -95,6 +116,17 @@ class Stack
         // it's found, null if not found.
         bool searchStack(std::string s, Symbol*& found)
         {
+            return findSymbol(s,found) != -1;
+        }
+        
+        //---------------------------------------------------------------------
+        //                          searchStack
+        // Searches Stack for a symbol with the specific name, returning the
+        // distance between the current scope and the scope in which the symbol
+        // exists. Returns -1 if not found.
+        int findSymbol(std::string s, Symbol*& found)
+        {
+            int distance = 0;
             StackFrame* temp = current;
             while(temp != NULL)
             {
@@ -102,11 +134,16 @@ class Stack
 				//Symbol if found, else NULL
 				bool wasFound = temp->findMatch(s, found);
 				if (wasFound) {
-					return true;
+				    if (distance < currentControlScope){
+				        return 0;
+			        } else {
+					    return distance - currentControlScope;
+				    }
 				}
 				temp = temp->previous;
+				distance++;
             }
-            return false;
+            return -1;
         }
 
         void print(std::ostream& out) const

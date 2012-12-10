@@ -24,6 +24,7 @@ extern Stack symbolTable;
 extern int lineNumber;		// The current line of the program we are parsing
 
 extern std::stack<Symbol*> designators;
+extern std::deque<Range*> accessedArrayRanges;
 
 /******************************************************************************
  * addAR(const char* ident, Type*)
@@ -296,6 +297,15 @@ void exitScope();
  * TypeDefBlock.
  *****************************************************************************/
 void generatePointers();
+/*****************************************************************************
+ * exitControlScope()
+ * Calls the symbol table's leaveControlScope() method, which returns the 
+ * stackframe
+ * scope that is being exited. The contents of this scope is then printed out,
+ * and the StackFrame object is deleted.
+ *****************************************************************************/
+void exitControlScope();
+
 
 /******************************************************************************
  * getConstantType(Constant*)
@@ -487,5 +497,8 @@ void startBlock();
 
 /** TODO */
 void endBlock();
+
+/** TODO */
+Type* getRawType(Type *);
 
 #endif

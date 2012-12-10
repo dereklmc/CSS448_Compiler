@@ -23,6 +23,7 @@ std::deque<TypeSymbol*> ptrGenBuffer;
 Stack symbolTable;
 
 std::stack<Symbol*> designators;
+std::deque<Range*> accessedArrayRanges;
 
 /******************************************************************************
  * Handles when a function call is encountered in the grammar. First searches
@@ -130,7 +131,6 @@ void processProcedureCall(const char* ident) {
 		for (int i = 0; i < temp; i++) {
 			typeVector.push_back(params[i]->type);
 		}
-
 		compareParamTypes(typeVector);
 	}
 	else {
@@ -479,13 +479,12 @@ void createProcedureDecl(Procedure* proc)
         
         std::cout << getTabs() << paramVarSymbol->generateCode() << ";" << std::endl;
     }
+    std::cout << getTabs() << symbolTable.current->previous->name << " *parent;" << std::endl;
     
     std::cout << getTabs() << proc->name << "(";
+    std::cout << symbolTable.current->previous->name << " *parent";
     
-    if (toPutOnStack.size() > 0) {
-        std::cout << toPutOnStack[0]->generateCode() << std::flush;
-    }
-    for (int i = 1; i < toPutOnStack.size(); i++) {
+    for (int i = 0; i < toPutOnStack.size(); i++) {
         Parameter *param = toPutOnStack[i];
         std::cout << ", " << toPutOnStack[i]->generateCode() << std::flush;
     }
@@ -498,12 +497,13 @@ void createProcedureDecl(Procedure* proc)
 			<< param->name << ";" << std::endl;
     }
     
+    std::cout << getTabs() << "\tthis->parent = parent;" << std::endl;
     std::cout << getTabs() << "}" << std::endl;
 }
 
 void createLoopCaseScope(const char *ident)
 {
-	symbolTable.createScope(std::string(ident));
+	symbolTable.createControlScope(std::string(ident));
 }
 
 /******************************************************************************
@@ -769,6 +769,24 @@ void exitScope()
 }
 
 /******************************************************************************
+ * exitControlScope
+ * Calls the symbol table's leaveControlScope() method, which returns the stackframe
+ * scope that is being exited. The contents of this scope is then printed out,
+ * and the StackFrame object is deleted.
+ *****************************************************************************/
+void exitControlScope()
+{
+    /* Exit Function scope */
+    StackFrame *scope = symbolTable.leaveControlScope();
+    /* Print exited scope. */
+    //std::cout << *scope;
+    /* Mem management */
+    delete scope;
+    scope = NULL;
+    std::cout << getTabs() << "}";
+}
+
+/******************************************************************************
  * getConstantType(Constant*)
  * Infers the Constant's type based on the enum value stored in the Constant,
  * then returns the type it represents.
@@ -858,7 +876,6 @@ bool checkTypesEqual(Type *a, Type *b)
 void  compareParamTypes(std::vector<Type*> a)
 {
 	std::stringstream ss;
-	
 	int alength = a.size();
 	int blength = parameterTypeCheckBuffer.size();
 	if (alength != blength) {
@@ -1089,7 +1106,7 @@ Type* getSymbolType(Symbol *s)
     
     TypeSymbol *typedSymbol = dynamic_cast<TypeSymbol*>(s);
     if (typedSymbol != NULL) {
-        return typedSymbol->getMyType();
+        return getRawType(typedSymbol->getMyType());
     }
     
     std::cout << "Symbol \"" << s->name << "\" does not have a type!" << std::endl;
@@ -1129,6 +1146,10 @@ void accessArray()
         designators.pop();
         designators.push(NULL);
         return;
+    }
+    
+    for (int i = arrayType->ranges.size()-1; i > -1; i--) {
+        accessedArrayRanges.push_front(arrayType->ranges[i]);
     }
 
     Symbol *newDesignator = new TypeSymbol("array-temp", arrayType->type);

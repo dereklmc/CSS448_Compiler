@@ -327,13 +327,13 @@ Assignment         :  Designator
 ProcedureCall      :  yident
                                 {
                                     std::cout << getTabs();
-                                    std::cout << $1 << "().call();" << std::endl;
+                                    std::cout << $1 << "(this).call();" << std::endl;
                                		processProcedureCall($1);
                                 }
                    |  yident
                                 {
                                     std::cout << getTabs();
-                                    std::cout << $1 << "(";
+                                    std::cout << $1 << "(this,";
                                 }
                       ActualParameters
                                 {
@@ -535,7 +535,7 @@ ForStatement       :  yfor
                                 }
                             ydo  Statement
                                 {
-                                    exitScope();
+                                    exitControlScope();
 			 	    std::cout << std::endl;
                                     //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
@@ -627,17 +627,23 @@ Designator         :  yident
                             {
                             	Type* potentialReturnType = checkForReturnValue($1);
                             	// Check current scope is a function and if this
-								if (designatorTab)
+								if (designatorTab) {
 									std::cout << getTabs();
+								}
+								
                                 if (potentialReturnType == NULL) {
+                                    Symbol *foundDesignator = NULL;
+                                    int distance = symbolTable.findSymbol($1,foundDesignator);
+                                    if (distance < 0) {
+                                        // TODO print error;
+                                    }
+                                    for (int i = 0; i < distance; i++) {
+                                        std::cout << "parent->";
+                                    }
                                 	std::cout << $1 << std::flush;
+                                    designators.push(foundDesignator);
                             	}
                                 
-                                Symbol *foundDesignator = NULL;
-                                if (!symbolTable.searchStack($1,foundDesignator)) {
-                                    // TODO print error;
-                                }
-                                designators.push(foundDesignator);
                             }
                       DesignatorStuff
                             {
@@ -667,7 +673,8 @@ Designator         :  yident
                                 	std::cout << getTabs() << "_returnValue";
                                 	$$ = potentialReturnType;
                                 }
-                                designators.pop();
+								if (!designators.empty())
+                                	designators.pop();
                             }
                    ;
 DesignatorStuff    :  /*** empty ***/
@@ -682,11 +689,12 @@ theDesignatorStuff :  ydot yident
 								designatorTab = false;
 								seps.push(ARRAY);
 								std::cout << "[";
+							    accessArray();
 							}
                       ExpList 
 							{
+							    accessedArrayRanges.clear();
 							    std::cout << "]";
-							    accessArray();
 								designatorTab = true;
 								seps.pop();
 							}
@@ -699,19 +707,30 @@ theDesignatorStuff :  ydot yident
 ActualParameters   :  yleftparen
 							{
 								designatorTab = false;
+								handlingProcFuncCalls = true;
 								seps.push(COMMA);
 							}
 					  ExpList  
 							{
 							    seps.pop();
+								handlingProcFuncCalls = false;
 								designatorTab = true;
 							}
 					  yrightparen
                    ;
 ExpList            :  Expression
 						    {
-							    if (handlingProcFuncCalls)
+							    if (handlingProcFuncCalls) {
 								    addParameterType($1);
+								}
+								if (accessedArrayRanges.empty() && seps.top() == ARRAY) {
+								    accessArray();
+								} 
+							    if (!accessedArrayRanges.empty()) {
+							        Range *range = accessedArrayRanges.front();
+							        accessedArrayRanges.pop_front();
+							        std::cout << " - " << range->getStart();
+							    }
 						    }
                    |  ExpList
                             {
@@ -720,17 +739,35 @@ ExpList            :  Expression
                       ycomma
                       Expression
 							{
-								if (handlingProcFuncCalls)
+								if (handlingProcFuncCalls) {
 									addParameterType($4);
+								}
+								if (accessedArrayRanges.empty() && seps.top() == ARRAY) {
+								    accessArray();
+								} 
+							    if (!accessedArrayRanges.empty()) {
+							        Range *range = accessedArrayRanges.front();
+							        accessedArrayRanges.pop_front();
+							        std::cout << " - " << range->getStart();
+							    }
 							}
                    ;
 MemoryStatement    :  ynew  yleftparen  yident
 										{
 											Variable* sym = NULL;
 											bool found = searchStack($3, sym); //Check if variable exists, prints out error within searchStack
+											std::cout << getTabs() << $3 << " = new ";
+											
 											Type* symType = sym->type;
-											std::cout << getTabs() << $3 << " = new " <<
-												*symType << ";" << std::endl;
+											symType = getRawType(symType);
+											PointerType *ptr = dynamic_cast<PointerType*>(symType);
+											if (ptr == NULL) {
+											    // TODO error
+											    std::cout << *symType << ";" << std::endl;
+											} else {
+											    std::cout << ptr->getPointee()->name << ";" << std::endl;
+										    }
+											
 										}
 					  yrightparen
                    |  ydispose yleftparen  yident
@@ -903,7 +940,7 @@ Factor             :  yinteger
 FunctionCall       :  yident
                                 {
                                     std::cout << getTabs();
-                                    std::cout << $1 << "(";
+                                    std::cout << $1 << "(this,";
                                     handlingProcFuncCalls = true;
                                 }
                       ActualParameters

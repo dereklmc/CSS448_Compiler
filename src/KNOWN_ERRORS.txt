@@ -1,35 +1,63 @@
-list.p
-	- Error falsely being thrown whenever a cellPtr type gets passed in to a procedure
-add.p
-	- Error falsely being thrown whenever a typedef'd array gets passed in to a procedure
 fact.p
 	- Error falsely being thrown when a constant (int) is being passed into a function that 
 	  has an integer for a parameter
-list2.p
-	- line 98 is throwing an error
 
+No argument function calls are not handled.
+Calling a function in a grandparent or older scope may or may not work.
 
+Values passed by reference aren't being passed by reference.
 
-Programs list
-add.p		- throws just one error at line 37 (see above)
-array.p		OK
-array2.p	OK, G++ Compiles, NO INDEX LOOKUP
-case.p		OK
-exp.p		OK (working as expected)
-fact.p		- just one problem at line 25, see above
-if.p		OK
-list.p		- problems at line 146, 147, 150 involving passing in typedef'd types (see above)
-list2.p     - problem with line 98
-            - problems with line 164, 165, 168, and 169 for the same reasons as list.p
-nestedprocs.p	OK
-pointer.p	- see above
+===============================================================================
+ Regular Pascal Programs
+-------------------------------------------------------------------------------
+----GOOD-----------------------------------------------------------------------
+
+simplest.p
+simplest2.p
+if.p		    OK, G++ Compiles, Runs
+case.p		    OK, G++ Compiles, Runs
+subscripts.p	OK, G++ Compiles, Runs
+
+----ERROR----------------------------------------------------------------------
+
+add.p		    - can't assign to arrays
+pointer.p	    - typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
+
+===============================================================================
+===============================================================================
+ Medium Pascal Programs
+-------------------------------------------------------------------------------
+----GOOD-----------------------------------------------------------------------
+
+array2.p	    OK, G++ Compiles, Runs
+array.p		    OK, G++ Compiles, Runs
+
+----ERROR----------------------------------------------------------------------
+
+list.p		- typedef issue, see pointer.p
+            - segfaults when running output of g++.
+fact.p		- problem at line 25, see above; missing line terminator in some error message.
+
+===============================================================================
+===============================================================================
+ Hard Pascal Programs
+-------------------------------------------------------------------------------
+----GOOD-----------------------------------------------------------------------
+
+nestedprocs.p	OK, G++ COMPILE, Runs
+sttest3.p	    OK, G++ Compiles, Runs
+
+----ERROR----------------------------------------------------------------------
+
+list2.p     - typedef issue, see pointer.p
+sttest.p	- See pointer.p
+sttest2.p	- See pointer.p
 set.p		NOT IMPLEMENTED
-sttest.p	OK (works as expected)
-sttest2.p	OK (works as expected)
-sttest3.p	OK
-subscripts.p	OK
-<<<<<<< HEAD
 
-	
-=======
->>>>>>> 2f4377a12108eb70630e35776741e60a95452520
+===============================================================================
+
+Other Programs
+----GOOD----------------------------------------------------------------------
+exp.p		    OK, (working as expected)
+----ERRORS--------------------------------------------------------------------
+--------------------------------------------------------------------------
