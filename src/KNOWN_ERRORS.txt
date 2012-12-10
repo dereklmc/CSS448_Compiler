@@ -10,8 +10,8 @@ Calling a function in a grandparent or older scope may or may not work.
 -------------------------------------------------------------------------------
 ----GOOD-----------------------------------------------------------------------
 
-simplest.p
-simplest2.p
+simplest.p      OK, G++ Compiles, Runs
+simplest2.p     OK, G++ Compiles, Runs
 if.p            OK, G++ Compiles, Runs
 case.p          OK, G++ Compiles, Runs
 subscripts.p    OK, G++ Compiles, Runs
@@ -40,10 +40,10 @@ fact.p          - problem at line 25, see above; missing line terminator in some
 
 nestedprocs.p   OK, G++ Compiles, Runs
 sttest3.p       OK, G++ Compiles, Runs
+list2.p         OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-list2.p     - Strange error, compile-time error
 sttest.p	- Error on proc2b's definition of y
 sttest2.p	- See sttest
 set.p		NOT IMPLEMENTED

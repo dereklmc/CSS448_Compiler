@@ -48,7 +48,7 @@ Type* processFunctionCall(Function *func) {
         }
         compareParamTypes(typeVector);
         
-        std::cout << ").call();" << std::endl;
+        std::cout << ").call()._returnValue;" << std::endl;
         
         return func->getReturnType();
     }
