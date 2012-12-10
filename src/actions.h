@@ -23,9 +23,9 @@
 extern Stack symbolTable;
 extern int lineNumber;		// The current line of the program we are parsing
 
+//Buffers to use to manipulate code.
 extern std::stack<Symbol*> designators;
 extern std::deque<Range*> accessedArrayRanges;
-
 extern std::vector<Type*> parameterTypeCheckBuffer;
 
 /******************************************************************************
@@ -409,6 +409,7 @@ void printCaseLabel();
  *****************************************************************************/
 void printErrorLog();
 
+//TODO
 template <class T>
 T* setupSubroutineCall(const char *name)
 {
@@ -527,13 +528,23 @@ void accessField(const char *ident);
 /** TODO */
 void accessArray();
 
-/** TODO */
+/******************************************************************************
+ * endProgram(const char*)
+ * Special method only used at the end of a program. Generates the main method
+ * nessesary to run, and prints out an error log with all errors encountered.
+ *****************************************************************************/
 void endProgram(const char *);
 
-/** TODO */
+/******************************************************************************
+ * startBlock()
+ * Generates the beginning of a code block.
+ *****************************************************************************/
 void startBlock();
 
-/** TODO */
+/******************************************************************************
+ * endBlock()
+ * Generates the end of a code block.
+ *****************************************************************************/
 void endBlock();
 
 /** TODO */
