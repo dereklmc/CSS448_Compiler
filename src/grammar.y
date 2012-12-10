@@ -107,8 +107,6 @@ ConstDefList       :  ConstantDef ysemicolon
 TypeDefBlock       :  /*** empty ***/
                    |  ytype  TypeDefList
                                 {
-                                    //loop throught all pointers
-                                    //add to symbol table
                                     generatePointers();
                                     createAR();
                                     checkPointers();
@@ -119,9 +117,6 @@ TypeDefList        :  TypeDef  ysemicolon
                    ;
 VariableDeclBlock  :  yvar
                       VariableDeclList
-                                {
-                                    // TODO ???
-                                }
                    |  /*** empty ***/
                    ;
 VariableDeclList   :  VariableDecl ysemicolon
@@ -206,7 +201,6 @@ ConstFactor        :  yident
 AnonType           :  Type
                                 {
                                     checkPointers();
-                                    // check Records
                                 }
                    ;
 Type               :  yident    {
@@ -294,23 +288,6 @@ Assignment         :  Designator
 								}
                       Expression
                       {
-                            /*********** ASSIGNMENT DEBUG ************/
-                            /*
-                            std::cout << "==*== ASSIGNMENT TYPES ::: ";
-                            std::cout << "<";
-                            std::cout << std::flush << $1 << std::flush;
-                            std::cout << ">=\"";
-                            std::cout << std::flush << *($1) << std::flush;
-                            std::cout << "\"";
-                            std::cout << " ::== ";
-                            std::cout << "<";
-                            std::cout << std::flush << $4 << std::flush;
-                            std::cout << ">=\"";
-                            std::cout << std::flush << *($4) << std::flush;
-                            std::cout << "\"";
-                            std::cout << " ==*==" << std::endl;
-                            /**/
-                            /*********** ASSIGNMENT DEBUG ************/
 							designatorTab = true;
                       		bool equal = checkTypesEqual($4, $1);
                       		if (!equal) {
@@ -395,7 +372,6 @@ CaseStatement      :  ycase
 CaseList           :  Case
                             {
                                 exitScope();
-                                //std::cout << std::endl << getTabs() << "}" <<
                                 std::cout << std::endl << getTabs() << "break;" << std::endl;
                             }
                    |  CaseList  ysemicolon
@@ -405,7 +381,6 @@ CaseList           :  Case
                       Case
                             {
                                 exitControlScope();
-                                //std::cout << std::endl << getTabs() << "}" <<
                                 std::cout << std::endl << getTabs() << "break;" << std::endl;
                             }
                    ;
@@ -422,16 +397,10 @@ Case               :  CaseLabelList  ycolon
                    ;
 CaseLabelList      :  ConstExpression
                                 {
-                                    /* TODO */
-                                    //delete $1;
-                                    //$1 = NULL;
                                     addCaseLabel($1);
                                 }
                    |  CaseLabelList  ycomma  ConstExpression
                                 {
-                                    /* TODO */
-                                    //delete $3;
-                                    //$3 = NULL;
                                     addCaseLabel($3);
                                 }
                    ;
@@ -445,7 +414,6 @@ WhileStatement     :  ywhile
                                 {
 									designatorTab = true;
                                     if (!BOOLEAN_TYPE->equals($3)) {
-                                        // TODO, record error message
                                         std::stringstream ss;
                                         ss << "***ERROR(" << lineNumber 
 											<< "): Expression is not conditional";
@@ -456,8 +424,7 @@ WhileStatement     :  ywhile
                       ydo  Statement
                                 {
                                     exitControlScope();
-				    std::cout << std::endl;
-                                    //std::cout << std::endl << getTabs() << "}" << std::endl;
+				                    std::cout << std::endl;
                                 }
                    ;
 RepeatStatement    :  yrepeat
@@ -499,17 +466,14 @@ ForStatement       :  yfor
                                     Variable *var = NULL;
                                     bool exists = searchStack($2,var); //Error being printed in searchStack
                                     //Check if yident and Expression have same types
-                                    //TODO UNCHECK THIS AFTER CONSTANTS ARE WORKING
                                     if (exists) {
                                     	if(!checkTypesEqual($5, var->type)) {
-                                        	//TODO record error
                                         	std::stringstream ss;
                                         	ss << "***ERROR(line: " << lineNumber 
 												<< "): Invalid for loop assignment";
                                         	addError(ss.str());
                                     	}
                                     	if(!checkTypesEqual($8, var->type)) {
-                                        	//TODO record error
                                         	std::stringstream ss;
                                         	ss << "***ERROR(line: " << lineNumber 
 												<< ": Incompatible for loop whichway type";
@@ -533,7 +497,6 @@ ForStatement       :  yfor
                                 {
                                     exitControlScope();
                                     std::cout << std::endl;
-                                    //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
                    ;
 WhichWay           :  yto
@@ -956,13 +919,11 @@ ElementList        :  Element
                    ;
 Element            :  ConstExpression
                                 {
-                                    /* TODO */
                                     delete $1;
                                     $1 = NULL;
                                 }
                    |  ConstExpression  ydotdot  ConstExpression
                                 {
-                                    /* TODO */
                                     delete $1;
                                     $1 = NULL;
                                     delete $3;
