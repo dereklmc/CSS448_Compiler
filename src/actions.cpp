@@ -18,7 +18,7 @@ std::deque<ConstValue*> caseLabelBuffer;
 std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 // Queue for ranges and records. Hence "ar"
 std::deque<TypeSymbol*> arBuffer;
-std::deque<PointerType*> ptrGenBuffer;
+std::deque<TypeSymbol*> ptrGenBuffer;
 
 Stack symbolTable;
 
@@ -147,15 +147,17 @@ void addParameterType(Type* t)
 void addPointers(const char* ident, Type* type)
 {
     //add to buffer to be printed out later
-    Symbol *s = new Symbol(ident);
-    PointerType* genType = dynamic_cast<PointerType*>(type);
-    genType->setPointee(s);
-    ptrGenBuffer.push_back(genType);
-
+    //Symbol *s = new Symbol(ident);
+    //PointerType* genType = dynamic_cast<PointerType*>(type);
+    //genType->setPointee(s);
+    //ptrGenBuffer.push_back(genType);
+    
     //add to symbolTable
     std::string name(ident);
+    std::cout << "Adding Pointer: " << name << std::endl;
     TypeSymbol *symbol = new TypeSymbol(name, type);
     symbolTable.current->addSymbol(symbol);
+    ptrGenBuffer.push_back(symbol);
 
 }
 
@@ -547,13 +549,12 @@ void createPointer(PointerType*& createdType, const char *ident)
 }
 void generatePointers()
 {
-    while(!arBuffer.empty())
+    while(!ptrGenBuffer.empty())
     {
         stringstream ss;
-        Type* symbol = ptrGenBuffer.front();
-        //TypeSymbol *symbol = new TypeSymbol(name, type);
+        TypeSymbol* symbol = ptrGenBuffer.front();
 
-        std::cout << getTabs() << symbol->generateTypeCode() + ";\n";
+        std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
         ptrGenBuffer.pop_front();
     }
 

@@ -109,8 +109,8 @@ TypeDefBlock       :  /*** empty ***/
                                 {
                                     //loop throught all pointers
                                     //add to symbol table
-                                    createAR();
                                     generatePointers();
+                                    createAR();
                                     checkPointers();
                                 }
                    ;
