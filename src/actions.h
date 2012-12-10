@@ -52,6 +52,12 @@ void addIdent(const char *);
 void addParameterType(Type* t);
 
 /******************************************************************************
+ * addPointers
+ * Adds pointers to a buffer to print out from later.
+ *****************************************************************************/
+void addPointers(const char*, Type*);
+
+/******************************************************************************
  * addError(std::string)
  * Takes a string and pushes it on the errorLog.
  *****************************************************************************/
@@ -286,8 +292,15 @@ void createVariables(Type *&);
 void exitScope();
 
 /******************************************************************************
+ * generatePointers()
+ * Outputs pointers saved in buffer to be printed at the end of the 
+ * TypeDefBlock.
+ *****************************************************************************/
+void generatePointers();
+/*****************************************************************************
  * exitControlScope()
- * Calls the symbol table's leaveControlScope() method, which returns the stackframe
+ * Calls the symbol table's leaveControlScope() method, which returns the 
+ * stackframe
  * scope that is being exited. The contents of this scope is then printed out,
  * and the StackFrame object is deleted.
  *****************************************************************************/

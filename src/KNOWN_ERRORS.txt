@@ -15,11 +15,14 @@ simplest2.p
 if.p            OK, G++ Compiles, Runs
 case.p          OK, G++ Compiles, Runs
 subscripts.p    OK, G++ Compiles, Runs
+if.p            OK, G++ Compiles, Runs
+case.p          OK, G++ Compiles, Runs
+subscripts.p    OK, G++ Compiles, Runs
+pointer.p       OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
 add.p           - tries to get constant from scope in which it was declared.
-pointer.p       - typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
 
 ===============================================================================
 ===============================================================================
@@ -32,8 +35,7 @@ array.p		    OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-list.p		- typedef issue, see pointer.p
-            - segfaults when running output of g++.
+list.p      - segfaults when running output of g++.
 fact.p		- problem at line 25, see above; missing line terminator in some error message.
 
 ===============================================================================
@@ -42,14 +44,14 @@ fact.p		- problem at line 25, see above; missing line terminator in some error m
 -------------------------------------------------------------------------------
 ----GOOD-----------------------------------------------------------------------
 
-nestedprocs.p	OK, G++ COMPILE, Runs
+nestedprocs.p	OK, G++ Compiles, Runs
 sttest3.p	    OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-list2.p     - typedef issue, see pointer.p
-sttest.p	- See pointer.p
-sttest2.p	- See pointer.p
+list2.p     - Strange error, compile-time error
+sttest.p	- Error on proc2b's definition of y
+sttest2.p	- See sttest
 set.p		NOT IMPLEMENTED
 
 ===============================================================================
@@ -58,4 +60,4 @@ Other Programs
 ----GOOD----------------------------------------------------------------------
 exp.p		    OK, (working as expected)
 ----ERRORS--------------------------------------------------------------------
---------------------------------------------------------------------------
+------------------------------------------------------------------------------

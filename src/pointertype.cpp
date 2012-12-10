@@ -16,6 +16,7 @@ using namespace std;
 PointerType::PointerType(Symbol *pointee) : Type()
 {
     this->pointee = pointee;
+    pointer = true;
 }
 
 Symbol* PointerType::getPointee() const
@@ -28,6 +29,9 @@ void PointerType::setPointee(Symbol *pointee)
     delete this->pointee;
     this->pointee = NULL;
     this->pointee = pointee;
+}
+std::string PointerType::generateOptionalCode() const{
+    return pointee->getName();
 }
 
 /*******************************************************************************

@@ -18,6 +18,7 @@ std::deque<ConstValue*> caseLabelBuffer;
 std::deque<ConstValue*> caseLabelTypeCheckBuffer;
 // Queue for ranges and records. Hence "ar"
 std::deque<TypeSymbol*> arBuffer;
+std::deque<TypeSymbol*> ptrGenBuffer;
 
 Stack symbolTable;
 
@@ -142,7 +143,24 @@ void addParameterType(Type* t)
 {
 	parameterTypeCheckBuffer.push_back(t);
 }
-void addAR(const char *ident, Type* type)
+
+void addPointers(const char* ident, Type* type)
+{
+    //add to buffer to be printed out later
+    //Symbol *s = new Symbol(ident);
+    //PointerType* genType = dynamic_cast<PointerType*>(type);
+    //genType->setPointee(s);
+    //ptrGenBuffer.push_back(genType);
+    
+    //add to symbolTable
+    std::string name(ident);
+    TypeSymbol *symbol = new TypeSymbol(name, type);
+    symbolTable.current->addSymbol(symbol);
+    ptrGenBuffer.push_back(symbol);
+
+}
+
+void addAR(const char* ident, Type* type)
 {
     if (type != NULL) { 
         type->typeDefed = true;
@@ -524,7 +542,18 @@ void createPointer(PointerType*& createdType, const char *ident)
     createdType = new PointerType(s);
     ptrBuffer.push_back(createdType);
 }
+void generatePointers()
+{
+    while(!ptrGenBuffer.empty())
+    {
+        stringstream ss;
+        TypeSymbol* symbol = ptrGenBuffer.front();
 
+        std::cout << getTabs() << symbol->generateTypeDeclCode() + ";\n";
+        ptrGenBuffer.pop_front();
+    }
+
+}
 /******************************************************************************
  * checkPointers()
  * While the ptrBuffer is not empty, takes the pointer from the front and 

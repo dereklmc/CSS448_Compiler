@@ -1,0 +1,71 @@
+<h1>TODO List</h1>
+
+<ol>
+<li><s><em>Hugo</em> Change Union</s>
+<ul>
+<li><s>%type <arraytype> ArrayType</s></li>
+</ul></li>
+<li><em>Hugo</em> Add to Type
+<ul>
+<li>virtual std::string Type::generateCode() const</li>
+</ul></li>
+<li><em>Nina</em> Actions.h
+<ul>
+<li>void printCode(std::string code)</li>
+</ul></li>
+<li><p><em>Derek</em> Types are hard, mmhkay?</p>
+
+<ul>
+<li>Hold off on adding to symbol table until we check all the shiznit.</li>
+<li>Hold off on code until aforementioned shiznit is checked.</li>
+</ul>
+
+<p>int numChanges;
+do:
+    numChanges = 0;
+    for typeSymbol in typeBuffer:
+        if typeSymbol.hasType():
+                if typeSymbol.type in SymbolTable
+                    numChanges++;
+                    Add Type to SymbolTable;
+                    GenerateCode();
+                    buffer.remove(typeSymbol);
+        else:
+            numChanges++;
+            Add Type to SymbolTable;
+            GenerateCode();
+            buffer.remove(typeSymbol);
+until numChanges == 0;</p></li>
+<li><em>Nina</em> Variables
+<ul>
+<li>Generate them!</li>
+<li>One variable per line.</li>
+</ul></li>
+<li><em>Nina ;->)</em> Calling Procedures
+<ul>
+<li>Make sure we are still discarding input/output variables.
+<ul>
+<li><strong>EMAIL ZANDER!</strong></li>
+</ul></li>
+</ul></li>
+<li><s><em>Hugo</em> Errors</s>
+<ul>
+<li><s>Should we spit out code if we have determined that the expression might be illegal?</s>
+<ul>
+<li><s><strong>EMAIL ZANDER!</strong></s> <strong>CONTINUE ON!</strong></li>
+</ul></li>
+</ul></li>
+<li><em>Derek</em> Modify grammar so I/O statements are standard procedures in the SymbolTable</li>
+<li>Will be outputting curly-braces for all if/while (one line or not)</li>
+<li><em>Derek</em> Constants
+<ul>
+<li>Implement Symbol#isConstant bool
+<ul>
+<li>Defaults to false</li>
+</ul></li>
+<li>Figure out how to generate Constants
+<ul>
+<li>Look at the Dragon Book</li>
+</ul></li>
+</ul></li>
+</ol>

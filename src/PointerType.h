@@ -22,6 +22,7 @@ class PointerType : public Type {
         void setPointee(Symbol*);
         Type* clone() const;
         std::string printCName() const {return "";};
+        std::string generateOptionalCode() const; 
 
     private:
         // The ident that the pointer points to.
@@ -32,8 +33,7 @@ class PointerType : public Type {
         void print(std::ostream&) const;
         std::string generateTypeCode() const;
 		std::string generateVarDeclCode() const;
-		std::string generateOptionalCode() const {return "";};
-
+	
 };
 
 #endif
