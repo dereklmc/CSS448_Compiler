@@ -58,26 +58,14 @@ Section 4
 -------------------------------------------------------------------------------
 ----GOOD-----------------------------------------------------------------------
 
-simpleerror.p       OK
-sterror2.p          
-harderror.p         
-funcerror.p         
-arrayerror.p        
-errors.p            
-paramtypeerror.p    
-
-----ERROR----------------------------------------------------------------------
-
-sterror.p           - undefined type error prints twice
-                    - identifiers are case sensitive.
+funcerror.p     - Function on the left of an assignment is grammatical error.
+errors.p        - Segfaults when parsing rule for non-terminal DesignatorStuff
+sterror.p       - undefined type error prints twice
+                - identifiers are case sensitive.
+                - don't check for duplicate parameters
+arrayerror.p    - Doest record error for illegal subscripts
 
 ===============================================================================
-
-Other Programs
-----GOOD----------------------------------------------------------------------
-exp.p           OK, (working as expected)
-----ERRORS--------------------------------------------------------------------
-------------------------------------------------------------------------------
 
 
 Section 5
