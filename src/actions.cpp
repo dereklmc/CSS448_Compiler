@@ -25,6 +25,7 @@ Stack symbolTable;
 std::stack<Symbol*> designators;
 std::deque<Range*> accessedArrayRanges;
 
+
 /******************************************************************************
  * Handles when a function call is encountered in the grammar. First searches
  * if a symbol by ident's name exists in the symbol table. If it does, then it
@@ -35,49 +36,27 @@ std::deque<Range*> accessedArrayRanges;
  * correct parameter types and the ones passed in match.
  * Lastly, returns the correct return type for the function call.
  *****************************************************************************/
-Type* processFunctionCall(const char* ident) {
-	std::stringstream ss;
-	Symbol *fSymbol = NULL;
-	bool exists = searchStack(ident, fSymbol);
-	Function *functionClass;
-	if (exists) {
-		//Attempt to cast as function
-		functionClass = dynamic_cast<Function*>(fSymbol);
-		if (functionClass == NULL) {
-			ss << "***ERROR(" << lineNumber << "): Symbol " 
-				<< ident << " is not a function definition";
-			addError(ss.str());
-		}
-	}
-	else {
-		/* TODO - record error */
-		ss << "***ERROR(" << lineNumber << "): Symbol " << ident 
-			<< " has not been declared";
-		addError(ss.str());
-	}
-
-	// Check the parameters to see if their types match
-	if (exists) {
-		std::vector<Parameter*> params = functionClass->getParameters();
-			
-		std::vector<Type*> typeVector;
-		int temp = params.size();
-		for (int i = 0; i < temp; i++) {
-			typeVector.push_back(params[i]->type);
-		}
-		compareParamTypes(typeVector);
-		return functionClass->getReturnType();
- 	}
-	else
-		while(!parameterTypeCheckBuffer.empty())
-			parameterTypeCheckBuffer.pop_back();
-		return NULL;
-	
+Type* processFunctionCall(Function *func) {
+    if (func != NULL) {
+        // Check the parameters to see if their types match
+        std::vector<Parameter*> params = func->getParameters();
+        
+        std::vector<Type*> typeVector;
+        int temp = params.size();
+        for (int i = 0; i < temp; i++) {
+            typeVector.push_back(params[i]->type);
+        }
+        compareParamTypes(typeVector);
+        
+        std::cout << ").call();" << std::endl;
+        
+        return func->getReturnType();
+    }
 }
 
 void addCaseLabel(ConstValue* c)
 {
-	caseLabelBuffer.push_back(c);
+    caseLabelBuffer.push_back(c);
 }
 
 void createAR()
@@ -92,6 +71,7 @@ void createAR()
         arBuffer.pop_front();
     }
 }
+
 /******************************************************************************
  * Handles when a procedure call is encountered in the grammar. First searches
  * if a symbol by ident's name exists in the symbol table. If it does, then it
@@ -101,47 +81,22 @@ void createAR()
  * object on the stack and uses compareParamTypes() to evaluate if the 
  * correct parameter types and the ones passed in match.
  *****************************************************************************/
-void processProcedureCall(const char* ident) {
-	std::stringstream ss;
-	Symbol *fSymbol = NULL;
-	bool exists = searchStack(ident, fSymbol);
-	Procedure *procClass;
-	if (exists) {
-		//Attempt to cast as procedure
-		procClass = dynamic_cast<Procedure*>(fSymbol);
-		if (procClass == NULL) {
-			ss << "***ERROR(" << lineNumber << "): Symbol " 
-				<< ident << " is not a procedure definition";
-			addError(ss.str());
-		}
-	}
-	else {
-		/* TODO - record error */
-		ss << "***ERROR(" << lineNumber << "): Symbol " << ident 
-			<< " has not been declared";
-		addError(ss.str());
-	}
-
-	// Check the parameters to see if their types match
-	if (exists) {
-		std::vector<Parameter*> params = procClass->getParameters();
-			
-		std::vector<Type*> typeVector;
-		int temp = params.size();
-		for (int i = 0; i < temp; i++) {
-			typeVector.push_back(params[i]->type);
-		}
-		compareParamTypes(typeVector);
-	}
-	else {
-		while (!parameterTypeCheckBuffer.empty())
-			parameterTypeCheckBuffer.pop_back();
-	}
+void processProcedureCall(Procedure *procClass) {
+    // Check the parameters to see if their types match
+    std::vector<Parameter*> params = procClass->getParameters();
+    std::vector<Type*> typeVector;
+    int temp = params.size();
+    for (int i = 0; i < temp; i++) {
+        typeVector.push_back(params[i]->type);
+    }
+    compareParamTypes(typeVector);
+    
+    std::cout << ").call();" << std::endl;
 }
 
 void addParameterType(Type* t)
 {
-	parameterTypeCheckBuffer.push_back(t);
+    parameterTypeCheckBuffer.push_back(t);
 }
 
 void addPointers(const char* ident, Type* type)

@@ -15,14 +15,8 @@ simplest2.p
 if.p            OK, G++ Compiles, Runs
 case.p          OK, G++ Compiles, Runs
 subscripts.p    OK, G++ Compiles, Runs
-if.p            OK, G++ Compiles, Runs
-case.p          OK, G++ Compiles, Runs
-subscripts.p    OK, G++ Compiles, Runs
 pointer.p       OK, G++ Compiles, Runs
-
-----ERROR----------------------------------------------------------------------
-
-add.p           - tries to get constant from scope in which it was declared.
+add.p           OK, G++ Compiles, Runs
 
 ===============================================================================
 ===============================================================================
@@ -30,13 +24,13 @@ add.p           - tries to get constant from scope in which it was declared.
 -------------------------------------------------------------------------------
 ----GOOD-----------------------------------------------------------------------
 
-array2.p	    OK, G++ Compiles, Runs
-array.p		    OK, G++ Compiles, Runs
+array2.p        OK, G++ Compiles, Runs
+array.p         OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-list.p      - segfaults when running output of g++.
-fact.p		- problem at line 25, see above; missing line terminator in some error message.
+list.p          - segfaults when running output of g++.
+fact.p          - problem at line 25, see above; missing line terminator in some error message.
 
 ===============================================================================
 ===============================================================================
@@ -44,8 +38,8 @@ fact.p		- problem at line 25, see above; missing line terminator in some error m
 -------------------------------------------------------------------------------
 ----GOOD-----------------------------------------------------------------------
 
-nestedprocs.p	OK, G++ Compiles, Runs
-sttest3.p	    OK, G++ Compiles, Runs
+nestedprocs.p   OK, G++ Compiles, Runs
+sttest3.p       OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
@@ -58,6 +52,6 @@ set.p		NOT IMPLEMENTED
 
 Other Programs
 ----GOOD----------------------------------------------------------------------
-exp.p		    OK, (working as expected)
+exp.p           OK, (working as expected)
 ----ERRORS--------------------------------------------------------------------
 ------------------------------------------------------------------------------
