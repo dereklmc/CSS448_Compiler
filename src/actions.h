@@ -51,6 +51,12 @@ void addIdent(const char *);
 void addParameterType(Type* t);
 
 /******************************************************************************
+ * addPointers
+ * Adds pointers to a buffer to print out from later.
+ *****************************************************************************/
+void addPointers(const char*, Type*);
+
+/******************************************************************************
  * addError(std::string)
  * Takes a string and pushes it on the errorLog.
  *****************************************************************************/
@@ -283,6 +289,13 @@ void createVariables(Type *&);
  * and the StackFrame object is deleted.
  *****************************************************************************/
 void exitScope();
+
+/******************************************************************************
+ * generatePointers()
+ * Outputs pointers saved in buffer to be printed at the end of the 
+ * TypeDefBlock.
+ *****************************************************************************/
+void generatePointers();
 
 /******************************************************************************
  * getConstantType(Constant*)

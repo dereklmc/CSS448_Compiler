@@ -16,6 +16,7 @@ using namespace std;
 PointerType::PointerType(Symbol *pointee) : Type()
 {
     this->pointee = pointee;
+    pointer = true;
 }
 
 Symbol* PointerType::getPointee() const

@@ -35,6 +35,7 @@ class Type
 		virtual bool equals(Type*) const { return false; }
         bool typeDefed;
         bool AR;
+        bool pointer;
 
     protected:
         virtual void print(std::ostream& out) const =0;
