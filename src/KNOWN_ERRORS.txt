@@ -5,8 +5,6 @@ fact.p
 No argument function calls are not handled.
 Calling a function in a grandparent or older scope may or may not work.
 
-Values passed by reference aren't being passed by reference.
-
 ===============================================================================
  Regular Pascal Programs
 -------------------------------------------------------------------------------
@@ -14,14 +12,11 @@ Values passed by reference aren't being passed by reference.
 
 simplest.p
 simplest2.p
-if.p		    OK, G++ Compiles, Runs
-case.p		    OK, G++ Compiles, Runs
-subscripts.p	OK, G++ Compiles, Runs
+if.p            OK, G++ Compiles, Runs
+case.p          OK, G++ Compiles, Runs
+subscripts.p    OK, G++ Compiles, Runs
 pointer.p       OK, G++ Compiles, Runs
-
-----ERROR----------------------------------------------------------------------
-
-add.p		    - can't assign to arrays
+add.p           OK, G++ Compiles, Runs
 
 ===============================================================================
 ===============================================================================
@@ -29,13 +24,13 @@ add.p		    - can't assign to arrays
 -------------------------------------------------------------------------------
 ----GOOD-----------------------------------------------------------------------
 
-array2.p	    OK, G++ Compiles, Runs
-array.p		    OK, G++ Compiles, Runs
+array2.p        OK, G++ Compiles, Runs
+array.p         OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-list.p      - segfaults when running output of g++.
-fact.p		- problem at line 25, see above; missing line terminator in some error message.
+list.p          - segfaults when running output of g++.
+fact.p          - problem at line 25, see above; missing line terminator in some error message.
 
 ===============================================================================
 ===============================================================================
@@ -43,8 +38,8 @@ fact.p		- problem at line 25, see above; missing line terminator in some error m
 -------------------------------------------------------------------------------
 ----GOOD-----------------------------------------------------------------------
 
-nestedprocs.p	OK, G++ Compiles, Runs
-sttest3.p	    OK, G++ Compiles, Runs
+nestedprocs.p   OK, G++ Compiles, Runs
+sttest3.p       OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
@@ -57,6 +52,6 @@ set.p		NOT IMPLEMENTED
 
 Other Programs
 ----GOOD----------------------------------------------------------------------
-exp.p		    OK, (working as expected)
+exp.p           OK, (working as expected)
 ----ERRORS--------------------------------------------------------------------
 ------------------------------------------------------------------------------

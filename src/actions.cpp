@@ -25,6 +25,7 @@ Stack symbolTable;
 std::stack<Symbol*> designators;
 std::deque<Range*> accessedArrayRanges;
 
+
 /******************************************************************************
  * Handles when a function call is encountered in the grammar. First searches
  * if a symbol by ident's name exists in the symbol table. If it does, then it
@@ -35,6 +36,7 @@ std::deque<Range*> accessedArrayRanges;
  * correct parameter types and the ones passed in match.
  * Lastly, returns the correct return type for the function call.
  *****************************************************************************/
+<<<<<<< HEAD
 Type* processFunctionCall(const char* ident) {
 	std::stringstream ss;
 	Symbol *fSymbol = NULL;
@@ -72,6 +74,24 @@ Type* processFunctionCall(const char* ident) {
 		while(!parameterTypeCheckBuffer.empty())
 			parameterTypeCheckBuffer.pop_back();
 		return NULL;
+=======
+Type* processFunctionCall(Function *func) {
+    if (func != NULL) {
+        // Check the parameters to see if their types match
+        std::vector<Parameter*> params = func->getParameters();
+        
+        std::vector<Type*> typeVector;
+        int temp = params.size();
+        for (int i = 0; i < temp; i++) {
+            typeVector.push_back(params[i]->type);
+        }
+        compareParamTypes(typeVector);
+        
+        std::cout << ").call();" << std::endl;
+        
+        return func->getReturnType();
+    }
+>>>>>>> f8ef2c6337c8ee102330d577d400bed833a0ecfa
 }
 
 /*****************************************************************************
@@ -80,7 +100,7 @@ Type* processFunctionCall(const char* ident) {
  ****************************************************************************/
 void addCaseLabel(ConstValue* c)
 {
-	caseLabelBuffer.push_back(c);
+    caseLabelBuffer.push_back(c);
 }
 
 /*****************************************************************************
@@ -109,42 +129,17 @@ void createAR()
  * object on the stack and uses compareParamTypes() to evaluate if the 
  * correct parameter types and the ones passed in match.
  *****************************************************************************/
-void processProcedureCall(const char* ident) {
-	std::stringstream ss;
-	Symbol *fSymbol = NULL;
-	bool exists = searchStack(ident, fSymbol);
-	Procedure *procClass;
-	if (exists) {
-		//Attempt to cast as procedure
-		procClass = dynamic_cast<Procedure*>(fSymbol);
-		if (procClass == NULL) {
-			ss << "***ERROR(" << lineNumber << "): Symbol " 
-				<< ident << " is not a procedure definition";
-			addError(ss.str());
-		}
-	}
-	else {
-		/* TODO - record error */
-		ss << "***ERROR(" << lineNumber << "): Symbol " << ident 
-			<< " has not been declared";
-		addError(ss.str());
-	}
-
-	// Check the parameters to see if their types match
-	if (exists) {
-		std::vector<Parameter*> params = procClass->getParameters();
-			
-		std::vector<Type*> typeVector;
-		int temp = params.size();
-		for (int i = 0; i < temp; i++) {
-			typeVector.push_back(params[i]->type);
-		}
-		compareParamTypes(typeVector);
-	}
-	else {
-		while (!parameterTypeCheckBuffer.empty())
-			parameterTypeCheckBuffer.pop_back();
-	}
+void processProcedureCall(Procedure *procClass) {
+    // Check the parameters to see if their types match
+    std::vector<Parameter*> params = procClass->getParameters();
+    std::vector<Type*> typeVector;
+    int temp = params.size();
+    for (int i = 0; i < temp; i++) {
+        typeVector.push_back(params[i]->type);
+    }
+    compareParamTypes(typeVector);
+    
+    std::cout << ").call();" << std::endl;
 }
 
 /*****************************************************************************
@@ -153,7 +148,7 @@ void processProcedureCall(const char* ident) {
  ****************************************************************************/
 void addParameterType(Type* t)
 {
-	parameterTypeCheckBuffer.push_back(t);
+    parameterTypeCheckBuffer.push_back(t);
 }
 
 /*****************************************************************************
@@ -497,29 +492,25 @@ void createProcedureDecl(Procedure* proc)
     symbolTable.createScope(proc->name);
 
     /* Put procedure params on symbol stack. */
-    std::vector<Parameter*> toPutOnStack = proc->getParameters();
-    for (int i = 0; i < toPutOnStack.size(); i++) {
-        Symbol *paramVarSymbol = toPutOnStack[i]->getVariable();
-        symbolTable.current->addSymbol(paramVarSymbol);
-        
-        std::cout << getTabs() << paramVarSymbol->generateCode() << ";" << std::endl;
+    std::vector<Parameter*> procParams = proc->getParameters();
+    for (int i = 0; i < procParams.size(); i++) {
+        Parameter *param = procParams[i];
+        symbolTable.current->addSymbol(new Parameter(*param));
+        std::cout << getTabs() << param->generateDeclaration() << ";" << std::endl;
     }
     std::cout << getTabs() << symbolTable.current->previous->name << " *parent;" << std::endl;
     
     std::cout << getTabs() << proc->name << "(";
     std::cout << symbolTable.current->previous->name << " *parent";
     
-    for (int i = 0; i < toPutOnStack.size(); i++) {
-        Parameter *param = toPutOnStack[i];
-        std::cout << ", " << toPutOnStack[i]->generateCode() << std::flush;
+    for (int i = 0; i < procParams.size(); i++) {
+        std::cout << ", " << procParams[i]->generateFunctorParam() << std::flush;
     }
     
     std::cout << ") {" << std::endl;
     
-    for (int i = 0; i < toPutOnStack.size(); i++) {
-        Parameter *param = toPutOnStack[i];
-        std::cout << getTabs() << "\tthis->" << param->name << " = " 
-			<< param->name << ";" << std::endl;
+    for (int i = 0; i < procParams.size(); i++) {
+        std::cout << getTabs() << "\tthis->" << procParams[i]->generateInit() << ";" << std::endl;
     }
     
     std::cout << getTabs() << "\tthis->parent = parent;" << std::endl;

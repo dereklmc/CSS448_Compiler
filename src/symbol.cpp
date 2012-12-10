@@ -33,4 +33,8 @@ std::string Symbol::generateCode() const
 {
     return name;
 }
-	    
+
+std::string Symbol::getDesignator() const
+{
+    return name;
+}

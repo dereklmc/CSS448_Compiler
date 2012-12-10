@@ -26,6 +26,8 @@ extern int lineNumber;		// The current line of the program we are parsing
 extern std::stack<Symbol*> designators;
 extern std::deque<Range*> accessedArrayRanges;
 
+extern std::vector<Type*> parameterTypeCheckBuffer;
+
 /******************************************************************************
  * addAR(const char* ident, Type*)
  * Takes a Type value that is either an ArrayType or a RecordType and places on
@@ -387,7 +389,7 @@ std::string getTabs();
  * correct parameter types and the ones passed in match.
  * Lastly, returns the correct return type for the function call.
  *****************************************************************************/
-Type* processFunctionCall(const char* ident);
+Type* processFunctionCall(Function *);
 
 /******************************************************************************
  * printCaseLabel()
@@ -407,6 +409,42 @@ void printCaseLabel();
  *****************************************************************************/
 void printErrorLog();
 
+template <class T>
+T* setupSubroutineCall(const char *name)
+{
+    
+    std::stringstream ss;
+    Symbol *subroutineSym = NULL;
+    int height = symbolTable.findSymbol(name, subroutineSym);
+    if (height < 0) {
+        /* TODO - record error */
+        ss << "***ERROR(" << lineNumber << "): Symbol " << name 
+            << " has not been declared";
+        addError(ss.str());
+        return NULL;
+    }
+    
+    //Attempt to cast as procedure
+    T *subroutine = dynamic_cast<T*>(subroutineSym);
+    if (subroutine == NULL) {
+        ss << "***ERROR(" << lineNumber << "): Symbol " 
+            << name << " is not a function definition";
+        addError(ss.str());
+        while (!parameterTypeCheckBuffer.empty())
+            parameterTypeCheckBuffer.pop_back();
+        return NULL;
+    }
+    
+    std::cout << getTabs();
+    std::cout << name << "(this";
+    
+    for (int i = 0; i < height; i++) {
+        std::cout << "->parent";
+    }
+    
+    return subroutine;
+}
+
 /******************************************************************************
  * Handles when a procedure call is encountered in the grammar. First searches
  * if a symbol by ident's name exists in the symbol table. If it does, then it
@@ -416,7 +454,7 @@ void printErrorLog();
  * object on the stack and uses compareParamTypes() to evaluate if the 
  * correct parameter types and the ones passed in match.
  *****************************************************************************/
-void processProcedureCall(const char* ident);
+void processProcedureCall(Procedure*);
 
 void pushVarOnStack();
 
@@ -462,9 +500,9 @@ bool searchStack(const char *ident, T *&castSymbol)
     bool isFound = symbolTable.searchStack(identStr, symbol);
     if (!isFound) {
         castSymbol = NULL;
-	std::stringstream ss;
-	ss << "***ERROR(line: " << lineNumber << "): Ident \"" << ident << "\" is undefined.";
-	addError(ss.str());
+        std::stringstream ss;
+        ss << "***ERROR(line: " << lineNumber << "): Ident \"" << ident << "\" is undefined.";
+        addError(ss.str());
         //std::cout << "***ERROR(line: " << lineNumber << ")Ident \"" << ident << "\" is undefined." << std::endl;
     } else {
         castSymbol = dynamic_cast<T*>(symbol); // = foundType;
