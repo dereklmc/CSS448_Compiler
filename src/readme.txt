@@ -68,10 +68,8 @@ paramtypeerror.p
 
 ----ERROR----------------------------------------------------------------------
 
-sterror.p           - Don't check for duplicate type names.
-                    - undefined type error prints twice
+sterror.p           - undefined type error prints twice
                     - identifiers are case sensitive.
-                    - don't check for duplicate parameters
 
 ===============================================================================
 
