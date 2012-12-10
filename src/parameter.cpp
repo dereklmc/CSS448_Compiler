@@ -1,4 +1,7 @@
 #include "parameter.h"
+#include "symbolictype.h"
+
+#include <sstream>
 
 /*******************************************************************************
  *
@@ -13,9 +16,14 @@ Parameter::Parameter(std::string name, Type *&type, bool byReference) :
     this->byReference = byReference;
 }
 
-Variable* Parameter::getVariable() const
+/*******************************************************************************
+ *
+ * Constructor
+ */
+Parameter::Parameter(const Parameter &other) :
+        Variable(other.name, other.type->clone())
 {
-    return new Variable(name, type->clone());
+    this->byReference = other.byReference;
 }
 
 bool Parameter::operator==(const Parameter &other) const
@@ -23,9 +31,50 @@ bool Parameter::operator==(const Parameter &other) const
     return other.name == name;
 }
 
-std::string Parameter::generateCode() const
+std::string Parameter::generateFunctorParam() const
 {
-    return (type->generateVarDeclCode() + " " + (byReference ? "&" : "") + " " + name);
+    std::stringstream ss;
+    ss << type->generateVarDeclCode() << " ";
+    if (byReference) {
+        ss << "& ";
+    }
+    ss << name;
+    return ss.str();
+}
+
+std::string Parameter::getDesignator() const
+{
+    std::stringstream ss;
+    if (byReference) {
+        ss << "(*";
+    }
+    ss << name;
+    if (byReference) {
+        ss << ")";
+    }
+    return ss.str();
+}
+
+std::string Parameter::generateDeclaration() const
+{
+    std::stringstream ss;
+    ss << type->generateVarDeclCode() << " ";
+    if (byReference) {
+        ss << "* ";
+    }
+    ss << name;
+    return ss.str();
+}
+
+std::string Parameter::generateInit() const
+{
+    std::stringstream ss;
+    ss << name << " = ";
+    if (byReference) {
+        ss << "&";
+    }
+    ss << name;
+    return ss.str();
 }
 
 /*******************************************************************************
@@ -39,5 +88,5 @@ void Parameter::print(std::ostream &output) const
     if (byReference) {
         output << "var ";
     }
-    var.print(output);
+    output << name;
 }

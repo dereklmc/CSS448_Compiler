@@ -286,10 +286,9 @@ Statement          :  Assignment
                    |  ybegin StatementSequence yend
                    |  /*** empty ***/
                    ;
-				   ;
 Assignment         :  Designator
-                      yassign 
-								{ 
+                      yassign
+								{
 									std::cout << " = "; 
 									designatorTab = false;
 								}
@@ -326,19 +325,17 @@ Assignment         :  Designator
                    ;
 ProcedureCall      :  yident
                                 {
-                                    std::cout << getTabs();
-                                    std::cout << $1 << "(this).call();" << std::endl;
-                               		processProcedureCall($1);
+                                    Procedure *proc = setupSubroutineCall<Procedure>($1);
+                                    processProcedureCall(proc);
                                 }
                    |  yident
                                 {
-                                    std::cout << getTabs();
-                                    std::cout << $1 << "(this,";
+                                    $<procedure>$ = setupSubroutineCall<Procedure>($1);
+                                    std::cout << ",";
                                 }
                       ActualParameters
                                 {
-                                	processProcedureCall($1);
-                                	std::cout << ").call();" << std::endl;
+                                    processProcedureCall($<procedure>2);
                                 }
                    ;
 IfStatement        :  IfStatementBlock
@@ -346,8 +343,7 @@ IfStatement        :  IfStatementBlock
                    |  IfStatementBlock
                       yelse
                             {
-                                exitScope();
-				std::cout << std::endl;
+                                exitControlScope();
                                 std::cout << getTabs() << "else {" << std::endl;
                                 createLoopCaseScope("else");
                             }
@@ -370,7 +366,7 @@ IfStatementBlock   :  yif
                    ;
 EndIf                 :  /*** empty ***/
                             {
-                                exitScope();
+                                exitControlScope();
 				std::cout << std::endl;
                             }
                       ;
@@ -390,7 +386,7 @@ CaseStatement      :  ycase
                       CaseList
                             {
                                 setCaseType(NULL);
-                                exitScope();
+                                exitControlScope();
 				std::cout << std::endl;
                                 //std::cout << std::endl << getTabs() << "}" << std::endl;
                             }
@@ -408,7 +404,7 @@ CaseList           :  Case
                             }
                       Case
                             {
-                                exitScope();
+                                exitControlScope();
                                 //std::cout << std::endl << getTabs() << "}" <<
                                 std::cout << std::endl << getTabs() << "break;" << std::endl;
                             }
@@ -459,7 +455,7 @@ WhileStatement     :  ywhile
                                 }
                       ydo  Statement
                                 {
-                                    exitScope();
+                                    exitControlScope();
 				    std::cout << std::endl;
                                     //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
@@ -471,7 +467,7 @@ RepeatStatement    :  yrepeat
                                 }
                       StatementSequence  yuntil
                                 {
-                                    exitScope();
+                                    exitControlScope();
 				    				std::cout << " while(";
 									designatorTab = false;
                                 }
@@ -536,7 +532,7 @@ ForStatement       :  yfor
                             ydo  Statement
                                 {
                                     exitControlScope();
-			 	    std::cout << std::endl;
+                                    std::cout << std::endl;
                                     //std::cout << std::endl << getTabs() << "}" << std::endl;
                                 }
                    ;
@@ -625,11 +621,11 @@ DesignatorList     :  Designator
                    ;
 Designator         :  yident
                             {
-                            	Type* potentialReturnType = checkForReturnValue($1);
-                            	// Check current scope is a function and if this
-								if (designatorTab) {
-									std::cout << getTabs();
-								}
+                                Type* potentialReturnType = checkForReturnValue($1);
+                                // Check current scope is a function and if this
+                                if (designatorTab) {
+                                    std::cout << getTabs();
+                                }
 								
                                 if (potentialReturnType == NULL) {
                                     Symbol *foundDesignator = NULL;
@@ -637,12 +633,15 @@ Designator         :  yident
                                     if (distance < 0) {
                                         // TODO print error;
                                     }
-                                    for (int i = 0; i < distance; i++) {
-                                        std::cout << "parent->";
+                                    if (dynamic_cast<Constant*>(foundDesignator) == NULL) {
+                                        for (int i = 0; i < distance; i++) {
+                                            std::cout << "parent->";
+                                        }
                                     }
-                                	std::cout << $1 << std::flush;
+                                    
+                                    std::cout << foundDesignator->getDesignator() << std::flush;
                                     designators.push(foundDesignator);
-                            	}
+                                }
                                 
                             }
                       DesignatorStuff
@@ -755,8 +754,8 @@ ExpList            :  Expression
 MemoryStatement    :  ynew  yleftparen  yident
 										{
 											Variable* sym = NULL;
-											bool found = searchStack($3, sym); //Check if variable exists, prints out error within searchStack
-											std::cout << getTabs() << $3 << " = new ";
+											bool found = searchStack<Variable>($3, sym); //Check if variable exists, prints out error within searchStack
+											std::cout << getTabs() << sym->getDesignator() << " = new ";
 											
 											Type* symType = sym->type;
 											symType = getRawType(symType);
@@ -939,15 +938,14 @@ Factor             :  yinteger
 /*  separated with commas.                                                  */
 FunctionCall       :  yident
                                 {
-                                    std::cout << getTabs();
-                                    std::cout << $1 << "(this,";
+                                    $<function>$ = setupSubroutineCall<Function>($1);
+                                    std::cout << ",";
                                     handlingProcFuncCalls = true;
                                 }
                       ActualParameters
                                 {
+                                    $$ = processFunctionCall($<function>2);
                                     handlingProcFuncCalls = false;
-                                    std::cout << ").call()._returnValue";
-                                    $$ = processFunctionCall($1);
                                 }
                    ;
 Setvalue           :  yleftbracket ElementList  yrightbracket

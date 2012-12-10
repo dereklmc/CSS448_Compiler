@@ -23,6 +23,7 @@ class Symbol
 	    
         virtual void print(std::ostream& out) const;
 	    virtual std::string generateCode() const;
+	    virtual std::string getDesignator() const;
 };
 
 #endif
