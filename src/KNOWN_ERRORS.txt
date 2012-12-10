@@ -26,10 +26,10 @@ add.p           OK, G++ Compiles, Runs
 
 array2.p        OK, G++ Compiles, Runs
 array.p         OK, G++ Compiles, Runs
+list.p          OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-list.p          - segfaults when running output of g++.
 fact.p          - problem at line 25, see above; missing line terminator in some error message.
 
 ===============================================================================
@@ -41,12 +41,33 @@ fact.p          - problem at line 25, see above; missing line terminator in some
 nestedprocs.p   OK, G++ Compiles, Runs
 sttest3.p       OK, G++ Compiles, Runs
 list2.p         OK, G++ Compiles, Runs
+sttest.p        OK
+sttest2.p       OK
 
 ----ERROR----------------------------------------------------------------------
 
-sttest.p	- Error on proc2b's definition of y
-sttest2.p	- See sttest
-set.p		NOT IMPLEMENTED
+set.p           NOT IMPLEMENTED
+
+===============================================================================
+===============================================================================
+ Erroneous Pascal Programs
+-------------------------------------------------------------------------------
+----GOOD-----------------------------------------------------------------------
+
+simpleerror.p       OK
+sterror2.p          
+harderror.p         
+funcerror.p         
+arrayerror.p        
+errors.p            
+paramtypeerror.p    
+
+----ERROR----------------------------------------------------------------------
+
+sterror.p           - Don't check for duplicate type names.
+                    - undefined type error prints twice
+                    - identifiers are case sensitive.
+                    - don't check for duplicate parameters
 
 ===============================================================================
 
