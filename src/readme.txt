@@ -89,6 +89,7 @@ a public .call() method that actually performed the procedure code. For function
 used this model but also incorporated handling for returns.
 Constants are global, not scoped.
 Don't handle passing arrays by value.
+All errors print at the bottom of the output with lineNumbers (approximate, errors in record declarations are slightly off with line numbers).
 
 Section 7
 -------------------------------------------------------------------------------
