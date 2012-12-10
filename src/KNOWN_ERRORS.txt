@@ -49,6 +49,27 @@ sttest2.p       OK
 set.p           NOT IMPLEMENTED
 
 ===============================================================================
+===============================================================================
+ Erroneous Pascal Programs
+-------------------------------------------------------------------------------
+----GOOD-----------------------------------------------------------------------
+
+simpleerror.p       OK
+sterror2.p          
+harderror.p         
+funcerror.p         
+arrayerror.p        
+errors.p            
+paramtypeerror.p    
+
+----ERROR----------------------------------------------------------------------
+
+sterror.p           - Don't check for duplicate type names.
+                    - undefined type error prints twice
+                    - identifiers are case sensitive.
+                    - don't check for duplicate parameters
+
+===============================================================================
 
 Other Programs
 ----GOOD----------------------------------------------------------------------
