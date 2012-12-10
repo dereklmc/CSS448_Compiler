@@ -55,15 +55,17 @@ bool StdType::equals(Type *other) const
 {
 	StdType *castedStdType = dynamic_cast<StdType*>(other);
 	if (castedStdType == NULL) {
-		if (typeid(*this) == typeid(other)) {
-		return true;
-		}
 		SymbolicType *castedSymType = dynamic_cast<SymbolicType*>(other);
 		if (castedSymType == NULL) {
 			return false;
 		}
+
 		return (castedSymType->getSymbol()->name.compare(pname) == 0);
 	}
-	
-	return (castedStdType->pname.compare(pname) == 0);
+	int result = castedStdType->pname.compare(pname);
+
+	if (result == 0)
+		return true;
+	else 
+		return false;
 }

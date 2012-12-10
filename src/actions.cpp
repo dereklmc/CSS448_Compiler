@@ -858,9 +858,11 @@ bool checkTypesEqual(Type *a, Type *b)
 		addError(ss.str());
 	}
 	else if (b->equals(NIL_TYPE)) {
+		std::cout << "b equals nil";
 		areEqual = true;
 	}
 	else if (a->equals(NIL_TYPE)) {
+		std::cout << "a equals nil";
 		areEqual = true;
 	}
 	else if (a->equals(b)) {
@@ -878,6 +880,7 @@ void  compareParamTypes(std::vector<Type*> a)
 	int blength = parameterTypeCheckBuffer.size();
 	if (alength != blength) {
 		//Already know that param sets not equal
+		
 		ss << "***ERROR(line: " << lineNumber << "): Parameter sets are not equal";
 		addError(ss.str());
 	}
@@ -889,7 +892,13 @@ void  compareParamTypes(std::vector<Type*> a)
 		int currentIndex = 0;
 		while ((currentIndex < alength) && (currentIndex < blength)) {
 			//NOTE Should we take error message out of checkTypesEqual and make it return a bool?
-			if (!checkTypesEqual(a[currentIndex], parameterTypeCheckBuffer[currentIndex])) {
+			
+			Type* aType = a[currentIndex];
+			Type* bType = parameterTypeCheckBuffer[currentIndex];
+			std::cout << "Atype = " << *aType << " bType= " << *bType;
+
+			if (!checkTypesEqual(aType, bType)) {	// Neither types are Constants
+				std::cout << "<<< "<<*aType << " " << *bType;
 				ss << "***ERROR(line: " << lineNumber << "): Parameter set types are not equal";
 				addError(ss.str());
 				break;
