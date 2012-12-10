@@ -36,45 +36,6 @@ std::deque<Range*> accessedArrayRanges;
  * correct parameter types and the ones passed in match.
  * Lastly, returns the correct return type for the function call.
  *****************************************************************************/
-<<<<<<< HEAD
-Type* processFunctionCall(const char* ident) {
-	std::stringstream ss;
-	Symbol *fSymbol = NULL;
-	bool exists = searchStack(ident, fSymbol);
-	Function *functionClass;
-	if (exists) {
-		//Attempt to cast as function
-		functionClass = dynamic_cast<Function*>(fSymbol);
-		if (functionClass == NULL) {
-			ss << "***ERROR(" << lineNumber << "): Symbol " 
-				<< ident << " is not a function definition";
-			addError(ss.str());
-		}
-	}
-	else {
-		/* TODO - record error */
-		ss << "***ERROR(" << lineNumber << "): Symbol " << ident 
-			<< " has not been declared";
-		addError(ss.str());
-	}
-
-	// Check the parameters to see if their types match
-	if (exists) {
-		std::vector<Parameter*> params = functionClass->getParameters();
-			
-		std::vector<Type*> typeVector;
-		int temp = params.size();
-		for (int i = 0; i < temp; i++) {
-			typeVector.push_back(params[i]->type);
-		}
-		compareParamTypes(typeVector);
-		return functionClass->getReturnType();
- 	}
-	else
-		while(!parameterTypeCheckBuffer.empty())
-			parameterTypeCheckBuffer.pop_back();
-		return NULL;
-=======
 Type* processFunctionCall(Function *func) {
     if (func != NULL) {
         // Check the parameters to see if their types match
@@ -91,7 +52,6 @@ Type* processFunctionCall(Function *func) {
         
         return func->getReturnType();
     }
->>>>>>> f8ef2c6337c8ee102330d577d400bed833a0ecfa
 }
 
 /*****************************************************************************
@@ -466,7 +426,6 @@ void createFunctionDecl(const char* ident, Function* funcPtr)
     /* Check if return type is valid */
     TypeSymbol *symbolType = NULL;
     bool found = searchStack<TypeSymbol>(ident, symbolType);
-    // TODO print error message if bad type was found.
     funcPtr->setType(new SymbolicType(symbolType));
     
     createProcedureDecl(funcPtr);
@@ -563,6 +522,10 @@ void createPointer(PointerType*& createdType, const char *ident)
     createdType = new PointerType(s);
     ptrBuffer.push_back(createdType);
 }
+/******************************************************************************
+ * generatePointers()
+ * Pops pointers off ptrGenBuffer, and outputs their code.
+ *****************************************************************************/
 void generatePointers()
 {
     while(!ptrGenBuffer.empty())
@@ -617,7 +580,8 @@ void getSymbolicType(Type *&type, const char *name)
     } else {
         type = NULL;
 		std::stringstream ss;
-		ss << "***ERROR(line: " << lineNumber << "): Type \"" << name << "\" is undefined.";
+		ss << "***ERROR(line: " << lineNumber << "): Type \"" << name << 
+		    "\" is undefined.";
 		errorLog.push_back(ss.str());
     }
 }
@@ -720,6 +684,11 @@ void createVariables(Type *&type) {
     }
 }
 
+/******************************************************************************
+ * createRecordType(Type*&)
+ * Generates a RecordType and inserts all the variables in variableBuffer into
+ * it. Returns that record as the createdType pointer.
+ *****************************************************************************/
 void createRecordType(Type *&createdType) {
     std::stringstream ss;
 
@@ -826,12 +795,14 @@ Type* getConstantType(Constant* c) {
 	else if (constType == NIL) {
 		return NIL_TYPE;	
 	}
-	//TODO handle the symbol 
 }
 
-// Checks to see if the ident passed in matches the current scope's name
-// If so, it means that this ident is going to be a return statement
-// Returns the correct return Type if true, NULL if not
+/******************************************************************************
+ * checkForReturnValue(const char*)
+ * Checks to see if the ident passed in matches the current scope's name
+ * If so, it means that this ident is going to be a return statement
+ * Returns the correct return Type if true, NULL if not
+ *****************************************************************************/
 Type* checkForReturnValue(const char* c) {
 
 	Type* retVal = NULL;
@@ -886,7 +857,8 @@ bool checkTypesEqual(Type *a, Type *b)
 
 	return areEqual;
 }
-
+/******************************************************************************
+ *****************************************************************************/
 void  compareParamTypes(std::vector<Type*> a)
 {
 	std::stringstream ss;
@@ -920,12 +892,14 @@ void  compareParamTypes(std::vector<Type*> a)
 
 	parameterTypeCheckBuffer.clear(); // Clear the buffer for the next comparison
 }
-
+/******************************************************************************
+ *****************************************************************************/
 void addError(std::string s)
 {
 	errorLog.push_back(s);
 }
-
+/******************************************************************************
+ *****************************************************************************/
 void printErrorLog()
 {
     while (!errorLog.empty()) {
@@ -952,7 +926,6 @@ Type* getDivModType(Type *left, Type *right)
 {
 	std::stringstream ss;
 	if (left == NULL || right == NULL) {
-		// TODO: log error
 		ss << "***ERROR(line: " << lineNumber << "): left or righthand Type in div/mod is NULL";
 		addError(ss.str());
 		return NULL;
@@ -965,14 +938,12 @@ Type* getDivModType(Type *left, Type *right)
 	bool rightIsReal = REAL_TYPE->equals(right);
 	
 	if (!leftIsInteger && !leftIsReal) {
-		// TODO log error
 		ss << "***ERROR(line: " << lineNumber << "): wrong left hand arg type to \"*\"";
 		addError(ss.str());
 		return NULL;
 	}
 
 	if (!rightIsInteger && !rightIsReal) {
-		// TODO log error
 		ss << "***ERROR(line: " << lineNumber << "): wrong right hand arg type to \"mod\"";
 		addError(ss.str());
 		return NULL;
@@ -981,7 +952,6 @@ Type* getDivModType(Type *left, Type *right)
 	// No reals allowed for mod and div
 	if (leftIsReal || rightIsReal)
 	{
-		// TODO log error
 		ss << "***ERROR(line: " << lineNumber << "): either right or left hand args for \"div\" are reals";
 		addError(ss.str());
 		return NULL;
@@ -1091,7 +1061,10 @@ Type* getMultAddSubType(Type *left, Type *right)
 	return NULL;
 }
 
-Type* getRawType(Type *type)
+/******************************************************************************
+ * getRawType(Type*)
+ *****************************************************************************/
+Type* getRawType(Type* type)
 {
     SymbolicType *st = dynamic_cast<SymbolicType*>(type);
     if (st == NULL) {
@@ -1100,7 +1073,10 @@ Type* getRawType(Type *type)
     return st->getSymbol()->getMyType();
 }
 
-Type* getSymbolType(Symbol *s)
+/******************************************************************************
+ * getSymbolType(Symbol*)
+ *****************************************************************************/
+Type* getSymbolType(Symbol* s)
 {
     Variable *var = dynamic_cast<Variable*>(s);
     if (var != NULL) {
@@ -1116,16 +1092,19 @@ Type* getSymbolType(Symbol *s)
     return NULL;
 }
 
+/******************************************************************************
+ * dereferenceDesignator()
+ *****************************************************************************/
 void dereferenceDesignator()
 {
     if (designators.top() == NULL) {
-        std::cout << "*** Error Cannot dereference NULL designator." << std::endl; // TODO
+        std::cout << "*** Error Cannot dereference NULL designator." << std::endl;
         return;
     }
     Type *designatorType = getSymbolType(designators.top());
     PointerType *ptr = dynamic_cast<PointerType*>(designatorType);
     if (ptr == NULL) {
-        std::cout << "*** Error Cannot dereference \"" << designators.top()->name << "\"of non-pointer type." << std::endl; // TODO
+        std::cout << "*** Error Cannot dereference \"" << designators.top()->name << "\"of non-pointer type." << std::endl;
         designators.pop();
         designators.push(NULL);
         return;
@@ -1136,16 +1115,19 @@ void dereferenceDesignator()
     std::cout << "[0]" << flush;
 }
 
+/******************************************************************************
+ * accessArray()
+ *****************************************************************************/
 void accessArray()
 {
     if (designators.top() == NULL) {
-        std::cout << "*** Error Cannot dereference NULL designator." << std::endl; // TODO
+        std::cout << "*** Error Cannot dereference NULL designator." << std::endl;
         return;
     }
     Type *designatorType = getSymbolType(designators.top());
     ArrayType *arrayType = dynamic_cast<ArrayType*>(designatorType);
     if (arrayType == NULL) {
-        std::cout << "*** Error Cannot access value in symbol \"" << designators.top()->name << "\"of non-array type." << std::endl; // TODO
+        std::cout << "*** Error Cannot access value in symbol \"" << designators.top()->name << "\"of non-array type." << std::endl;
         designators.pop();
         designators.push(NULL);
         return;
@@ -1160,17 +1142,22 @@ void accessArray()
     designators.push(newDesignator);
 }
 
-void accessField(const char *ident)
+/******************************************************************************
+ * accessField(const char*)
+ *****************************************************************************/
+void accessField(const char* ident)
 {
     if (designators.top() == NULL) {
-        std::cout << "*** Error Cannot dereference NULL designator." << std::endl; // TODO
+        std::cout << "*** Error Cannot dereference NULL designator." << 
+            std::endl;
         return;
     }
     
     Type *designatorType = getSymbolType(designators.top());
     RecordType *recordType = dynamic_cast<RecordType*>(designatorType);
     if (recordType == NULL) {
-        std::cout << "*** Error Cannot access field in \"" << designators.top()->name << "\"of non-record type." << std::endl; // TODO
+        std::cout << "*** Error Cannot access field in \"" << 
+            designators.top()->name << "\"of non-record type." << std::endl;
         designators.pop();
         designators.push(NULL);
         return;
@@ -1178,22 +1165,29 @@ void accessField(const char *ident)
     
     Symbol *newDesignator = recordType->getField(std::string(ident));
     if (newDesignator == NULL) {
-        std::cout << "*** Error Field \"" << ident << "\" is not a valid field in record\"" << designators.top()->name << "\"!" << std::endl; // TODO
+        std::cout << "*** Error Field \"" << ident << 
+            "\" is not a valid field in record\"" << designators.top()->name 
+            << "\"!" << std::endl;
     }
-    
     designators.pop();
     designators.push(newDesignator);
-    
     std::cout << "." << ident << std::flush;
 }
 
-/** TODO */
+/******************************************************************************
+ * startBlock()
+ * 
+ *****************************************************************************/
 void startBlock()
 {
-    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << std::endl;
+    std::cout << getTabs() << (symbolTable.current)->name << "& call() {" << 
+        std::endl;
 }
 
-/** TODO */
+/******************************************************************************
+ * endBlock()
+ * 
+ *****************************************************************************/
 void endBlock()
 {
     std::cout << getTabs() << "\treturn *this;" << std::endl;
