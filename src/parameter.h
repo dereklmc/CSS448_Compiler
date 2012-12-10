@@ -15,17 +15,20 @@ class Parameter : public Variable
         // ctr, creates a parameter with a name and a type that is passed by ref
         // or by value.
         Parameter(std::string, Type *&, bool);
-        Variable* getVariable() const;
+        Parameter(const Parameter&);
         
         bool operator==(const Parameter&) const;
-        virtual std::string generateCode() const;
+        std::string getDesignator() const;
+        //std::string generateCode() const;
+        std::string generateDeclaration() const;
+        std::string generateFunctorParam() const;
+        std::string generateInit() const;
 
-    private:
-        Variable var;
         // records how the parameter is passed:
         // true if by reference
         // false if by value.
         bool byReference;
+    private:
         // Overloaded print from Symbol.
         void print(std::ostream&) const;
 

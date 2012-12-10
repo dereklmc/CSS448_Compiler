@@ -5,8 +5,6 @@ fact.p
 No argument function calls are not handled.
 Calling a function in a grandparent or older scope may or may not work.
 
-Values passed by reference aren't being passed by reference.
-
 ===============================================================================
  Regular Pascal Programs
 -------------------------------------------------------------------------------
@@ -14,14 +12,14 @@ Values passed by reference aren't being passed by reference.
 
 simplest.p
 simplest2.p
-if.p		    OK, G++ Compiles, Runs
-case.p		    OK, G++ Compiles, Runs
-subscripts.p	OK, G++ Compiles, Runs
+if.p            OK, G++ Compiles, Runs
+case.p          OK, G++ Compiles, Runs
+subscripts.p    OK, G++ Compiles, Runs
 
 ----ERROR----------------------------------------------------------------------
 
-add.p		    - can't assign to arrays
-pointer.p	    - typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
+add.p           - tries to get constant from scope in which it was declared.
+pointer.p       - typedef of pointer is wrong, struct needs to be foreward defined, pointers need to print after forward definitions
 
 ===============================================================================
 ===============================================================================

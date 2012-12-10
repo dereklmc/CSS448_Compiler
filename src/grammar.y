@@ -637,9 +637,9 @@ Designator         :  yident
                                     for (int i = 0; i < distance; i++) {
                                         std::cout << "parent->";
                                     }
-                                	std::cout << $1 << std::flush;
+                                    std::cout << foundDesignator->getDesignator() << std::flush;
                                     designators.push(foundDesignator);
-                            	}
+                                }
                                 
                             }
                       DesignatorStuff

@@ -453,29 +453,25 @@ void createProcedureDecl(Procedure* proc)
     symbolTable.createScope(proc->name);
 
     /* Put procedure params on symbol stack. */
-    std::vector<Parameter*> toPutOnStack = proc->getParameters();
-    for (int i = 0; i < toPutOnStack.size(); i++) {
-        Symbol *paramVarSymbol = toPutOnStack[i]->getVariable();
-        symbolTable.current->addSymbol(paramVarSymbol);
-        
-        std::cout << getTabs() << paramVarSymbol->generateCode() << ";" << std::endl;
+    std::vector<Parameter*> procParams = proc->getParameters();
+    for (int i = 0; i < procParams.size(); i++) {
+        Parameter *param = procParams[i];
+        symbolTable.current->addSymbol(new Parameter(*param));
+        std::cout << getTabs() << param->generateDeclaration() << ";" << std::endl;
     }
     std::cout << getTabs() << symbolTable.current->previous->name << " *parent;" << std::endl;
     
     std::cout << getTabs() << proc->name << "(";
     std::cout << symbolTable.current->previous->name << " *parent";
     
-    for (int i = 0; i < toPutOnStack.size(); i++) {
-        Parameter *param = toPutOnStack[i];
-        std::cout << ", " << toPutOnStack[i]->generateCode() << std::flush;
+    for (int i = 0; i < procParams.size(); i++) {
+        std::cout << ", " << procParams[i]->generateFunctorParam() << std::flush;
     }
     
     std::cout << ") {" << std::endl;
     
-    for (int i = 0; i < toPutOnStack.size(); i++) {
-        Parameter *param = toPutOnStack[i];
-        std::cout << getTabs() << "\tthis->" << param->name << " = " 
-			<< param->name << ";" << std::endl;
+    for (int i = 0; i < procParams.size(); i++) {
+        std::cout << getTabs() << "\tthis->" << procParams[i]->generateInit() << ";" << std::endl;
     }
     
     std::cout << getTabs() << "\tthis->parent = parent;" << std::endl;
