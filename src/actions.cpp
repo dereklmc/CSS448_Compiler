@@ -244,7 +244,7 @@ void typeCheckCaseLabel()
 			}
 			// Boolean
 			else if ((type == BOOLEAN) && (!checkTypesEqual(BOOLEAN_TYPE, caseType))){
-				ss << std::cout << "***ERROR(line: " << lineNumber 
+				ss << "***ERROR(line: " << lineNumber 
 					<< "): Case label \"" << val->generateCode() <<
 					"\"(bool) does not match case expression type"; 
 				errorLog.push_back(ss.str());
@@ -858,11 +858,9 @@ bool checkTypesEqual(Type *a, Type *b)
 		addError(ss.str());
 	}
 	else if (b->equals(NIL_TYPE)) {
-		std::cout << "b equals nil";
 		areEqual = true;
 	}
 	else if (a->equals(NIL_TYPE)) {
-		std::cout << "a equals nil";
 		areEqual = true;
 	}
 	else if (a->equals(b)) {
@@ -895,10 +893,8 @@ void  compareParamTypes(std::vector<Type*> a)
 			
 			Type* aType = a[currentIndex];
 			Type* bType = parameterTypeCheckBuffer[currentIndex];
-			std::cout << "Atype = " << *aType << " bType= " << *bType;
 
 			if (!checkTypesEqual(aType, bType)) {	// Neither types are Constants
-				std::cout << "<<< "<<*aType << " " << *bType;
 				ss << "***ERROR(line: " << lineNumber << "): Parameter set types are not equal";
 				addError(ss.str());
 				break;
